@@ -1,0 +1,40 @@
+{
+  "id": "foundryvtt-nco",
+  "title": "Neon City Overdrive and other Action Tales!",
+  "description": "An unofficial FoundryVTT implementation of Neon City Overdrive and other Action Tales! by Data Suckers / Peril Planet.",
+  "version": "#{VERSION}#",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "Brian Blonski",
+      "url": "https://github.com/bblonski"
+    }
+  ],
+  "esmodules": [
+    "scripts/nco.js"
+  ],
+  "styles": [
+    "styles/nco.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }
+  ],
+  "packs": [],
+  "initiative": "1d6",
+  "gridDistance": 5,
+  "gridUnits": "ft",
+  "primaryTokenAttribute": "health.value",
+  "secondaryTokenAttribute": null,
+  "url": "#{URL}#",
+  "manifest": "#{MANIFEST}#",
+  "download": "#{DOWNLOAD}#",
+  "license": "LICENSE",
+  "readme": "README.md"
+}
