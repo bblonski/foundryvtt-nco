@@ -1,0 +1,407 @@
+:root {
+  --nco-action: #23d5e5;
+  --nco-danger: #ff2e88;
+  --nco-bg: rgba(10, 12, 24, 0.55);
+  --nco-border: rgba(255, 255, 255, 0.15);
+}
+
+/* ----------------------------------------------------------------------- */
+/* Character sheet                                                          */
+/* ----------------------------------------------------------------------- */
+
+.nco.sheet.actor .window-content {
+  background: #14172a;
+  color: #e7e9f5;
+}
+
+.nco-character-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: 8px;
+}
+
+.nco-character-sheet input[type="text"],
+.nco-character-sheet textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--nco-border);
+  border-radius: 4px;
+  color: inherit;
+  padding: 4px 6px;
+}
+
+.nco-sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nco-portrait {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border: 1px solid var(--nco-action);
+  border-radius: 6px;
+}
+
+.nco-header-fields {
+  flex: 1;
+}
+
+.nco-header-fields input[type="text"] {
+  width: 100%;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.nco-name {
+  margin: 0;
+  border: none;
+  font-size: 22px;
+  font-weight: bold;
+  color: #e7e9f5;
+}
+
+.nco-portrait-editable {
+  cursor: pointer;
+}
+
+.nco-portrait-editable:hover {
+  box-shadow: 0 0 8px 1px rgba(35, 213, 229, 0.6);
+}
+
+.nco-edit-toggle {
+  font-size: 14px;
+  align-self: flex-start;
+}
+
+.nco-edit-toggle:hover {
+  color: var(--nco-action);
+}
+
+.nco-edit-toggle-active {
+  color: var(--nco-action);
+  opacity: 1;
+}
+
+.nco-section-label {
+  display: block;
+  font-family: "Courier New", monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--nco-action);
+  margin: 0 0 4px;
+}
+
+.nco-description textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+.nco-description-text {
+  min-height: 24px;
+  font-size: 13px;
+  padding: 2px 0;
+  opacity: 0.9;
+}
+
+.nco-trademarks {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nco-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nco-empty-hint {
+  opacity: 0.6;
+  font-style: italic;
+  font-size: 12px;
+}
+
+.nco-trademark {
+  border: 1px solid var(--nco-border);
+  border-radius: 6px;
+  background: var(--nco-bg);
+  padding: 8px;
+}
+
+.nco-trademark-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.nco-trademark-name {
+  flex: 1;
+  font-weight: bold;
+}
+
+.nco-tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nco-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nco-tag-text {
+  flex: 1;
+}
+
+.nco-tag.nco-tag-edge .nco-tag-text {
+  border-color: var(--nco-action);
+  box-shadow: 0 0 4px 0 rgba(35, 213, 229, 0.4);
+}
+
+.nco-edge-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--nco-border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.nco-edge-toggle input {
+  display: none;
+}
+
+.nco-edge-toggle:has(input:checked) {
+  color: var(--nco-action);
+  border-color: var(--nco-action);
+  box-shadow: 0 0 6px 0 rgba(35, 213, 229, 0.5);
+}
+
+.nco-icon-button {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.nco-icon-button:hover {
+  opacity: 1;
+  color: var(--nco-danger);
+  text-shadow: none;
+}
+
+.nco-add {
+  background: rgba(35, 213, 229, 0.08);
+  border: 1px solid var(--nco-action);
+  color: var(--nco-action);
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.nco-add:hover {
+  background: rgba(35, 213, 229, 0.2);
+  text-shadow: none;
+}
+
+.nco-add-tag {
+  margin-top: 6px;
+}
+
+/* Play mode: Trademarks and tags rendered as clickable chips */
+
+.nco-tags-play {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.nco-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--nco-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e7e9f5;
+  font-size: 12px;
+  padding: 3px 10px;
+  max-width: 100%;
+}
+
+button.nco-chip {
+  cursor: pointer;
+}
+
+.nco-chip-trademark {
+  font-weight: bold;
+  font-size: 14px;
+  border-color: var(--nco-action);
+  color: var(--nco-action);
+  background: rgba(35, 213, 229, 0.08);
+}
+
+.nco-chip-edge {
+  border-color: var(--nco-action);
+  color: var(--nco-action);
+  box-shadow: 0 0 4px 0 rgba(35, 213, 229, 0.4);
+}
+
+button.nco-chip:hover {
+  background: rgba(35, 213, 229, 0.25);
+  text-shadow: none;
+}
+
+/* GM clicks add Danger dice, so hint with the danger color instead */
+button.nco-chip-gm:hover {
+  background: rgba(255, 46, 136, 0.25);
+  border-color: var(--nco-danger);
+  color: var(--nco-danger);
+}
+
+.nco-chip-static {
+  opacity: 0.75;
+}
+
+/* ----------------------------------------------------------------------- */
+/* Global roll dialog                                                       */
+/* ----------------------------------------------------------------------- */
+
+.nco.roll-dialog .window-content {
+  background: #14172a;
+  color: #e7e9f5;
+}
+
+.nco-roll-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px;
+}
+
+.nco-roll-hint {
+  margin: 0;
+  font-size: 11px;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.nco-roll-pools {
+  display: flex;
+  gap: 8px;
+}
+
+.nco-pool {
+  flex: 1;
+  border-radius: 6px;
+  padding: 8px;
+  border: 1px solid var(--nco-border);
+  background: var(--nco-bg);
+}
+
+.nco-action-label {
+  color: var(--nco-action);
+}
+
+.nco-danger-label {
+  color: var(--nco-danger);
+}
+
+.nco-pool-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 24px;
+}
+
+.nco-pool-item {
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.nco-pool-item:hover {
+  background: rgba(255, 46, 136, 0.25);
+  text-decoration: line-through;
+}
+
+.nco-pool-empty,
+.nco-pool-base {
+  font-size: 11px;
+  font-style: italic;
+  opacity: 0.5;
+}
+
+.nco-pool-base {
+  padding: 3px 6px;
+}
+
+.nco-pool-source {
+  opacity: 0.6;
+  font-size: 11px;
+}
+
+.nco-roll-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.nco-roll-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--nco-border);
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.nco-roll-clear:hover {
+  border-color: var(--nco-danger);
+  color: var(--nco-danger);
+  text-shadow: none;
+}
+
+.nco-roll-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(35, 213, 229, 0.12);
+  border: 1px solid var(--nco-action);
+  color: var(--nco-action);
+  border-radius: 4px;
+  padding: 6px 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.nco-roll-submit:hover {
+  background: rgba(35, 213, 229, 0.25);
+  text-shadow: none;
+}

@@ -1,3 +1,32 @@
 {
-    "MODULE.hello": "hello"
+    "NCO.Sheet.Character": "NCO Character Sheet",
+    "NCO.Sheet.NamePlaceholder": "Name",
+    "NCO.Sheet.EditImage": "Change portrait",
+    "NCO.Sheet.ToggleEdit": "Toggle edit mode",
+    "NCO.Sheet.Description": "Description",
+    "NCO.Sheet.Trademarks": "Trademarks",
+    "NCO.Sheet.AddTrademark": "Trademark",
+    "NCO.Sheet.AddTag": "Tag",
+    "NCO.Sheet.DeleteTrademark": "Delete Trademark",
+    "NCO.Sheet.DeleteTrademarkConfirm": "Delete this Trademark and all of its Tags?",
+    "NCO.Sheet.DeleteTag": "Delete Tag",
+    "NCO.Sheet.MarkEdge": "Mark as Edge",
+    "NCO.Sheet.TrademarkPlaceholder": "Trademark name…",
+    "NCO.Sheet.TagPlaceholder": "Narrative tag…",
+    "NCO.Sheet.EmptyTrademarks": "No Trademarks yet. Unlock edit mode and click \"Trademark\" to add one.",
+    "NCO.Sheet.InvokeAction": "Click to add to the roll as an Action die",
+    "NCO.Sheet.InvokeDanger": "Click to add to the roll as a Danger die",
+
+    "NCO.RollDialog.Title": "Neon City Overdrive — Roll",
+    "NCO.RollDialog.OpenTool": "NCO Roll",
+    "NCO.RollDialog.Hint": "Click Trademarks and Edges on character sheets to add Action dice. GM clicks add Danger dice. This pool is shared by all players.",
+    "NCO.RollDialog.ActionDice": "Action Dice",
+    "NCO.RollDialog.DangerDice": "Danger Dice",
+    "NCO.RollDialog.BaseDie": "Base die",
+    "NCO.RollDialog.BaseDieHint": "Every check always rolls at least one Action die.",
+    "NCO.RollDialog.EmptyDanger": "No Danger dice added.",
+    "NCO.RollDialog.Remove": "Click to remove",
+    "NCO.RollDialog.Roll": "Roll",
+    "NCO.RollDialog.Clear": "Clear",
+    "NCO.RollDialog.NoGM": "A GM must be connected to update the shared roll pool."
 }

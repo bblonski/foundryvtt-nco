@@ -1,0 +1,124 @@
+{{!-- The sheet's root element is already a <form> (DocumentSheetV2), so this
+      wrapper must not be one: a nested form would capture the inputs and
+      break submitOnChange. --}}
+<div class="nco-character-sheet {{#if editing}}nco-editing{{/if}}">
+  <header class="nco-sheet-header">
+    {{#if editable}}
+      <img class="nco-portrait nco-portrait-editable" src="{{actor.img}}" alt="{{actor.name}}"
+           data-action="editImage" title="{{localize 'NCO.Sheet.EditImage'}}" />
+    {{else}}
+      <img class="nco-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+    {{/if}}
+    <div class="nco-header-fields">
+      {{#if editing}}
+        <input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'NCO.Sheet.NamePlaceholder'}}" />
+      {{else}}
+        <h1 class="nco-name">{{actor.name}}</h1>
+      {{/if}}
+    </div>
+    {{#if editable}}
+      <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"
+              data-action="toggleEdit" title="{{localize 'NCO.Sheet.ToggleEdit'}}"
+              aria-label="{{localize 'NCO.Sheet.ToggleEdit'}}">
+        <i class="fas {{#if editing}}fa-unlock{{else}}fa-lock{{/if}}"></i>
+      </button>
+    {{/if}}
+  </header>
+
+  <section class="nco-description">
+    <label class="nco-section-label">{{localize "NCO.Sheet.Description"}}</label>
+    {{#if editing}}
+      <textarea name="system.description" rows="4">{{system.description}}</textarea>
+    {{else}}
+      <div class="nco-description-text">{{{descriptionHTML}}}</div>
+    {{/if}}
+  </section>
+
+  <section class="nco-trademarks">
+    <div class="nco-section-header">
+      <label class="nco-section-label">{{localize "NCO.Sheet.Trademarks"}}</label>
+      {{#if editing}}
+        <button type="button" class="nco-add" data-action="createTrademark">
+          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTrademark"}}
+        </button>
+      {{/if}}
+    </div>
+
+    {{#if editing}}
+      {{#each trademarks as |trademark trademarkIndex|}}
+        <div class="nco-trademark">
+          <div class="nco-trademark-header">
+            <input type="text" class="nco-trademark-name"
+                   name="system.trademarks.{{trademarkIndex}}.name"
+                   value="{{trademark.name}}" placeholder="{{localize 'NCO.Sheet.TrademarkPlaceholder'}}" />
+            <button type="button" class="nco-icon-button nco-delete" data-action="deleteTrademark"
+                    data-trademark-index="{{trademarkIndex}}"
+                    title="{{localize 'NCO.Sheet.DeleteTrademark'}}" aria-label="{{localize 'NCO.Sheet.DeleteTrademark'}}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+
+          <ul class="nco-tags">
+            {{#each trademark.tags as |tag tagIndex|}}
+              <li class="nco-tag {{#if tag.edge}}nco-tag-edge{{/if}}">
+                <label class="nco-edge-toggle" title="{{localize 'NCO.Sheet.MarkEdge'}}">
+                  <input type="checkbox"
+                         name="system.trademarks.{{../trademarkIndex}}.tags.{{tagIndex}}.edge"
+                         {{checked tag.edge}} />
+                  <i class="fas fa-bolt"></i>
+                </label>
+                <input type="text" class="nco-tag-text"
+                       name="system.trademarks.{{../trademarkIndex}}.tags.{{tagIndex}}.text"
+                       value="{{tag.text}}" placeholder="{{localize 'NCO.Sheet.TagPlaceholder'}}" />
+                <button type="button" class="nco-icon-button nco-delete" data-action="deleteTag"
+                        data-trademark-index="{{../trademarkIndex}}" data-tag-index="{{tagIndex}}"
+                        title="{{localize 'NCO.Sheet.DeleteTag'}}" aria-label="{{localize 'NCO.Sheet.DeleteTag'}}">
+                  <i class="fas fa-times"></i>
+                </button>
+              </li>
+            {{/each}}
+          </ul>
+
+          <button type="button" class="nco-add nco-add-tag" data-action="createTag"
+                  data-trademark-index="{{trademarkIndex}}">
+            <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTag"}}
+          </button>
+        </div>
+      {{else}}
+        <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyTrademarks"}}</p>
+      {{/each}}
+    {{else}}
+      {{#each trademarks as |trademark|}}
+        <div class="nco-trademark">
+          <div class="nco-trademark-header">
+            {{#if trademark.clickable}}
+              <button type="button" class="nco-chip nco-chip-trademark {{#if @root.isGM}}nco-chip-gm{{/if}}"
+                      data-action="invoke" data-text="{{trademark.name}}" title="{{@root.invokeTitle}}">
+                {{trademark.name}}
+              </button>
+            {{else}}
+              <span class="nco-chip nco-chip-trademark nco-chip-static">—</span>
+            {{/if}}
+          </div>
+          <ul class="nco-tags nco-tags-play">
+            {{#each trademark.tags as |tag|}}
+              <li>
+                {{#if tag.clickable}}
+                  <button type="button"
+                          class="nco-chip nco-chip-tag {{#if tag.edge}}nco-chip-edge{{/if}} {{#if @root.isGM}}nco-chip-gm{{/if}}"
+                          data-action="invoke" data-text="{{tag.text}}" title="{{@root.invokeTitle}}">
+                    {{#if tag.edge}}<i class="fas fa-bolt"></i> {{/if}}{{tag.text}}
+                  </button>
+                {{else}}
+                  <span class="nco-chip nco-chip-tag nco-chip-static">{{tag.text}}</span>
+                {{/if}}
+              </li>
+            {{/each}}
+          </ul>
+        </div>
+      {{else}}
+        <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyTrademarks"}}</p>
+      {{/each}}
+    {{/if}}
+  </section>
+</div>

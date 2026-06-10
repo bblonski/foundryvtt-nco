@@ -27,6 +27,13 @@
     }
   ],
   "packs": [],
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": ["description"]
+      }
+    }
+  },
   "initiative": "1d6",
   "gridDistance": 5,
   "gridUnits": "ft",

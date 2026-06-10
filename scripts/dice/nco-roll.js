@@ -1,6 +1,9 @@
 const ACTION_COLOR = "#23d5e5";
 const DANGER_COLOR = "#ff2e88";
 
+const ESCAPE_MAP = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (c) => ESCAPE_MAP[c]);
+
 /**
  * Encapsulates a Neon City Overdrive dice check:
  *   - Roll actionCount d6s and dangerCount d6s separately.
@@ -9,9 +12,18 @@ const DANGER_COLOR = "#ff2e88";
  *   - BOTCH when all action dice are cancelled or only 1s survive.
  */
 export class NCORoll {
-  constructor(actionCount, dangerCount) {
+  /**
+   * @param {number} actionCount
+   * @param {number} dangerCount
+   * @param {object} [options]
+   * @param {{action?: string[], danger?: string[]}} [options.edges]
+   *   Narrative tag text for any Edges that were invoked to build this roll,
+   *   shown on the chat card alongside the dice.
+   */
+  constructor(actionCount, dangerCount, { edges = null } = {}) {
     this.actionCount = Math.max(1, actionCount);
     this.dangerCount = Math.max(0, dangerCount);
+    this.edges = edges;
 
     this._actionRoll = new Roll(`${this.actionCount}d6`);
     this._dangerRoll = this.dangerCount > 0 ? new Roll(`${this.dangerCount}d6`) : null;
@@ -102,11 +114,22 @@ export class NCORoll {
 
     const dangerHtml = this.dangerDice.map(d => pip(d.value, { danger: true, faded: !d.used })).join("");
 
+    const edgeLine = (color, label, texts) => texts?.length
+      ? `<div style="color:${color};">${label}: ${texts.map(escapeHTML).join(", ")}</div>`
+      : "";
+    const edgesHtml = this.edges
+      ? `<div style="margin:6px 0 2px;font-size:11px;line-height:1.5;">
+          ${edgeLine(ACTION_COLOR, "Action Edges", this.edges.action)}
+          ${edgeLine(DANGER_COLOR, "Danger Edges", this.edges.danger)}
+        </div>`
+      : "";
+
     return `
       <div style="border:1px solid ${ACTION_COLOR};border-radius:6px;padding:8px 10px;background:rgba(10,12,24,0.55);">
         <div style="font-family:'Courier New',monospace;letter-spacing:1px;color:${ACTION_COLOR};font-size:11px;text-transform:uppercase;">
           Neon City Overdrive · Check
         </div>
+        ${edgesHtml}
         <div style="margin:6px 0 2px;color:${ACTION_COLOR};font-size:11px;">Action (${this.actionCount})</div>
         <div>${actionHtml}</div>
         ${this.dangerCount > 0

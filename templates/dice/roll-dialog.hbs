@@ -1,0 +1,47 @@
+<div class="nco-roll-dialog-content">
+  <p class="nco-roll-hint">{{localize "NCO.RollDialog.Hint"}}</p>
+
+  <section class="nco-roll-pools">
+    <div class="nco-pool nco-pool-action">
+      <h3 class="nco-section-label nco-action-label">
+        {{localize "NCO.RollDialog.ActionDice"}} ({{actionTotal}})
+      </h3>
+      <ul class="nco-pool-list">
+        <li class="nco-pool-base" title="{{localize 'NCO.RollDialog.BaseDieHint'}}">
+          {{localize "NCO.RollDialog.BaseDie"}}
+        </li>
+        {{#each action as |die|}}
+          <li class="nco-pool-item" data-action="removeDie" data-key="{{die.key}}"
+              title="{{localize 'NCO.RollDialog.Remove'}}">
+            {{die.text}}{{#if die.source}} <span class="nco-pool-source">({{die.source}})</span>{{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+
+    <div class="nco-pool nco-pool-danger">
+      <h3 class="nco-section-label nco-danger-label">
+        {{localize "NCO.RollDialog.DangerDice"}} ({{dangerTotal}})
+      </h3>
+      <ul class="nco-pool-list">
+        {{#each danger as |die|}}
+          <li class="nco-pool-item" data-action="removeDie" data-key="{{die.key}}"
+              title="{{localize 'NCO.RollDialog.Remove'}}">
+            {{die.text}}{{#if die.source}} <span class="nco-pool-source">({{die.source}})</span>{{/if}}
+          </li>
+        {{else}}
+          <li class="nco-pool-empty">{{localize "NCO.RollDialog.EmptyDanger"}}</li>
+        {{/each}}
+      </ul>
+    </div>
+  </section>
+
+  <footer class="nco-roll-footer">
+    <button type="button" class="nco-roll-clear" data-action="clear">
+      <i class="fas fa-eraser"></i> {{localize "NCO.RollDialog.Clear"}}
+    </button>
+    <button type="button" class="nco-roll-submit" data-action="roll">
+      <i class="fas fa-dice-d6"></i> {{localize "NCO.RollDialog.Roll"}}
+    </button>
+  </footer>
+</div>
