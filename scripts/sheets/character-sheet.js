@@ -73,16 +73,26 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
           clickable: !!tag.text?.trim() && (tag.edge || isGM),
         })),
       })),
+      // Exactly two Flaw slots, regardless of what older documents stored.
+      flaws: Array.from({ length: 2 }, (_, i) => {
+        const text = this.actor.system.flaws?.[i] ?? "";
+        return { text, clickable: !!text.trim() };
+      }),
       invokeTitle: game.i18n.localize(isGM ? "NCO.Sheet.InvokeDanger" : "NCO.Sheet.InvokeAction"),
+      invokeFlawTitle: game.i18n.localize("NCO.Sheet.InvokeDanger"),
       descriptionHTML: await TextEditorImpl.enrichHTML(this.actor.system.description ?? "", {
         relativeTo: this.actor,
       }),
     };
   }
 
-  /** Click a Trademark or tag label: add it to the shared roll pool and show the roll window. */
+  /**
+   * Click a Trademark, tag, or Flaw label: add it to the shared roll pool and
+   * show the roll window. The chip may force a die type (Flaws are always
+   * Danger); otherwise players add Action dice and the GM adds Danger dice.
+   */
   static async _onInvoke(_event, target) {
-    const type = game.user.isGM ? "danger" : "action";
+    const type = target.dataset.dieType ?? (game.user.isGM ? "danger" : "action");
     await GlobalRollPool.add(type, target.dataset.text, this.actor.name);
     NCORollDialog.open();
   }

@@ -124,4 +124,32 @@
       {{/each}}
     {{/if}}
   </section>
+
+  <section class="nco-flaws">
+    <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Flaws"}}</label>
+    {{#if editing}}
+      <div class="nco-flaw-inputs">
+        {{#each flaws as |flaw flawIndex|}}
+          <input type="text" class="nco-flaw-text" name="system.flaws.{{flawIndex}}"
+                 value="{{flaw.text}}" placeholder="{{localize 'NCO.Sheet.FlawPlaceholder'}}" />
+        {{/each}}
+      </div>
+    {{else}}
+      <ul class="nco-tags nco-tags-play">
+        {{#each flaws as |flaw|}}
+          <li>
+            {{#if flaw.clickable}}
+              <button type="button" class="nco-chip nco-chip-flaw"
+                      data-action="invoke" data-die-type="danger" data-text="{{flaw.text}}"
+                      title="{{@root.invokeFlawTitle}}">
+                <i class="fas fa-skull"></i> {{flaw.text}}
+              </button>
+            {{else}}
+              <span class="nco-chip nco-chip-flaw nco-chip-static">—</span>
+            {{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  </section>
 </div>

@@ -281,6 +281,33 @@ button.nco-chip-gm:hover {
   opacity: 0.75;
 }
 
+/* Flaws: always invoked as Danger dice */
+
+.nco-flaw-inputs {
+  display: flex;
+  gap: 6px;
+}
+
+.nco-flaw-text {
+  flex: 1;
+}
+
+.nco-character-sheet .nco-flaw-text {
+  border-color: rgba(255, 46, 136, 0.4);
+}
+
+.nco-chip-flaw {
+  border-color: var(--nco-danger);
+  color: var(--nco-danger);
+  background: rgba(255, 46, 136, 0.08);
+}
+
+button.nco-chip-flaw:hover {
+  background: rgba(255, 46, 136, 0.25);
+  border-color: var(--nco-danger);
+  color: var(--nco-danger);
+}
+
 /* ----------------------------------------------------------------------- */
 /* Global roll dialog                                                       */
 /* ----------------------------------------------------------------------- */
