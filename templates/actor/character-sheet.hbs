@@ -164,4 +164,42 @@
       </ul>
     {{/if}}
   </section>
+
+  <section class="nco-conditions">
+    <div class="nco-section-header">
+      <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Conditions"}}</label>
+      {{#if editable}}
+        <button type="button" class="nco-add" data-action="createCondition">
+          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddCondition"}}
+        </button>
+      {{/if}}
+    </div>
+    <ul class="nco-conditions-list">
+      {{#each conditions as |condition|}}
+        <li class="nco-condition">
+          <label class="nco-edge-toggle nco-condition-toggle" title="{{localize 'NCO.Sheet.ToggleCondition'}}">
+            <input type="checkbox" data-action="toggleCondition" data-item-id="{{condition.id}}"
+                   {{checked condition.active}} {{#unless @root.editable}}disabled{{/unless}} />
+            <i class="fas fa-exclamation-triangle"></i>
+          </label>
+          {{#if condition.active}}
+            <button type="button" class="nco-chip nco-chip-flaw" data-action="invoke"
+                    data-die-type="danger" data-text="{{condition.name}}"
+                    title="{{localize 'NCO.Sheet.InvokeDanger'}}">
+              {{condition.name}}
+            </button>
+          {{else}}
+            <span class="nco-chip nco-chip-static">{{condition.name}}</span>
+          {{/if}}
+          {{#if @root.editing}}
+            <button type="button" class="nco-icon-button nco-delete" data-action="deleteCondition"
+                    data-item-id="{{condition.id}}"
+                    title="{{localize 'NCO.Sheet.DeleteCondition'}}" aria-label="{{localize 'NCO.Sheet.DeleteCondition'}}">
+              <i class="fas fa-times"></i>
+            </button>
+          {{/if}}
+        </li>
+      {{/each}}
+    </ul>
+  </section>
 </div>

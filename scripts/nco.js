@@ -1,5 +1,6 @@
 import { NCORoll } from "./dice/nco-roll.js";
 import { CharacterData } from "./data/character-data.js";
+import { ConditionData } from "./data/condition-data.js";
 import { CharacterSheet } from "./sheets/character-sheet.js";
 import { NCORollDialog } from "./applications/nco-roll-dialog.js";
 import { GlobalRollPool } from "./global-roll-pool.js";
@@ -11,6 +12,7 @@ Hooks.once("init", function () {
   game.nco = { NCORoll, NCORollDialog, GlobalRollPool };
 
   CONFIG.Actor.dataModels.character = CharacterData;
+  CONFIG.Item.dataModels.condition = ConditionData;
 
   foundry.documents.collections.Actors.registerSheet("foundryvtt-nco", CharacterSheet, {
     types: ["character"],
@@ -50,6 +52,28 @@ Hooks.once("init", function () {
   documentClass.createDialog = function (data = {}, ...args) {
     return baseCreateDialog.call(this, { type: "character", ...data }, ...args);
   };
+
+  // Item has the same single-sub-type quirk as Actor.
+  const itemClass = CONFIG.Item.documentClass;
+  const baseItemCreateDialog = itemClass.createDialog;
+  itemClass.createDialog = function (data = {}, ...args) {
+    return baseItemCreateDialog.call(this, { type: "condition", ...data }, ...args);
+  };
+});
+
+// Every new character starts with the standard set of (unmarked) Conditions.
+// Skip actors that already carry items, e.g. duplicates and imports.
+const DEFAULT_CONDITIONS = ["Angry", "Exhausted", "Restrained", "Dazed", "Scared", "Weakened"];
+
+Hooks.on("preCreateActor", (actor, data) => {
+  if (actor.type !== "character" || data.items?.length) return;
+  actor.updateSource({
+    items: DEFAULT_CONDITIONS.map((key) => ({
+      name: game.i18n.localize(`NCO.Condition.${key}`),
+      type: "condition",
+      img: "icons/svg/downgrade.svg",
+    })),
+  });
 });
 
 // World collections don't exist until ready, and only one client should

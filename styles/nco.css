@@ -342,6 +342,37 @@ button.nco-chip-flaw:hover {
   color: var(--nco-danger);
 }
 
+/* Conditions: tag-like afflictions, marked when affecting the character */
+
+.nco-character-sheet .nco-conditions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.nco-character-sheet .nco-condition {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+}
+
+.nco-condition-toggle {
+  font-size: 11px;
+}
+
+/* Marked conditions glow danger-pink rather than the Edge toggle's cyan */
+.nco-condition-toggle:has(input:checked) {
+  color: var(--nco-danger);
+  border-color: var(--nco-danger);
+  box-shadow: 0 0 6px 0 rgba(255, 46, 136, 0.5);
+}
+
 /* ----------------------------------------------------------------------- */
 /* Global roll dialog                                                       */
 /* ----------------------------------------------------------------------- */

@@ -27,11 +27,20 @@
     }
   ],
   "packs": [],
+  "flags": {
+    "hotReload": {
+      "extensions": ["css", "hbs", "json"],
+      "paths": ["styles", "templates", "languages"]
+    }
+  },
   "documentTypes": {
     "Actor": {
       "character": {
         "htmlFields": ["description"]
       }
+    },
+    "Item": {
+      "condition": {}
     }
   },
   "initiative": "1d6",

@@ -30,6 +30,9 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       deleteTag: this._onDeleteTag,
       invoke: this._onInvoke,
       toggleHit: this._onToggleHit,
+      toggleCondition: this._onToggleCondition,
+      createCondition: this._onCreateCondition,
+      deleteCondition: this._onDeleteCondition,
     },
   };
 
@@ -75,6 +78,9 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         })),
       })),
       hitBoxes: this.#prepareHitBoxes(),
+      conditions: this.actor.items
+        .filter((item) => item.type === "condition")
+        .map((item) => ({ id: item.id, name: item.name, active: !!item.system.active })),
       hitsMaxLimit: game.settings.get("foundryvtt-nco", "maxHits"),
       // Exactly two Flaw slots, regardless of what older documents stored.
       flaws: Array.from({ length: 2 }, (_, i) => {
@@ -107,6 +113,38 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const taken = this.actor.system.hits?.taken ?? 0;
     const newTaken = index < taken ? index : index + 1;
     await this.actor.update({ "system.hits.taken": newTaken });
+  }
+
+  /** Mark or unmark a Condition as currently affecting the character. */
+  static async _onToggleCondition(_event, target) {
+    if (!this.isEditable) return;
+    const item = this.actor.items.get(target.dataset.itemId);
+    if (item) await item.update({ "system.active": !item.system.active });
+  }
+
+  /** Prompt for a name and embed a new (unmarked) Condition on the character. */
+  static async _onCreateCondition(_event, _target) {
+    const placeholder = game.i18n.localize("NCO.Sheet.ConditionNamePlaceholder");
+    const name = await foundry.applications.api.DialogV2.prompt({
+      window: { title: "NCO.Sheet.AddConditionTitle" },
+      content: `<input type="text" name="name" placeholder="${placeholder}" autofocus />`,
+      rejectClose: false,
+      ok: {
+        icon: "fas fa-plus",
+        label: "NCO.Sheet.AddCondition",
+        callback: (_event, _button, dialog) =>
+          dialog.element.querySelector('input[name="name"]')?.value ?? "",
+      },
+    });
+    if (!name?.trim()) return;
+    await this.actor.createEmbeddedDocuments("Item", [
+      { name: name.trim(), type: "condition", img: "icons/svg/downgrade.svg" },
+    ]);
+  }
+
+  static async _onDeleteCondition(_event, target) {
+    const item = this.actor.items.get(target.dataset.itemId);
+    if (item) await item.delete();
   }
 
   /**
