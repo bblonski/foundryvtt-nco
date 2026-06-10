@@ -27,6 +27,19 @@
                  min="1" max="{{hitsMaxLimit}}" step="1" title="{{localize 'NCO.Sheet.HitsMax'}}" />
         {{/if}}
       </div>
+      <div class="nco-stunt-points">
+        {{#if editable}}
+          <button type="button" class="nco-stunt-label" data-action="spendStuntPoint"
+                  title="{{localize 'NCO.Sheet.SpendStuntPoint'}}">
+            {{localize "NCO.Sheet.StuntPoints"}}
+          </button>
+        {{else}}
+          <span class="nco-section-label nco-stunt-static">{{localize "NCO.Sheet.StuntPoints"}}</span>
+        {{/if}}
+        <input type="number" class="nco-stunt-input" name="system.stuntPoints"
+               value="{{system.stuntPoints}}" min="0" step="1"
+               {{#unless editable}}disabled{{/unless}} />
+      </div>
     </div>
     {{#if editable}}
       <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"
@@ -158,6 +171,46 @@
               </button>
             {{else}}
               <span class="nco-chip nco-chip-flaw nco-chip-static">—</span>
+            {{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  </section>
+
+  <section class="nco-traumas">
+    <div class="nco-section-header">
+      <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Traumas"}}</label>
+      {{#if editable}}
+        <button type="button" class="nco-add" data-action="createTrauma">
+          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTrauma"}}
+        </button>
+      {{/if}}
+    </div>
+    {{#if editing}}
+      {{#each traumas as |trauma traumaIndex|}}
+        <div class="nco-trauma-row">
+          <input type="text" class="nco-flaw-text" name="system.traumas.{{traumaIndex}}"
+                 value="{{trauma.text}}" placeholder="{{localize 'NCO.Sheet.TraumaNamePlaceholder'}}" />
+          <button type="button" class="nco-icon-button nco-delete" data-action="deleteTrauma"
+                  data-trauma-index="{{traumaIndex}}"
+                  title="{{localize 'NCO.Sheet.DeleteTrauma'}}" aria-label="{{localize 'NCO.Sheet.DeleteTrauma'}}">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      {{/each}}
+    {{else}}
+      <ul class="nco-tags nco-tags-play">
+        {{#each traumas as |trauma|}}
+          <li>
+            {{#if trauma.clickable}}
+              <button type="button" class="nco-chip nco-chip-flaw" data-action="invoke"
+                      data-die-type="danger" data-text="{{trauma.text}}"
+                      title="{{localize 'NCO.Sheet.InvokeDanger'}}">
+                <i class="fas fa-heart-broken"></i> {{trauma.text}}
+              </button>
+            {{else}}
+              <span class="nco-chip nco-chip-static">{{trauma.text}}</span>
             {{/if}}
           </li>
         {{/each}}

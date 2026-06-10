@@ -18,6 +18,17 @@
     "NCO.Sheet.InvokeDanger": "Click to add to the roll as a Danger die",
     "NCO.Sheet.Flaws": "Flaws",
     "NCO.Sheet.FlawPlaceholder": "Flaw…",
+    "NCO.Sheet.Traumas": "Traumas",
+    "NCO.Sheet.AddTrauma": "Trauma",
+    "NCO.Sheet.AddTraumaTitle": "New Trauma",
+    "NCO.Sheet.TraumaNamePlaceholder": "Trauma…",
+    "NCO.Sheet.DeleteTrauma": "Delete Trauma",
+
+    "NCO.Chat.DeathCheck.Title": "Death Check",
+    "NCO.Chat.DeathCheck.Suffered": "{name} suffered a Trauma: {trauma}",
+    "NCO.Chat.DeathCheck.Safe": "{name} clings to life. (Death check: {result})",
+    "NCO.Chat.DeathCheck.Dying": "{name} is DYING and will die in {turns} turn(s)!",
+
     "NCO.Sheet.Conditions": "Conditions",
     "NCO.Sheet.AddCondition": "Condition",
     "NCO.Sheet.AddConditionTitle": "New Condition",
@@ -35,6 +46,17 @@
     "NCO.Sheet.Hits": "Hits",
     "NCO.Sheet.HitBox": "Check off a Hit when the character takes harm",
     "NCO.Sheet.HitsMax": "Total Hits for this character",
+
+    "NCO.Sheet.StuntPoints": "Stunt Points",
+    "NCO.Sheet.SpendStuntPoint": "Click to spend a Stunt Point",
+    "NCO.Sheet.NoStuntPoints": "{name} has no Stunt Points left to spend.",
+
+    "NCO.Chat.StuntPoint.Title": "Stunt Point Spent",
+    "NCO.Chat.StuntPoint.OptionTrademark": "Add a second Trademark to the check",
+    "NCO.Chat.StuntPoint.OptionSoak": "Soak all Hits from a single source",
+    "NCO.Chat.StuntPoint.OptionAdjust": "Change a die roll by +/- 1",
+    "NCO.Chat.StuntPoint.OptionDetail": "Add a detail or tag to the scene",
+    "NCO.Chat.StuntPoint.Remaining": "{name} has {remaining} Stunt Point(s) remaining.",
 
     "NCO.Settings.StartingHits.Name": "Starting Hits",
     "NCO.Settings.StartingHits.Hint": "How many Hits a newly created character begins with.",

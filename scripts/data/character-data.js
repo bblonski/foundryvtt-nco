@@ -38,6 +38,14 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         new fields.StringField({ required: true, blank: true, initial: "" }),
         { initial: ["", ""] },
       ),
+      // Lasting injuries. Like Flaws they are invoked as Danger dice, but the
+      // list is open-ended: suffering a new Trauma triggers a death check.
+      traumas: new fields.ArrayField(
+        new fields.StringField({ required: true, blank: true, initial: "" }),
+      ),
+      // Meta-currency spent for stunts; clicking the sheet label spends one
+      // and posts the spending options to chat. NCO characters start with 3.
+      stuntPoints: new fields.NumberField({ required: true, integer: true, min: 0, initial: 3 }),
       trademarks: new fields.ArrayField(
         new fields.SchemaField({
           name: new fields.StringField({ required: true, blank: true, initial: "" }),
