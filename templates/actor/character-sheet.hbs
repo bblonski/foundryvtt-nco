@@ -15,6 +15,18 @@
       {{else}}
         <h1 class="nco-name">{{actor.name}}</h1>
       {{/if}}
+      <div class="nco-hits">
+        <span class="nco-section-label nco-danger-label nco-hits-label">{{localize "NCO.Sheet.Hits"}}</span>
+        {{#each hitBoxes as |box|}}
+          <input type="checkbox" class="nco-hit-box" data-action="toggleHit" data-index="{{box.index}}"
+                 {{checked box.checked}} {{#unless @root.editable}}disabled{{/unless}}
+                 title="{{localize 'NCO.Sheet.HitBox'}}" />
+        {{/each}}
+        {{#if editing}}
+          <input type="number" class="nco-hits-max" name="system.hits.max" value="{{system.hits.max}}"
+                 min="1" max="{{hitsMaxLimit}}" step="1" title="{{localize 'NCO.Sheet.HitsMax'}}" />
+        {{/if}}
+      </div>
     </div>
     {{#if editable}}
       <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"

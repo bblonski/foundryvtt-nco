@@ -29,6 +29,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       createTag: this._onCreateTag,
       deleteTag: this._onDeleteTag,
       invoke: this._onInvoke,
+      toggleHit: this._onToggleHit,
     },
   };
 
@@ -73,6 +74,8 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
           clickable: !!tag.text?.trim() && (tag.edge || isGM),
         })),
       })),
+      hitBoxes: this.#prepareHitBoxes(),
+      hitsMaxLimit: game.settings.get("foundryvtt-nco", "maxHits"),
       // Exactly two Flaw slots, regardless of what older documents stored.
       flaws: Array.from({ length: 2 }, (_, i) => {
         const text = this.actor.system.flaws?.[i] ?? "";
@@ -84,6 +87,26 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         relativeTo: this.actor,
       }),
     };
+  }
+
+  /** One checkbox per hit, checked from the left as damage is taken. */
+  #prepareHitBoxes() {
+    const hits = this.actor.system.hits ?? {};
+    const max = Math.min(6, Math.max(1, hits.max ?? 3));
+    const taken = Math.min(max, hits.taken ?? 0);
+    return Array.from({ length: max }, (_, i) => ({ index: i, checked: i < taken }));
+  }
+
+  /**
+   * Toggle a hit box with fill-track behavior: checking box N also checks
+   * every box before it, unchecking it also clears every box after it.
+   */
+  static async _onToggleHit(_event, target) {
+    if (!this.isEditable) return;
+    const index = Number(target.dataset.index);
+    const taken = this.actor.system.hits?.taken ?? 0;
+    const newTaken = index < taken ? index : index + 1;
+    await this.actor.update({ "system.hits.taken": newTaken });
   }
 
   /**

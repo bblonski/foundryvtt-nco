@@ -21,6 +21,26 @@ Hooks.once("init", function () {
   GlobalRollPool.registerSettings();
   GlobalRollPool.registerSocket();
 
+  game.settings.register("foundryvtt-nco", "startingHits", {
+    name: "NCO.Settings.StartingHits.Name",
+    hint: "NCO.Settings.StartingHits.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 1, max: 6, step: 1 },
+    default: 3,
+  });
+
+  game.settings.register("foundryvtt-nco", "maxHits", {
+    name: "NCO.Settings.MaxHits.Name",
+    hint: "NCO.Settings.MaxHits.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 1, max: 6, step: 1 },
+    default: 4,
+  });
+
   // Foundry's built-in "Create Actor" dialog only fills in a default `type`
   // when more than one sub-type is registered (Actor disallows the "base"
   // type, so a system with a single sub-type ends up with no type selector
