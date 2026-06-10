@@ -4,3 +4,5 @@ The plan is to support other related systems like Star Scoundrels and Dungeon Cr
 References:
 https://foundryvtt.com/api/
 https://foundryvtt.com/article/system-development/
+
+Foundryvtt install at /home/bblonski/Desktop/FoundryVTT-Linux-14.363/

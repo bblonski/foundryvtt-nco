@@ -61,17 +61,20 @@
           <ul class="nco-tags">
             {{#each trademark.tags as |tag tagIndex|}}
               <li class="nco-tag {{#if tag.edge}}nco-tag-edge{{/if}}">
+                {{!-- Block params (trademarkIndex) are lexically scoped and must be
+                      referenced directly: a ../ prefix bypasses block params and
+                      resolves to undefined, silently corrupting the input names. --}}
                 <label class="nco-edge-toggle" title="{{localize 'NCO.Sheet.MarkEdge'}}">
                   <input type="checkbox"
-                         name="system.trademarks.{{../trademarkIndex}}.tags.{{tagIndex}}.edge"
+                         name="system.trademarks.{{trademarkIndex}}.tags.{{tagIndex}}.edge"
                          {{checked tag.edge}} />
                   <i class="fas fa-bolt"></i>
                 </label>
                 <input type="text" class="nco-tag-text"
-                       name="system.trademarks.{{../trademarkIndex}}.tags.{{tagIndex}}.text"
+                       name="system.trademarks.{{trademarkIndex}}.tags.{{tagIndex}}.text"
                        value="{{tag.text}}" placeholder="{{localize 'NCO.Sheet.TagPlaceholder'}}" />
                 <button type="button" class="nco-icon-button nco-delete" data-action="deleteTag"
-                        data-trademark-index="{{../trademarkIndex}}" data-tag-index="{{tagIndex}}"
+                        data-trademark-index="{{trademarkIndex}}" data-tag-index="{{tagIndex}}"
                         title="{{localize 'NCO.Sheet.DeleteTag'}}" aria-label="{{localize 'NCO.Sheet.DeleteTag'}}">
                   <i class="fas fa-times"></i>
                 </button>
