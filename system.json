@@ -40,7 +40,8 @@
       }
     },
     "Item": {
-      "condition": {}
+      "condition": {},
+      "trademark": {}
     }
   },
   "initiative": "1d6",

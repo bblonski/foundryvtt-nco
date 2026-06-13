@@ -1,10 +1,9 @@
 /**
  * System data for the "character" Actor type.
  *
- * A character has a description and a set of Trademarks. Each Trademark is a
- * named cluster of Triggers. A Trigger is not a Tag — it adds no dice — until
- * it is checked as an "edge", at which point it becomes a positive Tag that
- * can be clicked in the global roll dialog to add an Action die.
+ * A character has a description, a damage track, and tag-bearing elements.
+ * Trademarks are embedded Items (see {@link TrademarkData}), so they are not
+ * part of this schema.
  */
 export class CharacterData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -47,18 +46,6 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // Meta-currency spent for stunts; clicking the sheet label spends one
       // and posts the spending options to chat. NCO characters start with 3.
       stuntPoints: new fields.NumberField({ required: true, integer: true, min: 0, initial: 3 }),
-      trademarks: new fields.ArrayField(
-        new fields.SchemaField({
-          name: new fields.StringField({ required: true, blank: true, initial: "" }),
-          triggers: new fields.ArrayField(
-            new fields.SchemaField({
-              text: new fields.StringField({ required: true, blank: true, initial: "" }),
-              // An edged Trigger is a positive Tag and adds an Action die.
-              edge: new fields.BooleanField({ required: true, initial: false }),
-            }),
-          ),
-        }),
-      ),
     };
   }
 

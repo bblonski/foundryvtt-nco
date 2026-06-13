@@ -9,12 +9,14 @@
 /* Character sheet                                                          */
 /* ----------------------------------------------------------------------- */
 
-.nco.sheet.actor .window-content {
+.nco.sheet.actor .window-content,
+.nco.sheet.item .window-content {
   background: #14172a;
   color: #e7e9f5;
 }
 
-.nco-character-sheet {
+.nco-character-sheet,
+.nco-trademark-sheet {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -23,7 +25,8 @@
 }
 
 .nco-character-sheet input[type="text"],
-.nco-character-sheet textarea {
+.nco-character-sheet textarea,
+.nco-trademark-sheet input[type="text"] {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--nco-border);
   border-radius: 4px;

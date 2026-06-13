@@ -9,10 +9,12 @@ const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (c) => ESCAPE_MAP[
 /**
  * Character sheet for Neon City Overdrive characters.
  *
+ * Trademarks are embedded Items, edited in their own sheet and droppable onto
+ * the character (ActorSheetV2's default item-drop handling embeds them).
+ *
  * Has two modes per open sheet:
- *  - Edit mode: name, description, Trademarks and Triggers are form inputs,
- *    with controls to add/remove Trademarks and Triggers and mark Triggers as
- *    Edges.
+ *  - Edit mode: name and description are form inputs, with controls to add,
+ *    open, and remove Trademarks, and to manage Flaws, Traumas and Conditions.
  *  - Play mode (default once the character has content): Trademarks and
  *    Triggers render as labels. Clicking a Tag (a Trademark name, an Edge, a
  *    Flaw, Trauma, or Condition) sends it to the shared roll pool — positive
@@ -30,9 +32,8 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       editImage: this._onEditImage,
       toggleEdit: this._onToggleEdit,
       createTrademark: this._onCreateTrademark,
+      editTrademark: this._onEditTrademark,
       deleteTrademark: this._onDeleteTrademark,
-      createTrigger: this._onCreateTrigger,
-      deleteTrigger: this._onDeleteTrigger,
       invoke: this._onInvoke,
       toggleHit: this._onToggleHit,
       spendStuntPoint: this._onSpendStuntPoint,
@@ -57,8 +58,13 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   _editing;
 
   get isEditing() {
-    this._editing ??= !this.actor.system.trademarks?.length;
+    this._editing ??= !this.#trademarkItems.length;
     return this._editing && this.isEditable;
+  }
+
+  /** The character's embedded Trademark Items. */
+  get #trademarkItems() {
+    return this.actor.items.filter((item) => item.type === "trademark");
   }
 
   /** @override */
@@ -75,10 +81,11 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       // In play mode a Trademark name is a positive Tag (always clickable when
       // named); a Trigger is only a Tag — and so only clickable — once it is an
       // Edge. Plain Triggers add no dice and render as static labels.
-      trademarks: (this.actor.system.trademarks ?? []).map((trademark) => ({
-        name: trademark.name,
-        clickable: !!trademark.name?.trim(),
-        triggers: (trademark.triggers ?? []).map((trigger) => ({
+      trademarks: this.#trademarkItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        clickable: !!item.name?.trim(),
+        triggers: (item.system.triggers ?? []).map((trigger) => ({
           text: trigger.text,
           edge: trigger.edge,
           clickable: !!trigger.text?.trim() && trigger.edge,
@@ -303,31 +310,27 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     return picker.browse();
   }
 
-  /**
-   * Flush any pending form edits, then return a plain copy of the trademarks
-   * array for mutation. Submitting first prevents an in-flight submitOnChange
-   * update from clobbering the structural change (or vice versa).
-   */
-  async _trademarksForUpdate() {
-    if (this.isEditable) await this.submit();
-    return this.actor.toObject().system.trademarks ?? [];
+  /** Create a fresh embedded Trademark and open its sheet to fill it in. */
+  static async _onCreateTrademark(_event, _target) {
+    this._editing = true;
+    const [item] = await this.actor.createEmbeddedDocuments("Item", [
+      { name: game.i18n.localize("NCO.Sheet.NewTrademark"), type: "trademark", img: "icons/svg/upgrade.svg" },
+    ]);
+    item?.sheet.render(true);
   }
 
-  static async _onCreateTrademark(_event, _target) {
-    const trademarks = await this._trademarksForUpdate();
-    trademarks.push({ name: "", triggers: [] });
-    this._editing = true;
-    await this.actor.update({ "system.trademarks": trademarks });
+  /** Open an embedded Trademark's own sheet for editing. */
+  static _onEditTrademark(_event, target) {
+    const item = this.actor.items.get(target.dataset.itemId);
+    item?.sheet.render(true);
   }
 
   static async _onDeleteTrademark(_event, target) {
-    const index = Number(target.dataset.trademarkIndex);
-    const trademarks = await this._trademarksForUpdate();
-    const trademark = trademarks[index];
-    if (!trademark) return;
+    const item = this.actor.items.get(target.dataset.itemId);
+    if (!item) return;
 
     // Only prompt when the Trademark actually has content to lose.
-    if (trademark.name?.trim() || trademark.triggers?.length) {
+    if (item.name?.trim() || item.system.triggers?.length) {
       const confirmed = await foundry.applications.api.DialogV2.confirm({
         window: { title: "NCO.Sheet.DeleteTrademark" },
         content: `<p>${game.i18n.localize("NCO.Sheet.DeleteTrademarkConfirm")}</p>`,
@@ -335,24 +338,6 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       if (!confirmed) return;
     }
 
-    trademarks.splice(index, 1);
-    await this.actor.update({ "system.trademarks": trademarks });
-  }
-
-  static async _onCreateTrigger(_event, target) {
-    const index = Number(target.dataset.trademarkIndex);
-    const trademarks = await this._trademarksForUpdate();
-    if (!trademarks[index]) return;
-    trademarks[index].triggers.push({ text: "", edge: false });
-    await this.actor.update({ "system.trademarks": trademarks });
-  }
-
-  static async _onDeleteTrigger(_event, target) {
-    const trademarkIndex = Number(target.dataset.trademarkIndex);
-    const triggerIndex = Number(target.dataset.triggerIndex);
-    const trademarks = await this._trademarksForUpdate();
-    if (!trademarks[trademarkIndex]) return;
-    trademarks[trademarkIndex].triggers.splice(triggerIndex, 1);
-    await this.actor.update({ "system.trademarks": trademarks });
+    await item.delete();
   }
 }

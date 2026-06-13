@@ -1,7 +1,9 @@
 import { NCORoll } from "./dice/nco-roll.js";
 import { CharacterData } from "./data/character-data.js";
 import { ConditionData } from "./data/condition-data.js";
+import { TrademarkData } from "./data/trademark-data.js";
 import { CharacterSheet } from "./sheets/character-sheet.js";
+import { TrademarkSheet } from "./sheets/trademark-sheet.js";
 import { NCORollDialog } from "./applications/nco-roll-dialog.js";
 import { GlobalRollPool } from "./global-roll-pool.js";
 import { Tags } from "./tags.js";
@@ -14,11 +16,18 @@ Hooks.once("init", function () {
 
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Item.dataModels.condition = ConditionData;
+  CONFIG.Item.dataModels.trademark = TrademarkData;
 
   foundry.documents.collections.Actors.registerSheet("foundryvtt-nco", CharacterSheet, {
     types: ["character"],
     makeDefault: true,
     label: "NCO.Sheet.Character",
+  });
+
+  foundry.documents.collections.Items.registerSheet("foundryvtt-nco", TrademarkSheet, {
+    types: ["trademark"],
+    makeDefault: true,
+    label: "NCO.Sheet.Trademark",
   });
 
   GlobalRollPool.registerSettings();
@@ -52,13 +61,6 @@ Hooks.once("init", function () {
   const baseCreateDialog = documentClass.createDialog;
   documentClass.createDialog = function (data = {}, ...args) {
     return baseCreateDialog.call(this, { type: "character", ...data }, ...args);
-  };
-
-  // Item has the same single-sub-type quirk as Actor.
-  const itemClass = CONFIG.Item.documentClass;
-  const baseItemCreateDialog = itemClass.createDialog;
-  itemClass.createDialog = function (data = {}, ...args) {
-    return baseItemCreateDialog.call(this, { type: "condition", ...data }, ...args);
   };
 });
 

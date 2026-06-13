@@ -69,86 +69,50 @@
       {{/if}}
     </div>
 
-    {{#if editing}}
-      {{#each trademarks as |trademark trademarkIndex|}}
-        <div class="nco-trademark">
-          <div class="nco-trademark-header">
-            <input type="text" class="nco-trademark-name"
-                   name="system.trademarks.{{trademarkIndex}}.name"
-                   value="{{trademark.name}}" placeholder="{{localize 'NCO.Sheet.TrademarkPlaceholder'}}" />
+    {{#each trademarks as |trademark|}}
+      <div class="nco-trademark" data-item-id="{{trademark.id}}">
+        <div class="nco-trademark-header">
+          {{#if trademark.clickable}}
+            <button type="button" class="nco-chip nco-chip-trademark"
+                    data-action="invoke" data-text="{{trademark.name}}" data-polarity="positive"
+                    title="{{@root.invokePositiveTitle}}">
+              {{trademark.name}}
+            </button>
+          {{else}}
+            <span class="nco-chip nco-chip-trademark nco-chip-static">—</span>
+          {{/if}}
+          {{#if @root.editing}}
+            <button type="button" class="nco-icon-button" data-action="editTrademark"
+                    data-item-id="{{trademark.id}}"
+                    title="{{localize 'NCO.Sheet.EditTrademark'}}" aria-label="{{localize 'NCO.Sheet.EditTrademark'}}">
+              <i class="fas fa-pen"></i>
+            </button>
             <button type="button" class="nco-icon-button nco-delete" data-action="deleteTrademark"
-                    data-trademark-index="{{trademarkIndex}}"
+                    data-item-id="{{trademark.id}}"
                     title="{{localize 'NCO.Sheet.DeleteTrademark'}}" aria-label="{{localize 'NCO.Sheet.DeleteTrademark'}}">
               <i class="fas fa-trash"></i>
             </button>
-          </div>
-
-          <ul class="nco-tags">
-            {{#each trademark.triggers as |trigger triggerIndex|}}
-              <li class="nco-trigger {{#if trigger.edge}}nco-trigger-edge{{/if}}">
-                {{!-- Block params (trademarkIndex) are lexically scoped and must be
-                      referenced directly: a ../ prefix bypasses block params and
-                      resolves to undefined, silently corrupting the input names. --}}
-                <label class="nco-edge-toggle" title="{{localize 'NCO.Sheet.MarkEdge'}}">
-                  <input type="checkbox"
-                         name="system.trademarks.{{trademarkIndex}}.triggers.{{triggerIndex}}.edge"
-                         {{checked trigger.edge}} />
-                  <i class="fas fa-bolt"></i>
-                </label>
-                <input type="text" class="nco-trigger-text"
-                       name="system.trademarks.{{trademarkIndex}}.triggers.{{triggerIndex}}.text"
-                       value="{{trigger.text}}" placeholder="{{localize 'NCO.Sheet.TriggerPlaceholder'}}" />
-                <button type="button" class="nco-icon-button nco-delete" data-action="deleteTrigger"
-                        data-trademark-index="{{trademarkIndex}}" data-trigger-index="{{triggerIndex}}"
-                        title="{{localize 'NCO.Sheet.DeleteTrigger'}}" aria-label="{{localize 'NCO.Sheet.DeleteTrigger'}}">
-                  <i class="fas fa-times"></i>
+          {{/if}}
+        </div>
+        <ul class="nco-tags nco-tags-play">
+          {{#each trademark.triggers as |trigger|}}
+            <li>
+              {{#if trigger.clickable}}
+                <button type="button" class="nco-chip nco-chip-tag nco-chip-edge"
+                        data-action="invoke" data-text="{{trigger.text}}" data-polarity="positive"
+                        title="{{@root.invokePositiveTitle}}">
+                  <i class="fas fa-bolt"></i> {{trigger.text}}
                 </button>
-              </li>
-            {{/each}}
-          </ul>
-
-          <button type="button" class="nco-add nco-add-trigger" data-action="createTrigger"
-                  data-trademark-index="{{trademarkIndex}}">
-            <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTrigger"}}
-          </button>
-        </div>
-      {{else}}
-        <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyTrademarks"}}</p>
-      {{/each}}
+              {{else}}
+                <span class="nco-chip nco-chip-tag nco-chip-static">{{trigger.text}}</span>
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      </div>
     {{else}}
-      {{#each trademarks as |trademark|}}
-        <div class="nco-trademark">
-          <div class="nco-trademark-header">
-            {{#if trademark.clickable}}
-              <button type="button" class="nco-chip nco-chip-trademark"
-                      data-action="invoke" data-text="{{trademark.name}}" data-polarity="positive"
-                      title="{{@root.invokePositiveTitle}}">
-                {{trademark.name}}
-              </button>
-            {{else}}
-              <span class="nco-chip nco-chip-trademark nco-chip-static">—</span>
-            {{/if}}
-          </div>
-          <ul class="nco-tags nco-tags-play">
-            {{#each trademark.triggers as |trigger|}}
-              <li>
-                {{#if trigger.clickable}}
-                  <button type="button" class="nco-chip nco-chip-tag nco-chip-edge"
-                          data-action="invoke" data-text="{{trigger.text}}" data-polarity="positive"
-                          title="{{@root.invokePositiveTitle}}">
-                    <i class="fas fa-bolt"></i> {{trigger.text}}
-                  </button>
-                {{else}}
-                  <span class="nco-chip nco-chip-tag nco-chip-static">{{trigger.text}}</span>
-                {{/if}}
-              </li>
-            {{/each}}
-          </ul>
-        </div>
-      {{else}}
-        <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyTrademarks"}}</p>
-      {{/each}}
-    {{/if}}
+      <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyTrademarks"}}</p>
+    {{/each}}
   </section>
 
   <section class="nco-flaws">

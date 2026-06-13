@@ -1,0 +1,52 @@
+{{!-- The sheet root is already a <form> (DocumentSheetV2); this wrapper must
+      not be one so submitOnChange keeps working. --}}
+<div class="nco-trademark-sheet">
+  <header class="nco-sheet-header">
+    {{#if editable}}
+      <img class="nco-portrait nco-portrait-editable" src="{{item.img}}" alt="{{item.name}}"
+           data-action="editImage" title="{{localize 'NCO.Sheet.EditImage'}}" />
+    {{else}}
+      <img class="nco-portrait" src="{{item.img}}" alt="{{item.name}}" />
+    {{/if}}
+    <div class="nco-header-fields">
+      <input type="text" name="name" value="{{item.name}}"
+             placeholder="{{localize 'NCO.Sheet.TrademarkPlaceholder'}}"
+             {{#unless editable}}disabled{{/unless}} />
+    </div>
+  </header>
+
+  <section class="nco-trademarks">
+    <div class="nco-section-header">
+      <label class="nco-section-label">{{localize "NCO.Sheet.Triggers"}}</label>
+      {{#if editable}}
+        <button type="button" class="nco-add" data-action="createTrigger">
+          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTrigger"}}
+        </button>
+      {{/if}}
+    </div>
+
+    <ul class="nco-tags">
+      {{#each triggers as |trigger triggerIndex|}}
+        <li class="nco-trigger {{#if trigger.edge}}nco-trigger-edge{{/if}}">
+          <label class="nco-edge-toggle" title="{{localize 'NCO.Sheet.MarkEdge'}}">
+            <input type="checkbox" name="system.triggers.{{triggerIndex}}.edge"
+                   {{checked trigger.edge}} {{#unless @root.editable}}disabled{{/unless}} />
+            <i class="fas fa-bolt"></i>
+          </label>
+          <input type="text" class="nco-trigger-text" name="system.triggers.{{triggerIndex}}.text"
+                 value="{{trigger.text}}" placeholder="{{localize 'NCO.Sheet.TriggerPlaceholder'}}"
+                 {{#unless @root.editable}}disabled{{/unless}} />
+          {{#if @root.editable}}
+            <button type="button" class="nco-icon-button nco-delete" data-action="deleteTrigger"
+                    data-trigger-index="{{triggerIndex}}"
+                    title="{{localize 'NCO.Sheet.DeleteTrigger'}}" aria-label="{{localize 'NCO.Sheet.DeleteTrigger'}}">
+              <i class="fas fa-times"></i>
+            </button>
+          {{/if}}
+        </li>
+      {{else}}
+        <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyTriggers"}}</p>
+      {{/each}}
+    </ul>
+  </section>
+</div>
