@@ -2,8 +2,9 @@
  * System data for the "character" Actor type.
  *
  * A character has a description and a set of Trademarks. Each Trademark is a
- * named cluster of narrative tags; a tag checked as an "edge" can be clicked
- * in the global roll dialog to add it as an action or danger die.
+ * named cluster of Triggers. A Trigger is not a Tag — it adds no dice — until
+ * it is checked as an "edge", at which point it becomes a positive Tag that
+ * can be clicked in the global roll dialog to add an Action die.
  */
 export class CharacterData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -49,9 +50,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       trademarks: new fields.ArrayField(
         new fields.SchemaField({
           name: new fields.StringField({ required: true, blank: true, initial: "" }),
-          tags: new fields.ArrayField(
+          triggers: new fields.ArrayField(
             new fields.SchemaField({
               text: new fields.StringField({ required: true, blank: true, initial: "" }),
+              // An edged Trigger is a positive Tag and adds an Action die.
               edge: new fields.BooleanField({ required: true, initial: false }),
             }),
           ),

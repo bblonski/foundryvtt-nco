@@ -4,12 +4,13 @@ import { ConditionData } from "./data/condition-data.js";
 import { CharacterSheet } from "./sheets/character-sheet.js";
 import { NCORollDialog } from "./applications/nco-roll-dialog.js";
 import { GlobalRollPool } from "./global-roll-pool.js";
+import { Tags } from "./tags.js";
 
 // Matches: /r a4d5  or  /r a4  (danger count optional)
 const NCO_CHAT_PATTERN = /^\/r\s+a(\d+)(?:d(\d+))?\s*$/i;
 
 Hooks.once("init", function () {
-  game.nco = { NCORoll, NCORollDialog, GlobalRollPool };
+  game.nco = { NCORoll, NCORollDialog, GlobalRollPool, Tags };
 
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Item.dataModels.condition = ConditionData;

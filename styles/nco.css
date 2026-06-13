@@ -228,17 +228,17 @@
   gap: 4px;
 }
 
-.nco-tag {
+.nco-trigger {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.nco-tag-text {
+.nco-trigger-text {
   flex: 1;
 }
 
-.nco-tag.nco-tag-edge .nco-tag-text {
+.nco-trigger.nco-trigger-edge .nco-trigger-text {
   border-color: var(--nco-action);
   box-shadow: 0 0 4px 0 rgba(35, 213, 229, 0.4);
 }
@@ -295,11 +295,11 @@
   text-shadow: none;
 }
 
-.nco-add-tag {
+.nco-add-trigger {
   margin-top: 6px;
 }
 
-/* Play mode: Trademarks and tags rendered as clickable chips */
+/* Play mode: Trademarks and Tags rendered as clickable chips */
 
 .nco-tags-play {
   flex-direction: row;
@@ -341,13 +341,6 @@ button.nco-chip {
 button.nco-chip:hover {
   background: rgba(35, 213, 229, 0.25);
   text-shadow: none;
-}
-
-/* GM clicks add Danger dice, so hint with the danger color instead */
-button.nco-chip-gm:hover {
-  background: rgba(255, 46, 136, 0.25);
-  border-color: var(--nco-danger);
-  color: var(--nco-danger);
 }
 
 .nco-chip-static {

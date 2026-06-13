@@ -84,32 +84,32 @@
           </div>
 
           <ul class="nco-tags">
-            {{#each trademark.tags as |tag tagIndex|}}
-              <li class="nco-tag {{#if tag.edge}}nco-tag-edge{{/if}}">
+            {{#each trademark.triggers as |trigger triggerIndex|}}
+              <li class="nco-trigger {{#if trigger.edge}}nco-trigger-edge{{/if}}">
                 {{!-- Block params (trademarkIndex) are lexically scoped and must be
                       referenced directly: a ../ prefix bypasses block params and
                       resolves to undefined, silently corrupting the input names. --}}
                 <label class="nco-edge-toggle" title="{{localize 'NCO.Sheet.MarkEdge'}}">
                   <input type="checkbox"
-                         name="system.trademarks.{{trademarkIndex}}.tags.{{tagIndex}}.edge"
-                         {{checked tag.edge}} />
+                         name="system.trademarks.{{trademarkIndex}}.triggers.{{triggerIndex}}.edge"
+                         {{checked trigger.edge}} />
                   <i class="fas fa-bolt"></i>
                 </label>
-                <input type="text" class="nco-tag-text"
-                       name="system.trademarks.{{trademarkIndex}}.tags.{{tagIndex}}.text"
-                       value="{{tag.text}}" placeholder="{{localize 'NCO.Sheet.TagPlaceholder'}}" />
-                <button type="button" class="nco-icon-button nco-delete" data-action="deleteTag"
-                        data-trademark-index="{{trademarkIndex}}" data-tag-index="{{tagIndex}}"
-                        title="{{localize 'NCO.Sheet.DeleteTag'}}" aria-label="{{localize 'NCO.Sheet.DeleteTag'}}">
+                <input type="text" class="nco-trigger-text"
+                       name="system.trademarks.{{trademarkIndex}}.triggers.{{triggerIndex}}.text"
+                       value="{{trigger.text}}" placeholder="{{localize 'NCO.Sheet.TriggerPlaceholder'}}" />
+                <button type="button" class="nco-icon-button nco-delete" data-action="deleteTrigger"
+                        data-trademark-index="{{trademarkIndex}}" data-trigger-index="{{triggerIndex}}"
+                        title="{{localize 'NCO.Sheet.DeleteTrigger'}}" aria-label="{{localize 'NCO.Sheet.DeleteTrigger'}}">
                   <i class="fas fa-times"></i>
                 </button>
               </li>
             {{/each}}
           </ul>
 
-          <button type="button" class="nco-add nco-add-tag" data-action="createTag"
+          <button type="button" class="nco-add nco-add-trigger" data-action="createTrigger"
                   data-trademark-index="{{trademarkIndex}}">
-            <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTag"}}
+            <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTrigger"}}
           </button>
         </div>
       {{else}}
@@ -120,8 +120,9 @@
         <div class="nco-trademark">
           <div class="nco-trademark-header">
             {{#if trademark.clickable}}
-              <button type="button" class="nco-chip nco-chip-trademark {{#if @root.isGM}}nco-chip-gm{{/if}}"
-                      data-action="invoke" data-text="{{trademark.name}}" title="{{@root.invokeTitle}}">
+              <button type="button" class="nco-chip nco-chip-trademark"
+                      data-action="invoke" data-text="{{trademark.name}}" data-polarity="positive"
+                      title="{{@root.invokePositiveTitle}}">
                 {{trademark.name}}
               </button>
             {{else}}
@@ -129,16 +130,16 @@
             {{/if}}
           </div>
           <ul class="nco-tags nco-tags-play">
-            {{#each trademark.tags as |tag|}}
+            {{#each trademark.triggers as |trigger|}}
               <li>
-                {{#if tag.clickable}}
-                  <button type="button"
-                          class="nco-chip nco-chip-tag {{#if tag.edge}}nco-chip-edge{{/if}} {{#if @root.isGM}}nco-chip-gm{{/if}}"
-                          data-action="invoke" data-text="{{tag.text}}" title="{{@root.invokeTitle}}">
-                    {{#if tag.edge}}<i class="fas fa-bolt"></i> {{/if}}{{tag.text}}
+                {{#if trigger.clickable}}
+                  <button type="button" class="nco-chip nco-chip-tag nco-chip-edge"
+                          data-action="invoke" data-text="{{trigger.text}}" data-polarity="positive"
+                          title="{{@root.invokePositiveTitle}}">
+                    <i class="fas fa-bolt"></i> {{trigger.text}}
                   </button>
                 {{else}}
-                  <span class="nco-chip nco-chip-tag nco-chip-static">{{tag.text}}</span>
+                  <span class="nco-chip nco-chip-tag nco-chip-static">{{trigger.text}}</span>
                 {{/if}}
               </li>
             {{/each}}
@@ -165,8 +166,8 @@
           <li>
             {{#if flaw.clickable}}
               <button type="button" class="nco-chip nco-chip-flaw"
-                      data-action="invoke" data-die-type="danger" data-text="{{flaw.text}}"
-                      title="{{@root.invokeFlawTitle}}">
+                      data-action="invoke" data-polarity="negative" data-text="{{flaw.text}}"
+                      title="{{@root.invokeNegativeTitle}}">
                 <i class="fas fa-skull"></i> {{flaw.text}}
               </button>
             {{else}}
@@ -205,8 +206,8 @@
           <li>
             {{#if trauma.clickable}}
               <button type="button" class="nco-chip nco-chip-flaw" data-action="invoke"
-                      data-die-type="danger" data-text="{{trauma.text}}"
-                      title="{{localize 'NCO.Sheet.InvokeDanger'}}">
+                      data-polarity="negative" data-text="{{trauma.text}}"
+                      title="{{@root.invokeNegativeTitle}}">
                 <i class="fas fa-heart-broken"></i> {{trauma.text}}
               </button>
             {{else}}
@@ -237,8 +238,8 @@
           </label>
           {{#if condition.active}}
             <button type="button" class="nco-chip nco-chip-flaw" data-action="invoke"
-                    data-die-type="danger" data-text="{{condition.name}}"
-                    title="{{localize 'NCO.Sheet.InvokeDanger'}}">
+                    data-polarity="negative" data-text="{{condition.name}}"
+                    title="{{@root.invokeNegativeTitle}}">
               {{condition.name}}
             </button>
           {{else}}

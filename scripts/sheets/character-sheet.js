@@ -1,5 +1,4 @@
-import { GlobalRollPool } from "../global-roll-pool.js";
-import { NCORollDialog } from "../applications/nco-roll-dialog.js";
+import { Tags, TAG_POLARITY } from "../tags.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -11,12 +10,15 @@ const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (c) => ESCAPE_MAP[
  * Character sheet for Neon City Overdrive characters.
  *
  * Has two modes per open sheet:
- *  - Edit mode: name, description, Trademarks and tags are form inputs, with
- *    controls to add/remove Trademarks and tags and mark tags as Edges.
- *  - Play mode (default once the character has content): Trademarks and tags
- *    render as labels. Clicking a Trademark or Edge sends it to the shared
- *    roll pool — as an Action die for players, as a Danger die for the GM
- *    (for whom every tag is clickable, not just Edges).
+ *  - Edit mode: name, description, Trademarks and Triggers are form inputs,
+ *    with controls to add/remove Trademarks and Triggers and mark Triggers as
+ *    Edges.
+ *  - Play mode (default once the character has content): Trademarks and
+ *    Triggers render as labels. Clicking a Tag (a Trademark name, an Edge, a
+ *    Flaw, Trauma, or Condition) sends it to the shared roll pool — positive
+ *    Tags as Action dice, negative Tags as Danger dice, identically for GMs
+ *    and players. Shift-clicking inverts the polarity. Plain Triggers are not
+ *    Tags and are not clickable.
  */
 export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
@@ -29,8 +31,8 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       toggleEdit: this._onToggleEdit,
       createTrademark: this._onCreateTrademark,
       deleteTrademark: this._onDeleteTrademark,
-      createTag: this._onCreateTag,
-      deleteTag: this._onDeleteTag,
+      createTrigger: this._onCreateTrigger,
+      deleteTrigger: this._onDeleteTrigger,
       invoke: this._onInvoke,
       toggleHit: this._onToggleHit,
       spendStuntPoint: this._onSpendStuntPoint,
@@ -62,7 +64,6 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    const isGM = game.user.isGM;
     const TextEditorImpl = foundry.applications.ux?.TextEditor?.implementation ?? TextEditor;
 
     return {
@@ -71,16 +72,16 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       system: this.actor.system,
       editing: this.isEditing,
       editable: this.isEditable,
-      isGM,
-      // In play mode a tag is clickable if it is an Edge — or always, for the
-      // GM, who invokes any tag as a Danger die.
+      // In play mode a Trademark name is a positive Tag (always clickable when
+      // named); a Trigger is only a Tag — and so only clickable — once it is an
+      // Edge. Plain Triggers add no dice and render as static labels.
       trademarks: (this.actor.system.trademarks ?? []).map((trademark) => ({
         name: trademark.name,
         clickable: !!trademark.name?.trim(),
-        tags: (trademark.tags ?? []).map((tag) => ({
-          text: tag.text,
-          edge: tag.edge,
-          clickable: !!tag.text?.trim() && (tag.edge || isGM),
+        triggers: (trademark.triggers ?? []).map((trigger) => ({
+          text: trigger.text,
+          edge: trigger.edge,
+          clickable: !!trigger.text?.trim() && trigger.edge,
         })),
       })),
       hitBoxes: this.#prepareHitBoxes(),
@@ -97,8 +98,8 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         text,
         clickable: !!text?.trim(),
       })),
-      invokeTitle: game.i18n.localize(isGM ? "NCO.Sheet.InvokeDanger" : "NCO.Sheet.InvokeAction"),
-      invokeFlawTitle: game.i18n.localize("NCO.Sheet.InvokeDanger"),
+      invokePositiveTitle: game.i18n.localize("NCO.Sheet.InvokePositive"),
+      invokeNegativeTitle: game.i18n.localize("NCO.Sheet.InvokeNegative"),
       descriptionHTML: await TextEditorImpl.enrichHTML(this.actor.system.description ?? "", {
         relativeTo: this.actor,
       }),
@@ -272,14 +273,18 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   /**
-   * Click a Trademark, tag, or Flaw label: add it to the shared roll pool and
-   * show the roll window. The chip may force a die type (Flaws are always
-   * Danger); otherwise players add Action dice and the GM adds Danger dice.
+   * Click a Tag (a Trademark name, Edge, Flaw, Trauma, or Condition): add it to
+   * the shared roll pool and show the roll window. Polarity is intrinsic to the
+   * chip and the same for GMs and players — positive Tags add Action dice,
+   * negative Tags add Danger dice. Shift-clicking inverts the polarity.
    */
-  static async _onInvoke(_event, target) {
-    const type = target.dataset.dieType ?? (game.user.isGM ? "danger" : "action");
-    await GlobalRollPool.add(type, target.dataset.text, this.actor.name);
-    NCORollDialog.open();
+  static async _onInvoke(event, target) {
+    await Tags.invoke({
+      text: target.dataset.text,
+      polarity: target.dataset.polarity ?? TAG_POLARITY.POSITIVE,
+      source: this.actor.name,
+      invert: event.shiftKey,
+    });
   }
 
   static _onToggleEdit(_event, _target) {
@@ -310,7 +315,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static async _onCreateTrademark(_event, _target) {
     const trademarks = await this._trademarksForUpdate();
-    trademarks.push({ name: "", tags: [] });
+    trademarks.push({ name: "", triggers: [] });
     this._editing = true;
     await this.actor.update({ "system.trademarks": trademarks });
   }
@@ -322,7 +327,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     if (!trademark) return;
 
     // Only prompt when the Trademark actually has content to lose.
-    if (trademark.name?.trim() || trademark.tags?.length) {
+    if (trademark.name?.trim() || trademark.triggers?.length) {
       const confirmed = await foundry.applications.api.DialogV2.confirm({
         window: { title: "NCO.Sheet.DeleteTrademark" },
         content: `<p>${game.i18n.localize("NCO.Sheet.DeleteTrademarkConfirm")}</p>`,
@@ -334,20 +339,20 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     await this.actor.update({ "system.trademarks": trademarks });
   }
 
-  static async _onCreateTag(_event, target) {
+  static async _onCreateTrigger(_event, target) {
     const index = Number(target.dataset.trademarkIndex);
     const trademarks = await this._trademarksForUpdate();
     if (!trademarks[index]) return;
-    trademarks[index].tags.push({ text: "", edge: false });
+    trademarks[index].triggers.push({ text: "", edge: false });
     await this.actor.update({ "system.trademarks": trademarks });
   }
 
-  static async _onDeleteTag(_event, target) {
+  static async _onDeleteTrigger(_event, target) {
     const trademarkIndex = Number(target.dataset.trademarkIndex);
-    const tagIndex = Number(target.dataset.tagIndex);
+    const triggerIndex = Number(target.dataset.triggerIndex);
     const trademarks = await this._trademarksForUpdate();
     if (!trademarks[trademarkIndex]) return;
-    trademarks[trademarkIndex].tags.splice(tagIndex, 1);
+    trademarks[trademarkIndex].triggers.splice(triggerIndex, 1);
     await this.actor.update({ "system.trademarks": trademarks });
   }
 }
