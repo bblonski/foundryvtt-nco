@@ -31,9 +31,9 @@
       {{!-- Boss toggle: triples the Threat's Hits. Available whenever the user
             can edit the actor, since it changes how much punishment it takes. --}}
       <label class="nco-boss-toggle" title="{{localize 'NCO.Sheet.BossHint'}}">
-        <input type="checkbox" name="system.boss" {{checked system.boss}}
-               {{#unless editable}}disabled{{/unless}} />
         <span>{{localize "NCO.Sheet.Boss"}}</span>
+        <input type="checkbox" name="system.boss" {{checked system.boss}}
+               {{#unless editing}}disabled{{/unless}} />
       </label>
 
       <div class="nco-hits">

@@ -206,7 +206,7 @@ export class ThreatSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static async _onCreateTag(_event, _target) {
     this._editing = true;
     const tags = await this.#tagsForUpdate();
-    tags.push({ text: "", polarity: TAG_POLARITY.POSITIVE });
+    tags.push({ text: "", polarity: TAG_POLARITY.NEGATIVE });
     await this.actor.update({ "system.tags": tags });
   }
 

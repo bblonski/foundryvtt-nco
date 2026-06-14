@@ -797,7 +797,7 @@ button.nco-danger-rating:hover {
 .nco-boss-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   margin-top: 6px;
   font-family: "Courier New", monospace;
   letter-spacing: 1px;
@@ -808,7 +808,20 @@ button.nco-danger-rating:hover {
   width: fit-content;
 }
 
+/* Match the Hits label width so the Boss checkbox lines up in a column with
+   the first Hit box below it. */
+.nco-boss-toggle span {
+  min-width: 48px;
+  flex: none;
+}
+
+/* Match the Hit box footprint (and drop the UA margin) so the Boss checkbox
+   sits squarely in the same column as the first Hit box below it. */
 .nco-boss-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex: none;
   cursor: pointer;
 }
 
