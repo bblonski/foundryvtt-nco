@@ -181,6 +181,65 @@
   box-shadow: 0 0 5px 0 rgba(35, 213, 229, 0.7);
 }
 
+/* Drive track: a description input above a row of ten tri-state boxes. A box
+   cycles empty -> ticked (blue /) -> crossed (red x) -> empty on each click. */
+.nco-drive-desc {
+  width: 100%;
+  margin-bottom: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--nco-border);
+  border-radius: 4px;
+  color: inherit;
+  padding: 2px 6px;
+}
+
+.nco-drive-track {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.nco-character-sheet .nco-drive-box {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  box-sizing: border-box;
+  border: 1px solid var(--nco-border);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Courier New", monospace;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+  transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.nco-character-sheet .nco-drive-box-ticked {
+  border-color: var(--nco-action);
+}
+
+.nco-character-sheet .nco-drive-box-ticked::after {
+  content: "/";
+  color: var(--nco-action);
+  text-shadow: 0 0 5px rgba(35, 213, 229, 0.7);
+}
+
+.nco-character-sheet .nco-drive-box-crossed {
+  border-color: var(--nco-danger);
+}
+
+.nco-character-sheet .nco-drive-box-crossed::after {
+  content: "\00d7"; /* multiplication sign as a crisp X */
+  color: var(--nco-danger);
+  text-shadow: 0 0 5px rgba(255, 46, 136, 0.7);
+}
+
 .nco-character-sheet .nco-stunt-label {
   background: none;
   border: none;
@@ -480,13 +539,18 @@ button.nco-chip-flaw:hover {
 .nco-unique-gear-header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
+  gap: 8px;
 }
 
 .nco-unique-gear-name {
-  flex: 1;
+  flex: none;
   font-weight: bold;
+}
+
+/* Tags share the gear's name row, taking the remaining space so any edit/delete
+   buttons are pushed to the right edge. */
+.nco-unique-gear-header .nco-tags {
+  flex: 1;
 }
 
 /* Unique Gear sheet: each Tag has its own polarity toggle */

@@ -6,6 +6,11 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 const ESCAPE_MAP = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (c) => ESCAPE_MAP[c]);
 
+/** Fixed number of boxes on the Drive track. */
+const DRIVE_TRACK_LENGTH = 10;
+/** Drive box state values (index) mapped to their CSS state name. */
+const DRIVE_STATES = ["empty", "ticked", "crossed"];
+
 /**
  * Character sheet for Neon City Overdrive characters.
  *
@@ -36,6 +41,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       deleteTrademark: this._onDeleteTrademark,
       invoke: this._onInvoke,
       trackAdd: this._onTrackAdd,
+      driveClick: this._onDriveClick,
       spendStuntPoint: this._onSpendStuntPoint,
       toggleCondition: this._onToggleCondition,
       createCondition: this._onCreateCondition,
@@ -101,6 +107,9 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       })),
       hitBoxes: this.#prepareHitBoxes(),
       xpGroups: this.#prepareXpGroups(),
+      driveEnabled: game.settings.get("foundryvtt-nco", "driveTrackEnabled"),
+      driveBoxes: this.#prepareDriveBoxes(),
+      driveHint: game.i18n.localize("NCO.Sheet.DriveHint"),
       trackHint: game.i18n.localize(
         game.settings.get("foundryvtt-nco", "trackClickMode") === "fill"
           ? "NCO.Sheet.TrackHintFill"
@@ -171,6 +180,36 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       );
     }
     return groups;
+  }
+
+  /**
+   * The ten Drive boxes as {index, state} pairs, where state is the CSS state
+   * name ("empty", "ticked", or "crossed"). Older documents with a short or
+   * missing array fall back to empty.
+   */
+  #prepareDriveBoxes() {
+    const boxes = this.actor.system.drive?.boxes ?? [];
+    return Array.from({ length: DRIVE_TRACK_LENGTH }, (_, i) => ({
+      index: i,
+      state: DRIVE_STATES[boxes[i] ?? 0] ?? "empty",
+    }));
+  }
+
+  /**
+   * Click a Drive box: cycle its tri-state through empty -> ticked -> crossed
+   * -> empty. Unlike the Hits/XP tracks, each box is independent rather than a
+   * fill level, so the whole array is rewritten with the one box advanced.
+   */
+  static async _onDriveClick(_event, target) {
+    if (!this.isEditable) return;
+    const index = Number(target.dataset.index);
+    if (!Number.isInteger(index) || index < 0 || index >= DRIVE_TRACK_LENGTH) return;
+    const boxes = Array.from(
+      { length: DRIVE_TRACK_LENGTH },
+      (_, i) => Number(this.actor.system.drive?.boxes?.[i] ?? 0),
+    );
+    boxes[index] = (boxes[index] + 1) % 3;
+    await this.actor.update({ "system.drive.boxes": boxes });
   }
 
   /**

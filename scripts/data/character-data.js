@@ -55,6 +55,17 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // their own positive and negative Tags, for items significant enough to
       // warrant that detail.
       gear: new fields.HTMLField({ required: false, blank: true, initial: "" }),
+      // Drive track: a description plus a fixed row of ten tri-state boxes. Each
+      // box cycles empty (0) -> ticked (1) -> crossed (2). The number of ticked
+      // and crossed boxes are derived character stats (see prepareDerivedData).
+      // Optional in the sheet UI via the world's drive-track setting.
+      drive: new fields.SchemaField({
+        description: new fields.StringField({ required: true, blank: true, initial: "" }),
+        boxes: new fields.ArrayField(
+          new fields.NumberField({ required: true, integer: true, min: 0, max: 2, initial: 0 }),
+          { initial: () => Array.from({ length: 10 }, () => 0) },
+        ),
+      }),
     };
   }
 
@@ -62,5 +73,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
   prepareDerivedData() {
     // Remaining hits, primarily for token resource bars.
     this.hits.value = Math.max(0, this.hits.max - this.hits.taken);
+    // Ticked and crossed box counts on the Drive track, exposed as stats (e.g.
+    // for token resource bars and macros).
+    const driveBoxes = this.drive?.boxes ?? [];
+    this.drive.ticked = driveBoxes.filter((b) => b === 1).length;
+    this.drive.crossed = driveBoxes.filter((b) => b === 2).length;
   }
 }

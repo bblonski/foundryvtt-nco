@@ -81,6 +81,29 @@
     {{/if}}
   </section>
 
+  {{#if driveEnabled}}
+    {{!-- Drive track: a description plus ten tri-state boxes. Each box cycles
+          empty -> ticked (blue /) -> crossed (red x) -> empty on click; the
+          ticked/crossed counts are character stats (see CharacterData). The
+          description stays writable during play, like Gear. --}}
+    <section class="nco-drive">
+      <label class="nco-section-label">{{localize "NCO.Sheet.Drive"}}</label>
+      {{#if editable}}
+        <input type="text" class="nco-drive-desc" name="system.drive.description"
+               value="{{system.drive.description}}"
+               placeholder="{{localize 'NCO.Sheet.DrivePlaceholder'}}" />
+      {{else}}
+        <div class="nco-description-text">{{system.drive.description}}</div>
+      {{/if}}
+      <div class="nco-drive-track" title="{{driveHint}}">
+        {{#each driveBoxes as |box|}}
+          <span class="nco-drive-box nco-drive-box-{{box.state}}"
+                data-action="driveClick" data-index="{{box.index}}"></span>
+        {{/each}}
+      </div>
+    </section>
+  {{/if}}
+
   <section class="nco-trademarks">
     <div class="nco-section-header">
       <label class="nco-section-label">{{localize "NCO.Sheet.Trademarks"}}</label>
@@ -163,6 +186,23 @@
       <div class="nco-unique-gear" data-item-id="{{gearItem.id}}">
         <div class="nco-unique-gear-header">
           <span class="nco-unique-gear-name">{{gearItem.name}}</span>
+          <ul class="nco-tags nco-tags-play">
+            {{#each gearItem.tags as |tag|}}
+              <li>
+                {{#if tag.clickable}}
+                  <button type="button"
+                          class="nco-chip nco-chip-tag {{#if tag.positive}}nco-chip-edge{{else}}nco-chip-flaw{{/if}}"
+                          data-action="invoke" data-text="{{tag.text}}"
+                          data-polarity="{{#if tag.positive}}positive{{else}}negative{{/if}}"
+                          title="{{#if tag.positive}}{{@root.invokePositiveTitle}}{{else}}{{@root.invokeNegativeTitle}}{{/if}}">
+                    <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i> {{tag.text}}
+                  </button>
+                {{else}}
+                  <span class="nco-chip nco-chip-tag nco-chip-static">{{tag.text}}</span>
+                {{/if}}
+              </li>
+            {{/each}}
+          </ul>
           {{#if @root.editing}}
             <button type="button" class="nco-icon-button" data-action="editUniqueGear"
                     data-item-id="{{gearItem.id}}"
@@ -176,23 +216,6 @@
             </button>
           {{/if}}
         </div>
-        <ul class="nco-tags nco-tags-play">
-          {{#each gearItem.tags as |tag|}}
-            <li>
-              {{#if tag.clickable}}
-                <button type="button"
-                        class="nco-chip nco-chip-tag {{#if tag.positive}}nco-chip-edge{{else}}nco-chip-flaw{{/if}}"
-                        data-action="invoke" data-text="{{tag.text}}"
-                        data-polarity="{{#if tag.positive}}positive{{else}}negative{{/if}}"
-                        title="{{#if tag.positive}}{{@root.invokePositiveTitle}}{{else}}{{@root.invokeNegativeTitle}}{{/if}}">
-                  <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i> {{tag.text}}
-                </button>
-              {{else}}
-                <span class="nco-chip nco-chip-tag nco-chip-static">{{tag.text}}</span>
-              {{/if}}
-            </li>
-          {{/each}}
-        </ul>
       </div>
     {{else}}
       <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyUniqueGear"}}</p>

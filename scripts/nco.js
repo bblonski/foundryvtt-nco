@@ -86,6 +86,16 @@ Hooks.once("init", function () {
     default: "increment",
   });
 
+  // Whether the optional Drive track appears on character sheets.
+  game.settings.register("foundryvtt-nco", "driveTrackEnabled", {
+    name: "NCO.Settings.DriveTrack.Name",
+    hint: "NCO.Settings.DriveTrack.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
   // Foundry's built-in "Create Actor" dialog only fills in a default `type`
   // when more than one sub-type is registered (Actor disallows the "base"
   // type, so a system with a single sub-type ends up with no type selector
