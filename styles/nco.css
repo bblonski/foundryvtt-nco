@@ -908,6 +908,57 @@ button.nco-danger-rating:hover {
   background: var(--nco-bg);
 }
 
+/* Pool header: the dice-type label with an "add ad-hoc die" button (Bonus for
+   Action, Penalty for Danger) pushed to the right. */
+.nco-pool-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.nco-pool-header .nco-section-label {
+  margin: 0;
+}
+
+/* Penalty button mirrors .nco-add in the danger palette. */
+.nco-add-danger {
+  background: rgba(255, 46, 136, 0.08);
+  border-color: var(--nco-danger);
+  color: var(--nco-danger);
+}
+
+.nco-add-danger:hover {
+  background: rgba(255, 46, 136, 0.2);
+}
+
+/* Ad-hoc modifier buttons sit in a row beneath the two pools, one button per
+   column so Bonus lines up under the Action pool and Penalty under Danger. */
+.nco-roll-adhoc {
+  display: flex;
+  gap: 8px;
+}
+
+.nco-roll-adhoc .nco-add {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Penalty button mirrors .nco-add in the danger palette. */
+.nco-add-danger {
+  background: rgba(255, 46, 136, 0.08);
+  border-color: var(--nco-danger);
+  color: var(--nco-danger);
+}
+
+.nco-add-danger:hover {
+  background: rgba(255, 46, 136, 0.2);
+}
+
 .nco-action-label {
   color: var(--nco-action);
 }

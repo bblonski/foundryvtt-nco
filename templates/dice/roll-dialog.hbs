@@ -36,6 +36,19 @@
     </div>
   </section>
 
+  {{!-- Ad-hoc situational modifiers: Bonus adds an Action die, Penalty a Danger
+        die. Laid out in two columns to sit under their matching pool above. --}}
+  <section class="nco-roll-adhoc">
+    <button type="button" class="nco-add" data-action="addBonus"
+            title="{{localize 'NCO.RollDialog.AddBonusHint'}}">
+      <i class="fas fa-plus"></i> {{localize "NCO.RollDialog.Bonus"}}
+    </button>
+    <button type="button" class="nco-add nco-add-danger" data-action="addPenalty"
+            title="{{localize 'NCO.RollDialog.AddPenaltyHint'}}">
+      <i class="fas fa-plus"></i> {{localize "NCO.RollDialog.Penalty"}}
+    </button>
+  </section>
+
   <footer class="nco-roll-footer">
     <button type="button" class="nco-roll-clear" data-action="clear">
       <i class="fas fa-eraser"></i> {{localize "NCO.RollDialog.Clear"}}

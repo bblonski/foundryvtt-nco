@@ -21,6 +21,8 @@ export class NCORollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     position: { width: 460, height: "auto" },
     actions: {
       removeDie: this._onRemoveDie,
+      addBonus: this._onAddBonus,
+      addPenalty: this._onAddPenalty,
       clear: this._onClear,
       roll: this._onRoll,
     },
@@ -51,6 +53,16 @@ export class NCORollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /** Remove a die from the shared pool by clicking it in the list. */
   static _onRemoveDie(_event, target) {
     return GlobalRollPool.remove(target.dataset.key);
+  }
+
+  /** Add an ad-hoc Action die for a situational bonus. */
+  static _onAddBonus(_event, _target) {
+    return GlobalRollPool.add("action", game.i18n.localize("NCO.RollDialog.Bonus"));
+  }
+
+  /** Add an ad-hoc Danger die for a situational penalty. */
+  static _onAddPenalty(_event, _target) {
+    return GlobalRollPool.add("danger", game.i18n.localize("NCO.RollDialog.Penalty"));
   }
 
   /** Empty both pools without rolling. */
