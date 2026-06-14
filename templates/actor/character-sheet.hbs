@@ -42,6 +42,20 @@
                  {{#unless editable}}disabled{{/unless}} />
         </div>
       </div>
+      <div class="nco-xp">
+        <label class="nco-section-label">{{localize "NCO.Sheet.XP"}}</label>
+        {{!-- Left-click the track to add XP, right-click to remove (wired in JS). --}}
+        <div class="nco-xp-track" data-action="addXp" title="{{localize 'NCO.Sheet.XPHint'}}">
+          {{#each xpGroups as |group|}}
+            {{#unless @first}}<hr class="nco-xp-divider" />{{/unless}}
+            <div class="nco-xp-group">
+              {{#each group as |box|}}
+                <span class="nco-xp-box {{#if box.checked}}nco-xp-box-filled{{/if}}"></span>
+              {{/each}}
+            </div>
+          {{/each}}
+        </div>
+      </div>
     </div>
     {{#if editable}}
       <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"

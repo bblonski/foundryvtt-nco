@@ -44,13 +44,13 @@
 .nco-sheet-header {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
 }
 
 .nco-portrait {
-  width: 64px;
-  height: 64px;
+  width: 88px;
+  height: 88px;
   object-fit: cover;
   border: 1px solid var(--nco-action);
   border-radius: 6px;
@@ -106,17 +106,41 @@
   gap: 5px;
 }
 
-.nco-hits-label {
-  margin: 0 4px 0 0;
+/* Equal-width labels and matching gaps so the Hits and XP boxes line up in a
+   column beneath one another. */
+.nco-hits-label,
+.nco-xp .nco-section-label {
+  width: 36px;
+  margin: 0;
+  flex: none;
+}
+
+/* Hit boxes match the XP boxes (stylized squares) but glow danger-red. Foundry
+   draws checkboxes as a Font Awesome glyph in ::before/::after, so suppress
+   those and style the input box itself. */
+.nco-character-sheet .nco-hit-box::before,
+.nco-character-sheet .nco-hit-box::after {
+  content: none;
 }
 
 .nco-character-sheet .nco-hit-box {
-  width: 18px;
-  height: 18px;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
   margin: 0;
   flex: none;
+  border: 1px solid var(--nco-border);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.04);
   cursor: pointer;
-  accent-color: var(--nco-danger);
+  transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.nco-character-sheet .nco-hit-box:checked {
+  border-color: var(--nco-danger);
+  background: var(--nco-danger);
+  box-shadow: 0 0 5px 0 rgba(255, 46, 136, 0.7);
 }
 
 .nco-character-sheet .nco-hit-box:disabled {
@@ -138,6 +162,56 @@
   align-items: center;
   gap: 8px;
   margin-left: auto;
+}
+
+/* XP row: the label sits inline to the left of the track. The gap matches the
+   Hits row so the first box of each lines up vertically. */
+.nco-xp {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+/* XP track: stylized boxes on a single row, in groups of five separated by a
+   vertical divider. Left-click adds, right-click removes (handled in JS). */
+.nco-xp-track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  width: fit-content;
+  cursor: pointer;
+  user-select: none;
+}
+
+.nco-xp-group {
+  display: flex;
+  gap: 5px;
+}
+
+.nco-xp-divider {
+  width: 0;
+  height: 16px;
+  margin: 0 2px;
+  border: none;
+  border-left: 1px solid var(--nco-border);
+}
+
+.nco-xp-box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--nco-border);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.nco-xp-box-filled {
+  border-color: var(--nco-action);
+  background: var(--nco-action);
+  box-shadow: 0 0 5px 0 rgba(35, 213, 229, 0.7);
 }
 
 .nco-character-sheet .nco-stunt-label {

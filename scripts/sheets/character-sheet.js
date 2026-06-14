@@ -36,6 +36,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       deleteTrademark: this._onDeleteTrademark,
       invoke: this._onInvoke,
       toggleHit: this._onToggleHit,
+      addXp: this._onAddXp,
       spendStuntPoint: this._onSpendStuntPoint,
       toggleCondition: this._onToggleCondition,
       createCondition: this._onCreateCondition,
@@ -100,6 +101,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         })),
       })),
       hitBoxes: this.#prepareHitBoxes(),
+      xpGroups: this.#prepareXpGroups(),
       conditions: this.actor.items
         .filter((item) => item.type === "condition")
         .map((item) => ({ id: item.id, name: item.name, active: !!item.system.active })),
@@ -141,6 +143,56 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const max = Math.min(6, Math.max(1, hits.max ?? 3));
     const taken = Math.min(max, hits.taken ?? 0);
     return Array.from({ length: max }, (_, i) => ({ index: i, checked: i < taken }));
+  }
+
+  /** The configured XP track length (total boxes), clamped to a sane minimum. */
+  get #xpTrackLength() {
+    return Math.max(0, game.settings.get("foundryvtt-nco", "xpTrackLength") ?? 15);
+  }
+
+  /**
+   * The XP track split into groups of five boxes, so the template can draw a
+   * horizontal divider between each group. Boxes fill from the left.
+   */
+  #prepareXpGroups() {
+    const length = this.#xpTrackLength;
+    const filled = Math.min(length, Math.max(0, this.actor.system.xp ?? 0));
+    const groups = [];
+    for (let i = 0; i < length; i += 5) {
+      groups.push(
+        Array.from({ length: Math.min(5, length - i) }, (_, j) => ({
+          checked: i + j < filled,
+        })),
+      );
+    }
+    return groups;
+  }
+
+  /** Left-click the XP track: fill the next box (clamped to the track length). */
+  static async _onAddXp(_event, _target) {
+    if (!this.isEditable) return;
+    const current = this.actor.system.xp ?? 0;
+    const next = Math.min(this.#xpTrackLength, current + 1);
+    if (next !== current) await this.actor.update({ "system.xp": next });
+  }
+
+  /** Right-click the XP track: clear the last filled box. */
+  async #removeXp(event) {
+    event.preventDefault();
+    if (!this.isEditable) return;
+    const current = this.actor.system.xp ?? 0;
+    const next = Math.max(0, current - 1);
+    if (next !== current) await this.actor.update({ "system.xp": next });
+  }
+
+  /** @override */
+  async _onRender(context, options) {
+    await super._onRender(context, options);
+    // Right-click isn't an ActionV2 trigger, so wire the XP track's contextmenu
+    // (decrement) manually. The element is rebuilt each render, so re-bind here.
+    this.element
+      .querySelector(".nco-xp-track")
+      ?.addEventListener("contextmenu", this.#removeXp.bind(this));
   }
 
   /**

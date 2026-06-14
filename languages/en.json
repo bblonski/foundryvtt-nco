@@ -75,6 +75,9 @@
     "NCO.Sheet.SpendStuntPoint": "Click to spend a Stunt Point",
     "NCO.Sheet.NoStuntPoints": "{name} has no Stunt Points left to spend.",
 
+    "NCO.Sheet.XP": "XP",
+    "NCO.Sheet.XPHint": "Left-click to add XP, right-click to remove",
+
     "NCO.Chat.StuntPoint.Title": "Stunt Point Spent",
     "NCO.Chat.StuntPoint.OptionTrademark": "Add a second Trademark to the check",
     "NCO.Chat.StuntPoint.OptionSoak": "Soak all Hits from a single source",
@@ -86,6 +89,8 @@
     "NCO.Settings.StartingHits.Hint": "How many Hits a newly created character begins with.",
     "NCO.Settings.MaxHits.Name": "Maximum Hits",
     "NCO.Settings.MaxHits.Hint": "The most Hits any character can grow to through advancement.",
+    "NCO.Settings.XPTrackLength.Name": "XP Track Length",
+    "NCO.Settings.XPTrackLength.Hint": "How many XP boxes appear on each character's advancement track.",
 
     "NCO.RollDialog.Title": "Neon City Overdrive — Roll",
     "NCO.RollDialog.OpenTool": "NCO Roll",

@@ -62,6 +62,16 @@ Hooks.once("init", function () {
     default: 4,
   });
 
+  game.settings.register("foundryvtt-nco", "xpTrackLength", {
+    name: "NCO.Settings.XPTrackLength.Name",
+    hint: "NCO.Settings.XPTrackLength.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 5, max: 60, step: 1 },
+    default: 15,
+  });
+
   // Foundry's built-in "Create Actor" dialog only fills in a default `type`
   // when more than one sub-type is registered (Actor disallows the "base"
   // type, so a system with a single sub-type ends up with no type selector

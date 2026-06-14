@@ -46,6 +46,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // Meta-currency spent for stunts; clicking the sheet label spends one
       // and posts the spending options to chat. NCO characters start with 3.
       stuntPoints: new fields.NumberField({ required: true, integer: true, min: 0, initial: 3 }),
+      // Advancement track: how many XP boxes are filled. The track's length
+      // (total boxes) is a world setting, so it isn't stored per character;
+      // the sheet clamps the display to that length.
+      xp: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
       // Simple Gear: a freeform notes box for everyday equipment that doesn't
       // warrant its own Tags. Unique Gear (see GearData) is embedded Items with
       // their own positive and negative Tags, for items significant enough to
