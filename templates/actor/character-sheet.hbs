@@ -18,11 +18,15 @@
       <div class="nco-vitals">
         <div class="nco-hits">
           <span class="nco-section-label nco-danger-label nco-hits-label">{{localize "NCO.Sheet.Hits"}}</span>
-          {{#each hitBoxes as |box|}}
-            <input type="checkbox" class="nco-hit-box" data-action="toggleHit" data-index="{{box.index}}"
-                   {{checked box.checked}} {{#unless @root.editable}}disabled{{/unless}}
-                   title="{{localize 'NCO.Sheet.HitBox'}}" />
-          {{/each}}
+          {{!-- Click behavior (add/remove vs fill-to-level) is set in JS by the
+                world's track-click-mode setting; shared with the XP track. --}}
+          <div class="nco-hits-track nco-track" data-action="trackAdd" data-track="hits"
+               title="{{trackHint}}">
+            {{#each hitBoxes as |box|}}
+              <span class="nco-hit-box {{#if box.checked}}nco-hit-box-filled{{/if}}"
+                    data-index="{{box.index}}"></span>
+            {{/each}}
+          </div>
           {{#if editing}}
             <input type="number" class="nco-hits-max" name="system.hits.max" value="{{system.hits.max}}"
                    min="1" max="{{hitsMaxLimit}}" step="1" title="{{localize 'NCO.Sheet.HitsMax'}}" />
@@ -44,13 +48,15 @@
       </div>
       <div class="nco-xp">
         <label class="nco-section-label">{{localize "NCO.Sheet.XP"}}</label>
-        {{!-- Left-click the track to add XP, right-click to remove (wired in JS). --}}
-        <div class="nco-xp-track" data-action="addXp" title="{{localize 'NCO.Sheet.XPHint'}}">
+        {{!-- Click behavior is shared with the Hits track (see JS / setting). --}}
+        <div class="nco-xp-track nco-track" data-action="trackAdd" data-track="xp"
+             title="{{trackHint}}">
           {{#each xpGroups as |group|}}
             {{#unless @first}}<hr class="nco-xp-divider" />{{/unless}}
             <div class="nco-xp-group">
               {{#each group as |box|}}
-                <span class="nco-xp-box {{#if box.checked}}nco-xp-box-filled{{/if}}"></span>
+                <span class="nco-xp-box {{#if box.checked}}nco-xp-box-filled{{/if}}"
+                      data-index="{{box.index}}"></span>
               {{/each}}
             </div>
           {{/each}}

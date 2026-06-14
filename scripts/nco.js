@@ -72,6 +72,20 @@ Hooks.once("init", function () {
     default: 15,
   });
 
+  // Controls how the Hits and XP tracks respond to clicks (see CharacterSheet).
+  game.settings.register("foundryvtt-nco", "trackClickMode", {
+    name: "NCO.Settings.TrackClickMode.Name",
+    hint: "NCO.Settings.TrackClickMode.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      increment: "NCO.Settings.TrackClickMode.Increment",
+      fill: "NCO.Settings.TrackClickMode.Fill",
+    },
+    default: "increment",
+  });
+
   // Foundry's built-in "Create Actor" dialog only fills in a default `type`
   // when more than one sub-type is registered (Actor disallows the "base"
   // type, so a system with a single sub-type ends up with no type selector

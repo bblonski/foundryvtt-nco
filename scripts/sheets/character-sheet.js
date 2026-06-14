@@ -35,8 +35,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       editTrademark: this._onEditTrademark,
       deleteTrademark: this._onDeleteTrademark,
       invoke: this._onInvoke,
-      toggleHit: this._onToggleHit,
-      addXp: this._onAddXp,
+      trackAdd: this._onTrackAdd,
       spendStuntPoint: this._onSpendStuntPoint,
       toggleCondition: this._onToggleCondition,
       createCondition: this._onCreateCondition,
@@ -102,6 +101,11 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       })),
       hitBoxes: this.#prepareHitBoxes(),
       xpGroups: this.#prepareXpGroups(),
+      trackHint: game.i18n.localize(
+        game.settings.get("foundryvtt-nco", "trackClickMode") === "fill"
+          ? "NCO.Sheet.TrackHintFill"
+          : "NCO.Sheet.TrackHintIncrement",
+      ),
       conditions: this.actor.items
         .filter((item) => item.type === "condition")
         .map((item) => ({ id: item.id, name: item.name, active: !!item.system.active })),
@@ -161,6 +165,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     for (let i = 0; i < length; i += 5) {
       groups.push(
         Array.from({ length: Math.min(5, length - i) }, (_, j) => ({
+          index: i + j,
           checked: i + j < filled,
         })),
       );
@@ -168,43 +173,65 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     return groups;
   }
 
-  /** Left-click the XP track: fill the next box (clamped to the track length). */
-  static async _onAddXp(_event, _target) {
-    if (!this.isEditable) return;
-    const current = this.actor.system.xp ?? 0;
-    const next = Math.min(this.#xpTrackLength, current + 1);
-    if (next !== current) await this.actor.update({ "system.xp": next });
+  /**
+   * Where a track's filled-box count is stored and how high it can go. Both the
+   * Hits and XP tracks share the same click behavior, differing only in this.
+   */
+  #trackConfig(track) {
+    if (track === "hits") {
+      return {
+        field: "system.hits.taken",
+        current: this.actor.system.hits?.taken ?? 0,
+        max: Math.min(6, Math.max(1, this.actor.system.hits?.max ?? 3)),
+      };
+    }
+    return {
+      field: "system.xp",
+      current: this.actor.system.xp ?? 0,
+      max: this.#xpTrackLength,
+    };
   }
 
-  /** Right-click the XP track: clear the last filled box. */
-  async #removeXp(event) {
+  /**
+   * Left-click a track box. The world's "track click mode" setting decides
+   * whether this adds a single box ("increment") or fills/clears up to the
+   * clicked box ("fill"). Applies identically to the Hits and XP tracks.
+   */
+  static async _onTrackAdd(event, target) {
+    if (!this.isEditable) return;
+    const cfg = this.#trackConfig(target.dataset.track);
+    let next;
+    if (game.settings.get("foundryvtt-nco", "trackClickMode") === "fill") {
+      const box = event.target.closest("[data-index]");
+      if (!box) return;
+      const index = Number(box.dataset.index);
+      // Clicking a filled box clears down to it; an empty box fills up to it.
+      next = index < cfg.current ? index : index + 1;
+    } else {
+      next = cfg.current + 1;
+    }
+    next = Math.max(0, Math.min(cfg.max, next));
+    if (next !== cfg.current) await this.actor.update({ [cfg.field]: next });
+  }
+
+  /** Right-click a track: clear the last filled box (only in "increment" mode). */
+  async #onTrackRemove(event) {
     event.preventDefault();
     if (!this.isEditable) return;
-    const current = this.actor.system.xp ?? 0;
-    const next = Math.max(0, current - 1);
-    if (next !== current) await this.actor.update({ "system.xp": next });
+    if (game.settings.get("foundryvtt-nco", "trackClickMode") !== "increment") return;
+    const cfg = this.#trackConfig(event.currentTarget.dataset.track);
+    const next = Math.max(0, cfg.current - 1);
+    if (next !== cfg.current) await this.actor.update({ [cfg.field]: next });
   }
 
   /** @override */
   async _onRender(context, options) {
     await super._onRender(context, options);
-    // Right-click isn't an ActionV2 trigger, so wire the XP track's contextmenu
+    // Right-click isn't an ActionV2 trigger, so wire each track's contextmenu
     // (decrement) manually. The element is rebuilt each render, so re-bind here.
-    this.element
-      .querySelector(".nco-xp-track")
-      ?.addEventListener("contextmenu", this.#removeXp.bind(this));
-  }
-
-  /**
-   * Toggle a hit box with fill-track behavior: checking box N also checks
-   * every box before it, unchecking it also clears every box after it.
-   */
-  static async _onToggleHit(_event, target) {
-    if (!this.isEditable) return;
-    const index = Number(target.dataset.index);
-    const taken = this.actor.system.hits?.taken ?? 0;
-    const newTaken = index < taken ? index : index + 1;
-    await this.actor.update({ "system.hits.taken": newTaken });
+    for (const el of this.element.querySelectorAll(".nco-track")) {
+      el.addEventListener("contextmenu", this.#onTrackRemove.bind(this));
+    }
   }
 
   /**

@@ -68,7 +68,6 @@
     "NCO.Condition.Weakened": "Weakened",
 
     "NCO.Sheet.Hits": "Hits",
-    "NCO.Sheet.HitBox": "Check off a Hit when the character takes harm",
     "NCO.Sheet.HitsMax": "Total Hits for this character",
 
     "NCO.Sheet.StuntPoints": "Stunt Points",
@@ -76,7 +75,8 @@
     "NCO.Sheet.NoStuntPoints": "{name} has no Stunt Points left to spend.",
 
     "NCO.Sheet.XP": "XP",
-    "NCO.Sheet.XPHint": "Left-click to add XP, right-click to remove",
+    "NCO.Sheet.TrackHintIncrement": "Left-click to add, right-click to remove",
+    "NCO.Sheet.TrackHintFill": "Click a box to set the level",
 
     "NCO.Chat.StuntPoint.Title": "Stunt Point Spent",
     "NCO.Chat.StuntPoint.OptionTrademark": "Add a second Trademark to the check",
@@ -91,6 +91,10 @@
     "NCO.Settings.MaxHits.Hint": "The most Hits any character can grow to through advancement.",
     "NCO.Settings.XPTrackLength.Name": "XP Track Length",
     "NCO.Settings.XPTrackLength.Hint": "How many XP boxes appear on each character's advancement track.",
+    "NCO.Settings.TrackClickMode.Name": "Track Click Behavior",
+    "NCO.Settings.TrackClickMode.Hint": "How the Hits and XP tracks respond to clicks.",
+    "NCO.Settings.TrackClickMode.Increment": "Left-click adds, right-click removes",
+    "NCO.Settings.TrackClickMode.Fill": "Click a box to fill to that level",
 
     "NCO.RollDialog.Title": "Neon City Overdrive — Roll",
     "NCO.RollDialog.OpenTool": "NCO Roll",
