@@ -31,7 +31,7 @@
           <label class="nco-edge-toggle" title="{{localize 'NCO.Sheet.MarkEdge'}}">
             <input type="checkbox" name="system.triggers.{{triggerIndex}}.edge"
                    {{checked trigger.edge}} {{#unless @root.editable}}disabled{{/unless}} />
-            <i class="fas fa-bolt"></i>
+            <i class="fas fa-plus"></i>
           </label>
           <input type="text" class="nco-trigger-text" name="system.triggers.{{triggerIndex}}.text"
                  value="{{trigger.text}}" placeholder="{{localize 'NCO.Sheet.TriggerPlaceholder'}}"

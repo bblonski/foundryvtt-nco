@@ -16,7 +16,6 @@ export class GearData extends foundry.abstract.TypeDataModel {
     const fields = foundry.data.fields;
 
     return {
-      description: new fields.HTMLField({ required: false, blank: true, initial: "" }),
       tags: new fields.ArrayField(
         new fields.SchemaField({
           text: new fields.StringField({ required: true, blank: true, initial: "" }),

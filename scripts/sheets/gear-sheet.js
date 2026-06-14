@@ -6,7 +6,7 @@ const { ItemSheetV2 } = foundry.applications.sheets;
 /**
  * Sheet for the "gear" Item type (Unique Gear).
  *
- * Edits the Gear's name, description, and its list of Tags. Each Tag has its
+ * Edits the Gear's name and its list of Tags. Each Tag has its
  * own polarity, flipped independently of the others — positive Tags add an
  * Action die when invoked from a character sheet, negative Tags add a Danger
  * die. Form fields bind natively to the Item via submitOnChange; adding,
@@ -33,7 +33,6 @@ export class GearSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    const TextEditorImpl = foundry.applications.ux?.TextEditor?.implementation ?? TextEditor;
     return {
       ...context,
       item: this.item,
@@ -41,11 +40,9 @@ export class GearSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       editable: this.isEditable,
       tags: (this.item.system.tags ?? []).map((tag) => ({
         text: tag.text,
+        polarity: tag.polarity,
         positive: tag.polarity !== TAG_POLARITY.NEGATIVE,
       })),
-      descriptionHTML: await TextEditorImpl.enrichHTML(this.item.system.description ?? "", {
-        relativeTo: this.item,
-      }),
     };
   }
 

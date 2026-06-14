@@ -24,6 +24,13 @@
   padding: 8px;
 }
 
+/* Scroll the whole character sheet when the window is short, so key sections
+   (especially Trademarks) are never squeezed out of view. */
+.nco-character-sheet {
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .nco-character-sheet input[type="text"],
 .nco-character-sheet textarea,
 .nco-trademark-sheet input[type="text"] {
@@ -212,6 +219,13 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+/* Within the now-scrollable character sheet, Trademarks flow at their natural
+   height rather than acting as a collapsing internal scroll region. */
+.nco-character-sheet .nco-trademarks {
+  flex: 0 0 auto;
+  overflow-y: visible;
 }
 
 .nco-section-header {

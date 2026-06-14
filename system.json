@@ -42,9 +42,7 @@
     "Item": {
       "condition": {},
       "trademark": {},
-      "gear": {
-        "htmlFields": ["description"]
-      }
+      "gear": {}
     }
   },
   "initiative": "1d6",

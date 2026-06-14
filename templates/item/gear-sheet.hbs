@@ -15,15 +15,6 @@
     </div>
   </header>
 
-  <section class="nco-description">
-    <label class="nco-section-label">{{localize "NCO.Sheet.Description"}}</label>
-    {{#if editable}}
-      <textarea name="system.description" rows="3">{{system.description}}</textarea>
-    {{else}}
-      <div class="nco-description-text">{{{descriptionHTML}}}</div>
-    {{/if}}
-  </section>
-
   <section class="nco-gear-tags">
     <div class="nco-section-header">
       <label class="nco-section-label">{{localize "NCO.Sheet.Tags"}}</label>
@@ -44,6 +35,9 @@
                   title="{{localize 'NCO.Sheet.ToggleTagPolarity'}}">
             <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i>
           </button>
+          {{!-- Keep polarity in the form so a text-edit submit doesn't reset it
+                to the schema default. --}}
+          <input type="hidden" name="system.tags.{{tagIndex}}.polarity" value="{{tag.polarity}}" />
           <input type="text" class="nco-trigger-text" name="system.tags.{{tagIndex}}.text"
                  value="{{tag.text}}" placeholder="{{localize 'NCO.Sheet.TagPlaceholder'}}"
                  {{#unless @root.editable}}disabled{{/unless}} />
