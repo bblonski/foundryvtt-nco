@@ -22,13 +22,7 @@
   gap: 10px;
   height: 100%;
   padding: 8px;
-}
-
-/* Scroll the whole character sheet when the window is short, so key sections
-   (especially Trademarks) are never squeezed out of view. */
-.nco-character-sheet {
-  min-height: 0;
-  overflow-y: auto;
+  font-size: 15px;
 }
 
 .nco-character-sheet input[type="text"],
@@ -44,13 +38,14 @@
 .nco-sheet-header {
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
 }
 
 .nco-portrait {
-  width: 88px;
-  height: 88px;
+  flex: none;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border: 1px solid var(--nco-action);
   border-radius: 6px;
@@ -74,14 +69,10 @@
   color: #e7e9f5;
 }
 
-/* Keep the name clear of the edit-lock in the top-right corner: the input box
-   itself stops short of the lock rather than running underneath it. */
-.nco-header-fields input[type="text"] {
-  width: calc(100% - 30px);
-}
-
+/* Keep the name clear of the edit-lock now sitting in the top-right corner. */
+.nco-header-fields input[type="text"],
 .nco-name {
-  padding-right: 30px;
+  padding-right: 28px;
 }
 
 .nco-portrait-editable {
@@ -106,35 +97,39 @@
   gap: 5px;
 }
 
-/* Equal-width labels and matching gaps so the Hits and XP boxes line up in a
-   column beneath one another. */
+/* Hits and XP labels share a fixed width so their tracks begin at the same x
+   and the boxes line up in a column beneath one another. */
 .nco-hits-label,
 .nco-xp .nco-section-label {
-  width: 36px;
+  min-width: 48px;
   margin: 0;
   flex: none;
 }
 
-/* Hits track: stylized box squares like XP, but glowing danger-red. */
-.nco-hits-track {
+/* Hits and XP tracks: a flex row of bordered box-squares that light up when
+   filled. Shared layout; the filled glow color differs per track. */
+.nco-track {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 5px;
   cursor: pointer;
   user-select: none;
 }
 
-.nco-hit-box {
-  width: 14px;
-  height: 14px;
+.nco-character-sheet .nco-hit-box,
+.nco-character-sheet .nco-xp-box {
+  width: 18px;
+  height: 18px;
   flex: none;
+  box-sizing: border-box;
   border: 1px solid var(--nco-border);
   border-radius: 3px;
   background: rgba(255, 255, 255, 0.04);
   transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-.nco-hit-box-filled {
+.nco-character-sheet .nco-hit-box-filled {
   border-color: var(--nco-danger);
   background: var(--nco-danger);
   box-shadow: 0 0 5px 0 rgba(255, 46, 136, 0.7);
@@ -157,26 +152,14 @@
   margin-left: auto;
 }
 
-/* XP row: the label sits inline to the left of the track. The gap matches the
-   Hits row so the first box of each lines up vertically. */
+/* XP row: the label sits inline to the left of the track, with the same gap as
+   the Hits row so the first box of each lines up. Boxes are grouped in fives,
+   separated by a vertical divider. */
 .nco-xp {
   display: flex;
   align-items: center;
   gap: 5px;
   margin-top: 6px;
-}
-
-/* XP track: stylized boxes on a single row, in groups of five separated by a
-   vertical divider. Left-click adds, right-click removes (handled in JS). */
-.nco-xp-track {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 5px;
-  width: fit-content;
-  cursor: pointer;
-  user-select: none;
 }
 
 .nco-xp-group {
@@ -186,22 +169,13 @@
 
 .nco-xp-divider {
   width: 0;
-  height: 16px;
+  height: 18px;
   margin: 0 2px;
   border: none;
   border-left: 1px solid var(--nco-border);
 }
 
-.nco-xp-box {
-  width: 14px;
-  height: 14px;
-  border: 1px solid var(--nco-border);
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.04);
-  transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-
-.nco-xp-box-filled {
+.nco-character-sheet .nco-xp-box-filled {
   border-color: var(--nco-action);
   background: var(--nco-action);
   box-shadow: 0 0 5px 0 rgba(35, 213, 229, 0.7);
@@ -217,7 +191,7 @@
   font-family: "Courier New", monospace;
   letter-spacing: 1px;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 16px;
   color: var(--nco-action);
   cursor: pointer;
 }
@@ -263,7 +237,7 @@
   font-family: "Courier New", monospace;
   letter-spacing: 1px;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 16px;
   color: var(--nco-action);
   margin: 0 0 4px;
 }
@@ -275,7 +249,7 @@
 
 .nco-description-text {
   min-height: 24px;
-  font-size: 13px;
+  font-size: 15px;
   padding: 2px 0;
   opacity: 0.9;
 }
@@ -288,13 +262,6 @@
   gap: 8px;
 }
 
-/* Within the now-scrollable character sheet, Trademarks flow at their natural
-   height rather than acting as a collapsing internal scroll region. */
-.nco-character-sheet .nco-trademarks {
-  flex: 0 0 auto;
-  overflow-y: visible;
-}
-
 .nco-section-header {
   display: flex;
   align-items: center;
@@ -304,7 +271,7 @@
 .nco-empty-hint {
   opacity: 0.6;
   font-style: italic;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .nco-trademark {
@@ -394,7 +361,7 @@
   border-radius: 4px;
   padding: 2px 8px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .nco-add:hover {
@@ -422,7 +389,7 @@
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
   color: #e7e9f5;
-  font-size: 12px;
+  font-size: 14px;
   padding: 3px 10px;
   max-width: 100%;
 }
@@ -433,7 +400,7 @@ button.nco-chip {
 
 .nco-chip-trademark {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
   border-color: var(--nco-action);
   color: var(--nco-action);
   background: rgba(35, 213, 229, 0.08);
@@ -648,7 +615,7 @@ button.nco-chip-flaw:hover {
   border-radius: 0;
   color: inherit;
   font: inherit;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.4;
   min-height: 0;
   height: auto;
@@ -693,11 +660,12 @@ button.nco-condition-name:hover {
   flex-direction: column;
   gap: 10px;
   padding: 4px;
+  font-size: 15px;
 }
 
 .nco-roll-hint {
   margin: 0;
-  font-size: 11px;
+  font-size: 13px;
   font-style: italic;
   opacity: 0.6;
 }
@@ -734,7 +702,7 @@ button.nco-condition-name:hover {
 }
 
 .nco-pool-item {
-  font-size: 12px;
+  font-size: 14px;
   padding: 3px 6px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.06);
@@ -748,7 +716,7 @@ button.nco-condition-name:hover {
 
 .nco-pool-empty,
 .nco-pool-base {
-  font-size: 11px;
+  font-size: 13px;
   font-style: italic;
   opacity: 0.5;
 }
@@ -759,7 +727,7 @@ button.nco-condition-name:hover {
 
 .nco-pool-source {
   opacity: 0.6;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .nco-roll-footer {
