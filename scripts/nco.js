@@ -2,8 +2,10 @@ import { NCORoll } from "./dice/nco-roll.js";
 import { CharacterData } from "./data/character-data.js";
 import { ConditionData } from "./data/condition-data.js";
 import { TrademarkData } from "./data/trademark-data.js";
+import { GearData } from "./data/gear-data.js";
 import { CharacterSheet } from "./sheets/character-sheet.js";
 import { TrademarkSheet } from "./sheets/trademark-sheet.js";
+import { GearSheet } from "./sheets/gear-sheet.js";
 import { NCORollDialog } from "./applications/nco-roll-dialog.js";
 import { GlobalRollPool } from "./global-roll-pool.js";
 import { Tags } from "./tags.js";
@@ -17,6 +19,7 @@ Hooks.once("init", function () {
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Item.dataModels.condition = ConditionData;
   CONFIG.Item.dataModels.trademark = TrademarkData;
+  CONFIG.Item.dataModels.gear = GearData;
 
   foundry.documents.collections.Actors.registerSheet("foundryvtt-nco", CharacterSheet, {
     types: ["character"],
@@ -28,6 +31,12 @@ Hooks.once("init", function () {
     types: ["trademark"],
     makeDefault: true,
     label: "NCO.Sheet.Trademark",
+  });
+
+  foundry.documents.collections.Items.registerSheet("foundryvtt-nco", GearSheet, {
+    types: ["gear"],
+    makeDefault: true,
+    label: "NCO.Sheet.Gear",
   });
 
   GlobalRollPool.registerSettings();

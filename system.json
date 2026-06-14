@@ -36,12 +36,15 @@
   "documentTypes": {
     "Actor": {
       "character": {
-        "htmlFields": ["description"]
+        "htmlFields": ["description", "gear"]
       }
     },
     "Item": {
       "condition": {},
-      "trademark": {}
+      "trademark": {},
+      "gear": {
+        "htmlFields": ["description"]
+      }
     }
   },
   "initiative": "1d6",

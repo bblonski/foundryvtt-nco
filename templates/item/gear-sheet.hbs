@@ -1,0 +1,63 @@
+{{!-- The sheet root is already a <form> (DocumentSheetV2); this wrapper must
+      not be one so submitOnChange keeps working. --}}
+<div class="nco-gear-sheet">
+  <header class="nco-sheet-header">
+    {{#if editable}}
+      <img class="nco-portrait nco-portrait-editable" src="{{item.img}}" alt="{{item.name}}"
+           data-action="editImage" title="{{localize 'NCO.Sheet.EditImage'}}" />
+    {{else}}
+      <img class="nco-portrait" src="{{item.img}}" alt="{{item.name}}" />
+    {{/if}}
+    <div class="nco-header-fields">
+      <input type="text" name="name" value="{{item.name}}"
+             placeholder="{{localize 'NCO.Sheet.GearNamePlaceholder'}}"
+             {{#unless editable}}disabled{{/unless}} />
+    </div>
+  </header>
+
+  <section class="nco-description">
+    <label class="nco-section-label">{{localize "NCO.Sheet.Description"}}</label>
+    {{#if editable}}
+      <textarea name="system.description" rows="3">{{system.description}}</textarea>
+    {{else}}
+      <div class="nco-description-text">{{{descriptionHTML}}}</div>
+    {{/if}}
+  </section>
+
+  <section class="nco-gear-tags">
+    <div class="nco-section-header">
+      <label class="nco-section-label">{{localize "NCO.Sheet.Tags"}}</label>
+      {{#if editable}}
+        <button type="button" class="nco-add" data-action="createTag">
+          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTag"}}
+        </button>
+      {{/if}}
+    </div>
+
+    <ul class="nco-tags">
+      {{#each tags as |tag tagIndex|}}
+        <li class="nco-gear-tag">
+          <button type="button"
+                  class="nco-polarity-toggle {{#if tag.positive}}nco-polarity-positive{{else}}nco-polarity-negative{{/if}}"
+                  data-action="toggleTagPolarity" data-tag-index="{{tagIndex}}"
+                  {{#unless @root.editable}}disabled{{/unless}}
+                  title="{{localize 'NCO.Sheet.ToggleTagPolarity'}}">
+            <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i>
+          </button>
+          <input type="text" class="nco-trigger-text" name="system.tags.{{tagIndex}}.text"
+                 value="{{tag.text}}" placeholder="{{localize 'NCO.Sheet.TagPlaceholder'}}"
+                 {{#unless @root.editable}}disabled{{/unless}} />
+          {{#if @root.editable}}
+            <button type="button" class="nco-icon-button nco-delete" data-action="deleteTag"
+                    data-tag-index="{{tagIndex}}"
+                    title="{{localize 'NCO.Sheet.DeleteTag'}}" aria-label="{{localize 'NCO.Sheet.DeleteTag'}}">
+              <i class="fas fa-times"></i>
+            </button>
+          {{/if}}
+        </li>
+      {{else}}
+        <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyGearTags"}}</p>
+      {{/each}}
+    </ul>
+  </section>
+</div>

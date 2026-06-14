@@ -15,30 +15,32 @@
       {{else}}
         <h1 class="nco-name">{{actor.name}}</h1>
       {{/if}}
-      <div class="nco-hits">
-        <span class="nco-section-label nco-danger-label nco-hits-label">{{localize "NCO.Sheet.Hits"}}</span>
-        {{#each hitBoxes as |box|}}
-          <input type="checkbox" class="nco-hit-box" data-action="toggleHit" data-index="{{box.index}}"
-                 {{checked box.checked}} {{#unless @root.editable}}disabled{{/unless}}
-                 title="{{localize 'NCO.Sheet.HitBox'}}" />
-        {{/each}}
-        {{#if editing}}
-          <input type="number" class="nco-hits-max" name="system.hits.max" value="{{system.hits.max}}"
-                 min="1" max="{{hitsMaxLimit}}" step="1" title="{{localize 'NCO.Sheet.HitsMax'}}" />
-        {{/if}}
-      </div>
-      <div class="nco-stunt-points">
-        {{#if editable}}
-          <button type="button" class="nco-stunt-label" data-action="spendStuntPoint"
-                  title="{{localize 'NCO.Sheet.SpendStuntPoint'}}">
-            {{localize "NCO.Sheet.StuntPoints"}}
-          </button>
-        {{else}}
-          <span class="nco-section-label nco-stunt-static">{{localize "NCO.Sheet.StuntPoints"}}</span>
-        {{/if}}
-        <input type="number" class="nco-stunt-input" name="system.stuntPoints"
-               value="{{system.stuntPoints}}" min="0" step="1"
-               {{#unless editable}}disabled{{/unless}} />
+      <div class="nco-vitals">
+        <div class="nco-hits">
+          <span class="nco-section-label nco-danger-label nco-hits-label">{{localize "NCO.Sheet.Hits"}}</span>
+          {{#each hitBoxes as |box|}}
+            <input type="checkbox" class="nco-hit-box" data-action="toggleHit" data-index="{{box.index}}"
+                   {{checked box.checked}} {{#unless @root.editable}}disabled{{/unless}}
+                   title="{{localize 'NCO.Sheet.HitBox'}}" />
+          {{/each}}
+          {{#if editing}}
+            <input type="number" class="nco-hits-max" name="system.hits.max" value="{{system.hits.max}}"
+                   min="1" max="{{hitsMaxLimit}}" step="1" title="{{localize 'NCO.Sheet.HitsMax'}}" />
+          {{/if}}
+        </div>
+        <div class="nco-stunt-points">
+          {{#if editable}}
+            <button type="button" class="nco-stunt-label" data-action="spendStuntPoint"
+                    title="{{localize 'NCO.Sheet.SpendStuntPoint'}}">
+              {{localize "NCO.Sheet.StuntPoints"}}
+            </button>
+          {{else}}
+            <span class="nco-section-label nco-stunt-static">{{localize "NCO.Sheet.StuntPoints"}}</span>
+          {{/if}}
+          <input type="number" class="nco-stunt-input" name="system.stuntPoints"
+                 value="{{system.stuntPoints}}" min="0" step="1"
+                 {{#unless editable}}disabled{{/unless}} />
+        </div>
       </div>
     </div>
     {{#if editable}}
@@ -76,7 +78,7 @@
             <button type="button" class="nco-chip nco-chip-trademark"
                     data-action="invoke" data-text="{{trademark.name}}" data-polarity="positive"
                     title="{{@root.invokePositiveTitle}}">
-              {{trademark.name}}
+              <i class="fas fa-plus"></i> {{trademark.name}}
             </button>
           {{else}}
             <span class="nco-chip nco-chip-trademark nco-chip-static">—</span>
@@ -101,7 +103,7 @@
                 <button type="button" class="nco-chip nco-chip-tag nco-chip-edge"
                         data-action="invoke" data-text="{{trigger.text}}" data-polarity="positive"
                         title="{{@root.invokePositiveTitle}}">
-                  <i class="fas fa-bolt"></i> {{trigger.text}}
+                  <i class="fas fa-plus"></i> {{trigger.text}}
                 </button>
               {{else}}
                 <span class="nco-chip nco-chip-tag nco-chip-static">{{trigger.text}}</span>
@@ -112,6 +114,68 @@
       </div>
     {{else}}
       <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyTrademarks"}}</p>
+    {{/each}}
+  </section>
+
+  {{!-- Gear is a freeform notes box that stays writable during play (when the
+        sheet is locked), so it follows `editable` (permission) rather than
+        `editing` (the lock toggle). --}}
+  <section class="nco-gear">
+    <label class="nco-section-label">{{localize "NCO.Sheet.SimpleGear"}}</label>
+    {{#if editable}}
+      <textarea name="system.gear" rows="3" placeholder="{{localize 'NCO.Sheet.GearPlaceholder'}}">{{system.gear}}</textarea>
+    {{else}}
+      <div class="nco-description-text">{{{gearHTML}}}</div>
+    {{/if}}
+  </section>
+
+  <section class="nco-unique-gear-section">
+    <div class="nco-section-header">
+      <label class="nco-section-label">{{localize "NCO.Sheet.UniqueGear"}}</label>
+      {{#if editing}}
+        <button type="button" class="nco-add" data-action="createUniqueGear">
+          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddUniqueGear"}}
+        </button>
+      {{/if}}
+    </div>
+
+    {{#each uniqueGear as |gearItem|}}
+      <div class="nco-unique-gear" data-item-id="{{gearItem.id}}">
+        <div class="nco-unique-gear-header">
+          <span class="nco-unique-gear-name">{{gearItem.name}}</span>
+          {{#if @root.editing}}
+            <button type="button" class="nco-icon-button" data-action="editUniqueGear"
+                    data-item-id="{{gearItem.id}}"
+                    title="{{localize 'NCO.Sheet.EditUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.EditUniqueGear'}}">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button type="button" class="nco-icon-button nco-delete" data-action="deleteUniqueGear"
+                    data-item-id="{{gearItem.id}}"
+                    title="{{localize 'NCO.Sheet.DeleteUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.DeleteUniqueGear'}}">
+              <i class="fas fa-trash"></i>
+            </button>
+          {{/if}}
+        </div>
+        <ul class="nco-tags nco-tags-play">
+          {{#each gearItem.tags as |tag|}}
+            <li>
+              {{#if tag.clickable}}
+                <button type="button"
+                        class="nco-chip nco-chip-tag {{#if tag.positive}}nco-chip-edge{{else}}nco-chip-flaw{{/if}}"
+                        data-action="invoke" data-text="{{tag.text}}"
+                        data-polarity="{{#if tag.positive}}positive{{else}}negative{{/if}}"
+                        title="{{#if tag.positive}}{{@root.invokePositiveTitle}}{{else}}{{@root.invokeNegativeTitle}}{{/if}}">
+                  <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i> {{tag.text}}
+                </button>
+              {{else}}
+                <span class="nco-chip nco-chip-tag nco-chip-static">{{tag.text}}</span>
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+    {{else}}
+      <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyUniqueGear"}}</p>
     {{/each}}
   </section>
 
@@ -132,7 +196,7 @@
               <button type="button" class="nco-chip nco-chip-flaw"
                       data-action="invoke" data-polarity="negative" data-text="{{flaw.text}}"
                       title="{{@root.invokeNegativeTitle}}">
-                <i class="fas fa-skull"></i> {{flaw.text}}
+                <i class="fas fa-minus"></i> {{flaw.text}}
               </button>
             {{else}}
               <span class="nco-chip nco-chip-flaw nco-chip-static">—</span>
@@ -172,7 +236,7 @@
               <button type="button" class="nco-chip nco-chip-flaw" data-action="invoke"
                       data-polarity="negative" data-text="{{trauma.text}}"
                       title="{{@root.invokeNegativeTitle}}">
-                <i class="fas fa-heart-broken"></i> {{trauma.text}}
+                <i class="fas fa-minus"></i> {{trauma.text}}
               </button>
             {{else}}
               <span class="nco-chip nco-chip-static">{{trauma.text}}</span>
@@ -195,27 +259,30 @@
     <ul class="nco-conditions-list">
       {{#each conditions as |condition|}}
         <li class="nco-condition">
-          <label class="nco-edge-toggle nco-condition-toggle" title="{{localize 'NCO.Sheet.ToggleCondition'}}">
-            <input type="checkbox" data-action="toggleCondition" data-item-id="{{condition.id}}"
-                   {{checked condition.active}} {{#unless @root.editable}}disabled{{/unless}} />
-            <i class="fas fa-exclamation-triangle"></i>
-          </label>
-          {{#if condition.active}}
-            <button type="button" class="nco-chip nco-chip-flaw" data-action="invoke"
+          {{!-- One pill per Condition with an integrated toggle: ticking the
+                checkbox flips it on/off without rolling; when on, clicking the
+                name invokes it as a Danger die. --}}
+          <div class="nco-chip nco-chip-condition {{#if condition.active}}nco-condition-on{{/if}}">
+            <label class="nco-condition-switch" title="{{localize 'NCO.Sheet.ToggleCondition'}}">
+              <input type="checkbox" data-action="toggleCondition" data-item-id="{{condition.id}}"
+                     {{checked condition.active}} {{#unless @root.editable}}disabled{{/unless}} />
+            </label>
+            {{!-- Always a button (disabled when inactive) so the pill keeps the
+                  same size whether or not the Condition is toggled on. --}}
+            <button type="button" class="nco-condition-name" data-action="invoke"
                     data-polarity="negative" data-text="{{condition.name}}"
-                    title="{{@root.invokeNegativeTitle}}">
-              {{condition.name}}
+                    title="{{@root.invokeNegativeTitle}}"
+                    {{#unless condition.active}}disabled{{/unless}}>
+              <i class="fas fa-minus"></i> {{condition.name}}
             </button>
-          {{else}}
-            <span class="nco-chip nco-chip-static">{{condition.name}}</span>
-          {{/if}}
-          {{#if @root.editing}}
-            <button type="button" class="nco-icon-button nco-delete" data-action="deleteCondition"
-                    data-item-id="{{condition.id}}"
-                    title="{{localize 'NCO.Sheet.DeleteCondition'}}" aria-label="{{localize 'NCO.Sheet.DeleteCondition'}}">
-              <i class="fas fa-times"></i>
-            </button>
-          {{/if}}
+            {{#if @root.editing}}
+              <button type="button" class="nco-icon-button nco-delete" data-action="deleteCondition"
+                      data-item-id="{{condition.id}}"
+                      title="{{localize 'NCO.Sheet.DeleteCondition'}}" aria-label="{{localize 'NCO.Sheet.DeleteCondition'}}">
+                <i class="fas fa-times"></i>
+              </button>
+            {{/if}}
+          </div>
         </li>
       {{/each}}
     </ul>

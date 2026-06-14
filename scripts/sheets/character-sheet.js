@@ -42,6 +42,9 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       deleteCondition: this._onDeleteCondition,
       createTrauma: this._onCreateTrauma,
       deleteTrauma: this._onDeleteTrauma,
+      createUniqueGear: this._onCreateUniqueGear,
+      editUniqueGear: this._onEditUniqueGear,
+      deleteUniqueGear: this._onDeleteUniqueGear,
     },
   };
 
@@ -65,6 +68,11 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   /** The character's embedded Trademark Items. */
   get #trademarkItems() {
     return this.actor.items.filter((item) => item.type === "trademark");
+  }
+
+  /** The character's embedded Unique Gear Items. */
+  get #gearItems() {
+    return this.actor.items.filter((item) => item.type === "gear");
   }
 
   /** @override */
@@ -105,9 +113,23 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         text,
         clickable: !!text?.trim(),
       })),
+      // Unique Gear: the Item's name is just a label, not a Tag — only its
+      // own Tags (each independently positive or negative) are clickable.
+      uniqueGear: this.#gearItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        tags: (item.system.tags ?? []).map((tag) => ({
+          text: tag.text,
+          positive: tag.polarity !== TAG_POLARITY.NEGATIVE,
+          clickable: !!tag.text?.trim(),
+        })),
+      })),
       invokePositiveTitle: game.i18n.localize("NCO.Sheet.InvokePositive"),
       invokeNegativeTitle: game.i18n.localize("NCO.Sheet.InvokeNegative"),
       descriptionHTML: await TextEditorImpl.enrichHTML(this.actor.system.description ?? "", {
+        relativeTo: this.actor,
+      }),
+      gearHTML: await TextEditorImpl.enrichHTML(this.actor.system.gear ?? "", {
         relativeTo: this.actor,
       }),
     };
@@ -334,6 +356,37 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       const confirmed = await foundry.applications.api.DialogV2.confirm({
         window: { title: "NCO.Sheet.DeleteTrademark" },
         content: `<p>${game.i18n.localize("NCO.Sheet.DeleteTrademarkConfirm")}</p>`,
+      });
+      if (!confirmed) return;
+    }
+
+    await item.delete();
+  }
+
+  /** Create a fresh embedded Unique Gear Item and open its sheet to fill it in. */
+  static async _onCreateUniqueGear(_event, _target) {
+    this._editing = true;
+    const [item] = await this.actor.createEmbeddedDocuments("Item", [
+      { name: game.i18n.localize("NCO.Sheet.NewGear"), type: "gear", img: "icons/svg/item-bag.svg" },
+    ]);
+    item?.sheet.render(true);
+  }
+
+  /** Open an embedded Unique Gear Item's own sheet for editing. */
+  static _onEditUniqueGear(_event, target) {
+    const item = this.actor.items.get(target.dataset.itemId);
+    item?.sheet.render(true);
+  }
+
+  static async _onDeleteUniqueGear(_event, target) {
+    const item = this.actor.items.get(target.dataset.itemId);
+    if (!item) return;
+
+    // Only prompt when the Gear actually has content to lose.
+    if (item.name?.trim() || item.system.tags?.length) {
+      const confirmed = await foundry.applications.api.DialogV2.confirm({
+        window: { title: "NCO.Sheet.DeleteUniqueGear" },
+        content: `<p>${game.i18n.localize("NCO.Sheet.DeleteUniqueGearConfirm")}</p>`,
       });
       if (!confirmed) return;
     }

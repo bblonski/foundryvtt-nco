@@ -74,11 +74,18 @@
   box-shadow: 0 0 8px 1px rgba(35, 213, 229, 0.6);
 }
 
+/* Hits on the left, Stunt Points pushed to the right, sharing one row. */
+.nco-vitals {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
 .nco-hits {
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-top: 6px;
 }
 
 .nco-hits-label {
@@ -112,7 +119,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 6px;
+  margin-left: auto;
 }
 
 .nco-character-sheet .nco-stunt-label {
@@ -390,7 +397,75 @@ button.nco-chip-flaw:hover {
   flex: 1;
 }
 
-/* Conditions: tag-like afflictions, marked when affecting the character */
+/* Simple Gear: a freeform notes box, styled like the Description field */
+
+.nco-gear textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+/* Unique Gear: embedded Items with their own positive/negative Tags */
+
+.nco-unique-gear {
+  border: 1px solid var(--nco-border);
+  border-radius: 6px;
+  background: var(--nco-bg);
+  padding: 8px;
+}
+
+.nco-unique-gear-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.nco-unique-gear-name {
+  flex: 1;
+  font-weight: bold;
+}
+
+/* Unique Gear sheet: each Tag has its own polarity toggle */
+
+.nco-gear-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nco-polarity-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--nco-border);
+  border-radius: 4px;
+  background: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.nco-polarity-toggle.nco-polarity-positive {
+  color: var(--nco-action);
+  border-color: var(--nco-action);
+  box-shadow: 0 0 6px 0 rgba(35, 213, 229, 0.5);
+}
+
+.nco-polarity-toggle.nco-polarity-negative {
+  color: var(--nco-danger);
+  border-color: var(--nco-danger);
+  box-shadow: 0 0 6px 0 rgba(255, 46, 136, 0.5);
+}
+
+.nco-polarity-toggle:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+/* Conditions: a Tag with an integrated on/off toggle. The whole pill is one
+   unit — a switch on the left flips the Condition without rolling; when on,
+   the name becomes a clickable Danger-die Tag. */
 
 .nco-character-sheet .nco-conditions-list {
   list-style: none;
@@ -405,20 +480,106 @@ button.nco-chip-flaw:hover {
 
 .nco-character-sheet .nco-condition {
   display: inline-flex;
-  align-items: center;
-  gap: 4px;
   margin: 0;
 }
 
-.nco-condition-toggle {
-  font-size: 11px;
+/* The pill itself carries the border/background; its segments butt together,
+   so zero out the chip's own padding and clip the corners. */
+.nco-chip-condition {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0.75;
 }
 
-/* Marked conditions glow danger-pink rather than the Edge toggle's cyan */
-.nco-condition-toggle:has(input:checked) {
-  color: var(--nco-danger);
+/* The integrated toggle: a checkbox at the left edge of the pill. */
+.nco-condition-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 7px;
+  cursor: pointer;
+  border-right: 1px solid var(--nco-border);
+}
+
+/* Power-indicator light: an unlit dot that glows danger-pink when the
+   Condition is switched on. Foundry core draws checkboxes as a Font Awesome
+   glyph in a ::before/::after pseudo-element, so suppress those and style the
+   input box itself as the dot. */
+.nco-character-sheet .nco-condition-switch input[type="checkbox"]::before,
+.nco-character-sheet .nco-condition-switch input[type="checkbox"]::after {
+  content: none;
+}
+
+.nco-character-sheet .nco-condition-switch input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 11px;
+  height: 11px;
+  margin: 0;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.5));
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.nco-character-sheet .nco-condition-switch input[type="checkbox"]:hover:not(:disabled) {
+  border-color: rgba(255, 46, 136, 0.6);
+}
+
+.nco-character-sheet .nco-condition-switch input[type="checkbox"]:checked {
   border-color: var(--nco-danger);
-  box-shadow: 0 0 6px 0 rgba(255, 46, 136, 0.5);
+  background: radial-gradient(circle at 50% 35%, #ff9ac4, var(--nco-danger) 70%);
+  box-shadow: 0 0 7px 1px rgba(255, 46, 136, 0.85), inset 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.nco-character-sheet .nco-condition-switch input[type="checkbox"]:disabled {
+  cursor: default;
+}
+
+/* The name shares the pill, so as a button it carries no border of its own.
+   It is always a <button> (disabled when inactive), so reset the button box
+   model fully to keep the pill the same size in both states. */
+.nco-character-sheet .nco-condition-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  border-radius: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  min-height: 0;
+  height: auto;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.nco-character-sheet .nco-condition-name:disabled {
+  cursor: default;
+  color: inherit;
+  opacity: 1;
+}
+
+/* Active Condition glows danger-pink across the whole pill. */
+.nco-chip-condition.nco-condition-on {
+  opacity: 1;
+  border-color: var(--nco-danger);
+  color: var(--nco-danger);
+  background: rgba(255, 46, 136, 0.08);
+}
+
+.nco-chip-condition.nco-condition-on .nco-condition-switch {
+  border-right-color: var(--nco-danger);
+}
+
+button.nco-condition-name:hover {
+  background: rgba(255, 46, 136, 0.25);
+  text-shadow: none;
 }
 
 /* ----------------------------------------------------------------------- */
