@@ -1,5 +1,6 @@
 {
     "NCO.Sheet.Character": "NCO Character Sheet",
+    "NCO.Sheet.Threat": "NCO Threat Sheet",
     "NCO.Sheet.Trademark": "NCO Trademark Sheet",
     "NCO.Sheet.NamePlaceholder": "Name",
     "NCO.Sheet.EditImage": "Change portrait",
@@ -69,6 +70,15 @@
 
     "NCO.Sheet.Hits": "Hits",
     "NCO.Sheet.HitsMax": "Total Hits for this character",
+
+    "NCO.Sheet.Boss": "Boss",
+    "NCO.Sheet.BossHint": "A Boss has triple the Hits of a normal Threat.",
+    "NCO.Sheet.DangerRating": "Danger Rating",
+    "NCO.Sheet.InvokeDangerRating": "Click to add this many Danger dice — Shift-click to add Action dice instead",
+    "NCO.Sheet.ThreatDrivePlaceholder": "What drives this Threat?",
+    "NCO.Sheet.Actions": "Actions",
+    "NCO.Sheet.ActionsPlaceholder": "What can this Threat do?",
+    "NCO.Sheet.EmptyThreatTags": "No Tags yet. Unlock edit mode and click \"Tag\" to add one.",
 
     "NCO.Sheet.StuntPoints": "Stunt Points",
     "NCO.Sheet.SpendStuntPoint": "Click to spend a Stunt Point",

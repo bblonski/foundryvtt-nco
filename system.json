@@ -37,6 +37,9 @@
     "Actor": {
       "character": {
         "htmlFields": ["description", "gear"]
+      },
+      "threat": {
+        "htmlFields": ["drive", "actions"]
       }
     },
     "Item": {

@@ -36,11 +36,22 @@ export class Tags {
    * @param {string}  [options.polarity] A TAG_POLARITY value (positive by default).
    * @param {string}  [options.source]   Name of the element it came from.
    * @param {boolean} [options.invert]   Flip polarity (shift-click).
+   * @param {number}  [options.count]    How many dice to add (e.g. a Threat's
+   *                                     Danger Rating adds that many Danger dice).
    */
-  static async invoke({ text, polarity = TAG_POLARITY.POSITIVE, source = "", invert = false } = {}) {
+  static async invoke({
+    text,
+    polarity = TAG_POLARITY.POSITIVE,
+    source = "",
+    invert = false,
+    count = 1,
+  } = {}) {
     if (!text?.trim()) return;
     const effective = invert ? this.invert(polarity) : polarity;
-    await GlobalRollPool.add(this.dieType(effective), text, source);
+    const type = this.dieType(effective);
+    for (let i = 0; i < Math.max(1, count); i++) {
+      await GlobalRollPool.add(type, text, source);
+    }
     NCORollDialog.open();
   }
 }

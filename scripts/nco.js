@@ -1,9 +1,11 @@
 import { NCORoll } from "./dice/nco-roll.js";
 import { CharacterData } from "./data/character-data.js";
+import { ThreatData } from "./data/threat-data.js";
 import { ConditionData } from "./data/condition-data.js";
 import { TrademarkData } from "./data/trademark-data.js";
 import { GearData } from "./data/gear-data.js";
 import { CharacterSheet } from "./sheets/character-sheet.js";
+import { ThreatSheet } from "./sheets/threat-sheet.js";
 import { TrademarkSheet } from "./sheets/trademark-sheet.js";
 import { GearSheet } from "./sheets/gear-sheet.js";
 import { NCORollDialog } from "./applications/nco-roll-dialog.js";
@@ -17,6 +19,7 @@ Hooks.once("init", function () {
   game.nco = { NCORoll, NCORollDialog, GlobalRollPool, Tags };
 
   CONFIG.Actor.dataModels.character = CharacterData;
+  CONFIG.Actor.dataModels.threat = ThreatData;
   CONFIG.Item.dataModels.condition = ConditionData;
   CONFIG.Item.dataModels.trademark = TrademarkData;
   CONFIG.Item.dataModels.gear = GearData;
@@ -25,6 +28,12 @@ Hooks.once("init", function () {
     types: ["character"],
     makeDefault: true,
     label: "NCO.Sheet.Character",
+  });
+
+  foundry.documents.collections.Actors.registerSheet("foundryvtt-nco", ThreatSheet, {
+    types: ["threat"],
+    makeDefault: true,
+    label: "NCO.Sheet.Threat",
   });
 
   foundry.documents.collections.Items.registerSheet("foundryvtt-nco", TrademarkSheet, {

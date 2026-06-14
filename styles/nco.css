@@ -711,6 +711,167 @@ button.nco-condition-name:hover {
 }
 
 /* ----------------------------------------------------------------------- */
+/* Threat sheet                                                             */
+/* ----------------------------------------------------------------------- */
+
+.nco-threat-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: 8px;
+  font-size: 15px;
+}
+
+.nco-threat-sheet input[type="text"],
+.nco-threat-sheet input[type="number"],
+.nco-threat-sheet textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--nco-border);
+  border-radius: 4px;
+  color: inherit;
+  padding: 4px 6px;
+}
+
+.nco-threat-sheet textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+/* Name row: the Danger Rating circle sits to the left of the name. */
+.nco-threat-namerow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nco-threat-namerow input[type="text"],
+.nco-threat-namerow .nco-name {
+  flex: 1;
+}
+
+/* Danger Rating: a red circle holding a single integer. As a button (play
+   mode) it adds that many Danger dice; as an input (edit mode) it sets the
+   rating. Both share the circular red look. */
+.nco-threat-sheet .nco-danger-rating {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 1px solid var(--nco-danger);
+  background: radial-gradient(circle at 50% 35%, #ff6aa6, var(--nco-danger) 75%);
+  box-shadow: 0 0 8px 0 rgba(255, 46, 136, 0.7);
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  padding: 0;
+}
+
+button.nco-danger-rating {
+  cursor: pointer;
+}
+
+button.nco-danger-rating:hover {
+  box-shadow: 0 0 12px 2px rgba(255, 46, 136, 0.9);
+  text-shadow: none;
+}
+
+/* Suppress the number input's spinners so the circle stays clean. */
+.nco-danger-rating-input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.nco-danger-rating-input::-webkit-outer-spin-button,
+.nco-danger-rating-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Boss toggle: a labelled checkbox in the header. */
+.nco-boss-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-family: "Courier New", monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: var(--nco-danger);
+  cursor: pointer;
+  width: fit-content;
+}
+
+.nco-boss-toggle input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.nco-threat-sheet .nco-hits {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.nco-threat-sheet .nco-hit-box {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  box-sizing: border-box;
+  border: 1px solid var(--nco-border);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.nco-threat-sheet .nco-hit-box-filled {
+  border-color: var(--nco-danger);
+  background: var(--nco-danger);
+  box-shadow: 0 0 5px 0 rgba(255, 46, 136, 0.7);
+}
+
+/* A Boss's Hits are grouped in threes, separated by a vertical divider. */
+.nco-hit-group {
+  display: flex;
+  gap: 5px;
+}
+
+.nco-hit-divider {
+  width: 0;
+  height: 18px;
+  margin: 0 2px;
+  border: none;
+  border-left: 1px solid var(--nco-border);
+}
+
+.nco-threat-sheet .nco-hits-max {
+  width: 48px;
+  margin-left: 8px;
+}
+
+.nco-threat-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nco-threat-actions {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.nco-threat-actions .nco-description-text {
+  flex: 1;
+}
+
+/* ----------------------------------------------------------------------- */
 /* Global roll dialog                                                       */
 /* ----------------------------------------------------------------------- */
 
