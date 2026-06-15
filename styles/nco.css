@@ -240,19 +240,32 @@
 }
 
 .nco-character-sheet .nco-drive-box-ticked::after {
-  content: "/";
+  content: "\f00c"; /* Font Awesome check, matching the pressure track */
+  font-family: "Font Awesome 7 Pro", "Font Awesome 6 Pro", "Font Awesome 5 Pro";
+  font-weight: 900;
+  font-size: 11px;
   color: var(--nco-action);
   text-shadow: 0 0 5px rgba(35, 213, 229, 0.7);
 }
 
 .nco-character-sheet .nco-drive-box-crossed {
   border-color: var(--nco-danger);
+  position: relative;
 }
 
+/* A full cross drawn corner-to-corner so it reaches the edges of the box. */
 .nco-character-sheet .nco-drive-box-crossed::after {
-  content: "\00d7"; /* multiplication sign as a crisp X */
-  color: var(--nco-danger);
-  text-shadow: 0 0 5px rgba(255, 46, 136, 0.7);
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top right,
+      transparent calc(50% - 1.1px), var(--nco-danger) calc(50% - 1.1px),
+      var(--nco-danger) calc(50% + 1.1px), transparent calc(50% + 1.1px)),
+    linear-gradient(to bottom right,
+      transparent calc(50% - 1.1px), var(--nco-danger) calc(50% - 1.1px),
+      var(--nco-danger) calc(50% + 1.1px), transparent calc(50% + 1.1px));
+  filter: drop-shadow(0 0 3px rgba(255, 46, 136, 0.7));
 }
 
 .nco-character-sheet .nco-stunt-label {
