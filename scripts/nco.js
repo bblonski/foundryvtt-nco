@@ -10,6 +10,7 @@ import { ThreatSheet } from "./sheets/threat-sheet.js";
 import { VehicleSheet } from "./sheets/vehicle-sheet.js";
 import { TrademarkSheet } from "./sheets/trademark-sheet.js";
 import { GearSheet } from "./sheets/gear-sheet.js";
+import { ConditionSheet } from "./sheets/condition-sheet.js";
 import { NCORollDialog } from "./applications/nco-roll-dialog.js";
 import { GlobalRollPool } from "./global-roll-pool.js";
 import { PressureTrack } from "./pressure-track.js";
@@ -59,6 +60,12 @@ Hooks.once("init", function () {
     label: "NCO.Sheet.Gear",
   });
 
+  foundry.documents.collections.Items.registerSheet("foundryvtt-nco", ConditionSheet, {
+    types: ["condition"],
+    makeDefault: true,
+    label: "NCO.Sheet.Condition",
+  });
+
   GlobalRollPool.registerSettings();
   GlobalRollPool.registerSocket();
 
@@ -91,7 +98,7 @@ Hooks.once("init", function () {
     scope: "world",
     config: true,
     type: Number,
-    range: { min: 5, max: 60, step: 1 },
+    range: { min: 5, max: 20, step: 1 },
     default: 15,
   });
 
@@ -117,6 +124,27 @@ Hooks.once("init", function () {
     config: true,
     type: Boolean,
     default: true,
+  });
+
+  // Whether the optional Stash track appears on character sheets.
+  game.settings.register("foundryvtt-nco", "stashTrackEnabled", {
+    name: "NCO.Settings.StashTrack.Name",
+    hint: "NCO.Settings.StashTrack.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
+  // How many Stash boxes appear on each character's Stash track.
+  game.settings.register("foundryvtt-nco", "stashTrackLength", {
+    name: "NCO.Settings.StashTrackLength.Name",
+    hint: "NCO.Settings.StashTrackLength.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 1, max: 20, step: 1 },
+    default: 5,
   });
 
   // Foundry's built-in "Create Actor" dialog only fills in a default `type`

@@ -61,6 +61,11 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     sheet: { template: "systems/foundryvtt-nco/templates/actor/character-sheet.hbs" },
   };
 
+  /** Show just the document name in the title bar, without the type prefix. */
+  get title() {
+    return this.document.name;
+  }
+
   /**
    * Whether this sheet is currently in edit mode. Starts in edit mode for a
    * blank character so there is something to interact with, otherwise in
@@ -112,6 +117,8 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       stuntBoxes: this.#prepareStuntBoxes(),
       stuntMaxLimit: STUNT_POINTS_MAX,
       xpGroups: this.#prepareXpGroups(),
+      stashEnabled: game.settings.get("foundryvtt-nco", "stashTrackEnabled"),
+      stashGroups: this.#prepareStashGroups(),
       driveEnabled: game.settings.get("foundryvtt-nco", "driveTrackEnabled"),
       driveBoxes: this.#prepareDriveBoxes(),
       driveHint: game.i18n.localize("NCO.Sheet.DriveHint"),
@@ -195,6 +202,31 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     return groups;
   }
 
+  /** The configured Stash track length (total boxes), clamped to a sane minimum. */
+  get #stashTrackLength() {
+    return Math.max(0, game.settings.get("foundryvtt-nco", "stashTrackLength") ?? 5);
+  }
+
+  /**
+   * The Stash track split into groups of five boxes, so the template can draw a
+   * horizontal divider between each group. Boxes fill from the left. Mirrors the
+   * XP track, differing only in its (blue) fill color.
+   */
+  #prepareStashGroups() {
+    const length = this.#stashTrackLength;
+    const filled = Math.min(length, Math.max(0, this.actor.system.stash ?? 0));
+    const groups = [];
+    for (let i = 0; i < length; i += 5) {
+      groups.push(
+        Array.from({ length: Math.min(5, length - i) }, (_, j) => ({
+          index: i + j,
+          checked: i + j < filled,
+        })),
+      );
+    }
+    return groups;
+  }
+
   /**
    * The ten Drive boxes as {index, state} pairs, where state is the CSS state
    * name ("empty", "ticked", or "crossed"). Older documents with a short or
@@ -243,6 +275,13 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         field: "system.stuntPoints.value",
         current: this.actor.system.stuntPoints?.value ?? 0,
         max: Math.min(STUNT_POINTS_MAX, Math.max(1, this.actor.system.stuntPoints?.max ?? 3)),
+      };
+    }
+    if (track === "stash") {
+      return {
+        field: "system.stash",
+        current: this.actor.system.stash ?? 0,
+        max: this.#stashTrackLength,
       };
     }
     return {

@@ -215,24 +215,43 @@
               </li>
             {{/each}}
           </ul>
-          {{#if @root.editing}}
-            <button type="button" class="nco-icon-button" data-action="editUniqueGear"
-                    data-item-id="{{gearItem.id}}"
-                    title="{{localize 'NCO.Sheet.EditUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.EditUniqueGear'}}">
-              <i class="fas fa-pen"></i>
-            </button>
-            <button type="button" class="nco-icon-button nco-delete" data-action="deleteUniqueGear"
-                    data-item-id="{{gearItem.id}}"
-                    title="{{localize 'NCO.Sheet.DeleteUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.DeleteUniqueGear'}}">
-              <i class="fas fa-trash"></i>
-            </button>
-          {{/if}}
+          <button type="button" class="nco-icon-button" data-action="editUniqueGear"
+                  data-item-id="{{gearItem.id}}"
+                  title="{{localize 'NCO.Sheet.EditUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.EditUniqueGear'}}">
+            <i class="fas fa-pen"></i>
+          </button>
+          <button type="button" class="nco-icon-button nco-delete" data-action="deleteUniqueGear"
+                  data-item-id="{{gearItem.id}}"
+                  title="{{localize 'NCO.Sheet.DeleteUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.DeleteUniqueGear'}}">
+            <i class="fas fa-trash"></i>
+          </button>
         </div>
       </div>
     {{else}}
       <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyUniqueGear"}}</p>
     {{/each}}
   </section>
+
+  {{#if stashEnabled}}
+    {{!-- Stash track: a positive (blue) row of boxes filled from the left. Boxes
+          are grouped in fives with a divider between groups, like XP. Click
+          behavior is shared with the Hits/Stunt/XP tracks (see JS / setting). --}}
+    <section class="nco-stash">
+      <label class="nco-section-label">{{localize "NCO.Sheet.Stash"}}</label>
+      <div class="nco-stash-track nco-track" data-action="trackAdd" data-track="stash"
+           title="{{trackHint}}">
+        {{#each stashGroups as |group|}}
+          {{#unless @first}}<hr class="nco-stash-divider" />{{/unless}}
+          <div class="nco-stash-group">
+            {{#each group as |box|}}
+              <span class="nco-stash-box {{#if box.checked}}nco-stash-box-filled{{/if}}"
+                    data-index="{{box.index}}"></span>
+            {{/each}}
+          </div>
+        {{/each}}
+      </div>
+    </section>
+  {{/if}}
 
   <section class="nco-flaws">
     <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Flaws"}}</label>

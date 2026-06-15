@@ -44,6 +44,11 @@ export class ThreatSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     sheet: { template: "systems/foundryvtt-nco/templates/actor/threat-sheet.hbs" },
   };
 
+  /** Show just the document name in the title bar, without the type prefix. */
+  get title() {
+    return this.document.name;
+  }
+
   /**
    * Whether this sheet is currently in edit mode. Starts in edit mode for a
    * Threat with no Tags so there is something to fill in, otherwise in play

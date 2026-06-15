@@ -148,7 +148,8 @@
 
 .nco-character-sheet .nco-hit-box,
 .nco-character-sheet .nco-xp-box,
-.nco-character-sheet .nco-stunt-box {
+.nco-character-sheet .nco-stunt-box,
+.nco-character-sheet .nco-stash-box {
   width: 18px;
   height: 18px;
   flex: none;
@@ -209,10 +210,32 @@
 }
 
 .nco-character-sheet .nco-xp-box-filled,
-.nco-character-sheet .nco-stunt-box-filled {
+.nco-character-sheet .nco-stunt-box-filled,
+.nco-character-sheet .nco-stash-box-filled {
   border-color: var(--nco-action);
   background: var(--nco-action);
   box-shadow: 0 0 5px 0 rgba(35, 213, 229, 0.7);
+}
+
+/* Stash track: a label above a row of boxes grouped in fives, mirroring the XP
+   track's layout. Boxes light up blue (positive) when filled. */
+.nco-stash {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nco-stash-group {
+  display: flex;
+  gap: 5px;
+}
+
+.nco-stash-divider {
+  width: 0;
+  height: 18px;
+  margin: 0 2px;
+  border: none;
+  border-left: 1px solid var(--nco-border);
 }
 
 /* Drive track: a description input above a row of ten tri-state boxes. A box

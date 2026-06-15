@@ -55,6 +55,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // (total boxes) is a world setting, so it isn't stored per character;
       // the sheet clamps the display to that length.
       xp: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+      // Stash track: how many Stash boxes are filled. Like XP, the track's
+      // length is a world setting (optional, default 5) and isn't stored per
+      // character; the sheet clamps the display to that length. Drawn in blue.
+      stash: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
       // Simple Gear: a freeform notes box for everyday equipment that doesn't
       // warrant its own Tags. Unique Gear (see GearData) is embedded Items with
       // their own positive and negative Tags, for items significant enough to

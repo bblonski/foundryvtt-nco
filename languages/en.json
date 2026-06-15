@@ -55,6 +55,8 @@
     "NCO.Chat.DeathCheck.Safe": "{name} clings to life. (Death check: {result})",
     "NCO.Chat.DeathCheck.Dying": "{name} is DYING and will die in {turns} turn(s)!",
 
+    "NCO.Sheet.Condition": "Condition",
+    "NCO.Sheet.ConditionActive": "Active",
     "NCO.Sheet.Conditions": "Conditions",
     "NCO.Sheet.VehicleConditions": "Conditions / Criticals",
     "NCO.Sheet.AddCondition": "Condition",
@@ -88,6 +90,7 @@
     "NCO.Sheet.StuntPointsMax": "Total Stunt Points for this character",
 
     "NCO.Sheet.XP": "XP",
+    "NCO.Sheet.Stash": "Stash",
     "NCO.Sheet.TrackHintIncrement": "Left-click to add, right-click to remove",
     "NCO.Sheet.TrackHintFill": "Click a box to set the level",
 
@@ -114,6 +117,10 @@
     "NCO.Settings.TrackClickMode.Fill": "Click a box to fill to that level",
     "NCO.Settings.DriveTrack.Name": "Drive Track",
     "NCO.Settings.DriveTrack.Hint": "Show the optional Drive track on character sheets.",
+    "NCO.Settings.StashTrack.Name": "Stash Track",
+    "NCO.Settings.StashTrack.Hint": "Show the optional Stash track on character sheets.",
+    "NCO.Settings.StashTrackLength.Name": "Stash Track Length",
+    "NCO.Settings.StashTrackLength.Hint": "How many Stash boxes appear on each character's Stash track.",
     "NCO.Settings.Pressure.Name": "Pressure (optional rule)",
     "NCO.Settings.Pressure.Hint": "Show a shared GM Pressure track near the top of the screen. Each uncancelled 6 on a Danger die adds one Pressure, up to the track length.",
     "NCO.Settings.PressureTrackLength.Name": "Pressure Track Length",

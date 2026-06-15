@@ -30,6 +30,11 @@ export class GearSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     sheet: { template: "systems/foundryvtt-nco/templates/item/gear-sheet.hbs" },
   };
 
+  /** Show just the document name in the title bar, without the type prefix. */
+  get title() {
+    return this.document.name;
+  }
+
   /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);

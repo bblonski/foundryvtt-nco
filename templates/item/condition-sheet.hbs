@@ -1,0 +1,25 @@
+{{!-- The sheet root is already a <form> (DocumentSheetV2); this wrapper must
+      not be one so submitOnChange keeps working. --}}
+<div class="nco-condition-sheet">
+  <header class="nco-sheet-header">
+    {{#if editable}}
+      <img class="nco-portrait nco-portrait-editable" src="{{item.img}}" alt="{{item.name}}"
+           data-action="editImage" title="{{localize 'NCO.Sheet.EditImage'}}" />
+    {{else}}
+      <img class="nco-portrait" src="{{item.img}}" alt="{{item.name}}" />
+    {{/if}}
+    <div class="nco-header-fields">
+      <input type="text" name="name" value="{{item.name}}"
+             placeholder="{{localize 'NCO.Sheet.ConditionNamePlaceholder'}}"
+             {{#unless editable}}disabled{{/unless}} />
+    </div>
+  </header>
+
+  <section class="nco-condition-active">
+    <label class="nco-checkbox">
+      <input type="checkbox" name="system.active" {{checked system.active}}
+             {{#unless editable}}disabled{{/unless}} />
+      {{localize "NCO.Sheet.ConditionActive"}}
+    </label>
+  </section>
+</div>
