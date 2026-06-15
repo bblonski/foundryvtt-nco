@@ -37,9 +37,22 @@
 
 .nco-sheet-header {
   position: relative;
+  flex: none;
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+/* Everything below the header scrolls as one unit, so the header (portrait,
+   Hits, Stunt Points, XP) stays pinned at the top of the frame regardless of
+   sheet size. */
+.nco-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .nco-portrait {
@@ -317,8 +330,6 @@
 }
 
 .nco-trademarks {
-  flex: 1;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
