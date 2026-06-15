@@ -10,11 +10,20 @@
       <img class="nco-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
     {{/if}}
     <div class="nco-header-fields">
-      {{#if editing}}
-        <input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'NCO.Sheet.NamePlaceholder'}}" />
-      {{else}}
-        <h1 class="nco-name">{{actor.name}}</h1>
-      {{/if}}
+      <div class="nco-name-row">
+        {{#if editing}}
+          <input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'NCO.Sheet.NamePlaceholder'}}" />
+        {{else}}
+          <h1 class="nco-name">{{actor.name}}</h1>
+        {{/if}}
+        {{#if editable}}
+          <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"
+                  data-action="toggleEdit" title="{{localize 'NCO.Sheet.ToggleEdit'}}"
+                  aria-label="{{localize 'NCO.Sheet.ToggleEdit'}}">
+            <i class="fas {{#if editing}}fa-unlock{{else}}fa-lock{{/if}}"></i>
+          </button>
+        {{/if}}
+      </div>
       <div class="nco-vitals">
         <div class="nco-hits">
           <span class="nco-section-label nco-danger-label nco-hits-label">{{localize "NCO.Sheet.Hits"}}</span>
@@ -72,13 +81,6 @@
         </div>
       </div>
     </div>
-    {{#if editable}}
-      <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"
-              data-action="toggleEdit" title="{{localize 'NCO.Sheet.ToggleEdit'}}"
-              aria-label="{{localize 'NCO.Sheet.ToggleEdit'}}">
-        <i class="fas {{#if editing}}fa-unlock{{else}}fa-lock{{/if}}"></i>
-      </button>
-    {{/if}}
   </header>
 
   <div class="nco-sheet-body">

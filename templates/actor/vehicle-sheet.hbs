@@ -26,6 +26,13 @@
         {{else}}
           <h1 class="nco-name">{{actor.name}}</h1>
         {{/if}}
+        {{#if editable}}
+          <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"
+                  data-action="toggleEdit" title="{{localize 'NCO.Sheet.ToggleEdit'}}"
+                  aria-label="{{localize 'NCO.Sheet.ToggleEdit'}}">
+            <i class="fas {{#if editing}}fa-unlock{{else}}fa-lock{{/if}}"></i>
+          </button>
+        {{/if}}
       </div>
 
       <div class="nco-hits">
@@ -44,13 +51,6 @@
         {{/if}}
       </div>
     </div>
-    {{#if editable}}
-      <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"
-              data-action="toggleEdit" title="{{localize 'NCO.Sheet.ToggleEdit'}}"
-              aria-label="{{localize 'NCO.Sheet.ToggleEdit'}}">
-        <i class="fas {{#if editing}}fa-unlock{{else}}fa-lock{{/if}}"></i>
-      </button>
-    {{/if}}
   </header>
 
   <section class="nco-threat-tags">

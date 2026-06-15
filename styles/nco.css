@@ -72,20 +72,36 @@
   width: 100%;
   font-size: 20px;
   font-weight: bold;
+  line-height: 22px;
+  box-sizing: border-box;
 }
 
+/* Mirror the edit-mode input's box metrics (font size, padding, transparent
+   border) so the name doesn't shift when toggling between play and edit. */
 .nco-name {
   margin: 0;
-  border: none;
-  font-size: 22px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 20px;
   font-weight: bold;
+  line-height: 22px;
+  box-sizing: border-box;
   color: #e7e9f5;
 }
 
-/* Keep the name clear of the edit-lock now sitting in the top-right corner. */
-.nco-header-fields input[type="text"],
-.nco-name {
-  padding-right: 28px;
+/* Name and its edit-lock share a row; the name takes the slack so the lock
+   sits flush at the end of the field. */
+.nco-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nco-name-row input[type="text"],
+.nco-name-row .nco-name {
+  flex: 1;
+  min-width: 0;
 }
 
 .nco-portrait-editable {
@@ -150,13 +166,16 @@
 }
 
 .nco-character-sheet .nco-hits-max {
-  width: 48px;
+  width: 24px;
+  height: 18px;
+  box-sizing: border-box;
   margin-left: 8px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--nco-border);
   border-radius: 4px;
   color: inherit;
-  padding: 2px 4px;
+  padding: 0 4px;
+  line-height: 1;
 }
 
 .nco-stunt-points {
@@ -292,23 +311,23 @@
 }
 
 .nco-character-sheet .nco-stunt-max {
-  width: 48px;
+  width: 24px;
+  height: 18px;
+  box-sizing: border-box;
   margin-left: 8px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--nco-border);
   border-radius: 4px;
   color: inherit;
-  padding: 2px 4px;
+  padding: 0 4px;
+  line-height: 1;
 }
 
-/* Pulled out of the flex flow into the top-right corner so the header fields
-   (and the Stunt Points within them) can span the full width and line up
-   directly beneath it. */
+/* Sits inline at the end of the name field on each sheet. */
 .nco-edit-toggle {
-  position: absolute;
-  top: 0;
-  right: 0;
+  flex: none;
   font-size: 18px;
+  line-height: 1;
 }
 
 .nco-edit-toggle:hover {
@@ -949,8 +968,12 @@ button.nco-danger-rating:hover {
 }
 
 .nco-threat-sheet .nco-hits-max {
-  width: 48px;
+  width: 24px;
+  height: 18px;
+  box-sizing: border-box;
   margin-left: 8px;
+  padding: 0 4px;
+  line-height: 1;
 }
 
 .nco-threat-tags {
