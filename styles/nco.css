@@ -308,7 +308,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .nco-edit-toggle:hover {
@@ -431,7 +431,7 @@
   color: inherit;
   opacity: 0.6;
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 4px 0px;
 }
 
 .nco-icon-button:hover {
