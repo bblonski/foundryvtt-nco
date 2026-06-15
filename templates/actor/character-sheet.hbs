@@ -41,9 +41,18 @@
           {{else}}
             <span class="nco-section-label nco-stunt-static">{{localize "NCO.Sheet.StuntPoints"}}</span>
           {{/if}}
-          <input type="number" class="nco-stunt-input" name="system.stuntPoints"
-                 value="{{system.stuntPoints}}" min="0" step="1"
-                 {{#unless editable}}disabled{{/unless}} />
+          {{!-- Click behavior is shared with the Hits/XP tracks (see JS / setting). --}}
+          <div class="nco-stunt-track nco-track" data-action="trackAdd" data-track="stunt"
+               title="{{trackHint}}">
+            {{#each stuntBoxes as |box|}}
+              <span class="nco-stunt-box {{#if box.checked}}nco-stunt-box-filled{{/if}}"
+                    data-index="{{box.index}}"></span>
+            {{/each}}
+          </div>
+          {{#if editing}}
+            <input type="number" class="nco-stunt-max" name="system.stuntPoints.max" value="{{system.stuntPoints.max}}"
+                   min="1" max="{{stuntMaxLimit}}" step="1" title="{{localize 'NCO.Sheet.StuntPointsMax'}}" />
+          {{/if}}
         </div>
       </div>
       <div class="nco-xp">
@@ -273,17 +282,26 @@
       {{/each}}
     {{else}}
       <ul class="nco-tags nco-tags-play">
-        {{#each traumas as |trauma|}}
+        {{#each traumas as |trauma traumaIndex|}}
           <li>
-            {{#if trauma.clickable}}
-              <button type="button" class="nco-chip nco-chip-flaw" data-action="invoke"
-                      data-polarity="negative" data-text="{{trauma.text}}"
-                      title="{{@root.invokeNegativeTitle}}">
-                <i class="fas fa-minus"></i> {{trauma.text}}
-              </button>
-            {{else}}
-              <span class="nco-chip nco-chip-static">{{trauma.text}}</span>
-            {{/if}}
+            <div class="nco-chip nco-chip-flaw {{#if @root.editable}}nco-chip-removable{{/if}}">
+              {{#if trauma.clickable}}
+                <button type="button" class="nco-chip-label" data-action="invoke"
+                        data-polarity="negative" data-text="{{trauma.text}}"
+                        title="{{@root.invokeNegativeTitle}}">
+                  <i class="fas fa-minus"></i> {{trauma.text}}
+                </button>
+              {{else}}
+                <span class="nco-chip-label nco-chip-static">{{trauma.text}}</span>
+              {{/if}}
+              {{#if @root.editable}}
+                <button type="button" class="nco-chip-remove" data-action="deleteTrauma"
+                        data-trauma-index="{{traumaIndex}}"
+                        title="{{localize 'NCO.Sheet.DeleteTrauma'}}" aria-label="{{localize 'NCO.Sheet.DeleteTrauma'}}">
+                  <i class="fas fa-times"></i>
+                </button>
+              {{/if}}
+            </div>
           </li>
         {{/each}}
       </ul>

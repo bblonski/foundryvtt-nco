@@ -44,8 +44,13 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         new fields.StringField({ required: true, blank: true, initial: "" }),
       ),
       // Meta-currency spent for stunts; clicking the sheet label spends one
-      // and posts the spending options to chat. NCO characters start with 3.
-      stuntPoints: new fields.NumberField({ required: true, integer: true, min: 0, initial: 3 }),
+      // and posts the spending options to chat. Drawn as a Hits-like track
+      // (filled boxes = available points) in blue. NCO characters start with
+      // 3 and the pool can grow to 5 through advancement.
+      stuntPoints: new fields.SchemaField({
+        value: new fields.NumberField({ required: true, integer: true, min: 0, max: 5, initial: 3 }),
+        max: new fields.NumberField({ required: true, integer: true, min: 1, max: 5, initial: 3 }),
+      }),
       // Advancement track: how many XP boxes are filled. The track's length
       // (total boxes) is a world setting, so it isn't stored per character;
       // the sheet clamps the display to that length.

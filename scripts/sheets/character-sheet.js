@@ -8,6 +8,8 @@ const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (c) => ESCAPE_MAP[
 
 /** Fixed number of boxes on the Drive track. */
 const DRIVE_TRACK_LENGTH = 10;
+/** Absolute ceiling for the Stunt Points track. */
+const STUNT_POINTS_MAX = 5;
 /** Drive box state values (index) mapped to their CSS state name. */
 const DRIVE_STATES = ["empty", "ticked", "crossed"];
 
@@ -30,7 +32,7 @@ const DRIVE_STATES = ["empty", "ticked", "crossed"];
 export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
     classes: ["nco", "sheet", "actor"],
-    position: { width: 480, height: 640 },
+    position: { width: 600, height: 800 },
     window: { resizable: true },
     form: { submitOnChange: true, closeOnSubmit: false },
     actions: {
@@ -106,6 +108,8 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         })),
       })),
       hitBoxes: this.#prepareHitBoxes(),
+      stuntBoxes: this.#prepareStuntBoxes(),
+      stuntMaxLimit: STUNT_POINTS_MAX,
       xpGroups: this.#prepareXpGroups(),
       driveEnabled: game.settings.get("foundryvtt-nco", "driveTrackEnabled"),
       driveBoxes: this.#prepareDriveBoxes(),
@@ -156,6 +160,14 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const max = Math.min(6, Math.max(1, hits.max ?? 3));
     const taken = Math.min(max, hits.taken ?? 0);
     return Array.from({ length: max }, (_, i) => ({ index: i, checked: i < taken }));
+  }
+
+  /** One box per Stunt Point, filled from the left as points become available. */
+  #prepareStuntBoxes() {
+    const stuntPoints = this.actor.system.stuntPoints ?? {};
+    const max = Math.min(STUNT_POINTS_MAX, Math.max(1, stuntPoints.max ?? 3));
+    const value = Math.min(max, stuntPoints.value ?? 0);
+    return Array.from({ length: max }, (_, i) => ({ index: i, checked: i < value }));
   }
 
   /** The configured XP track length (total boxes), clamped to a sane minimum. */
@@ -213,8 +225,9 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   /**
-   * Where a track's filled-box count is stored and how high it can go. Both the
-   * Hits and XP tracks share the same click behavior, differing only in this.
+   * Where a track's filled-box count is stored and how high it can go. The
+   * Hits, Stunt Points, and XP tracks share the same click behavior, differing
+   * only in this.
    */
   #trackConfig(track) {
     if (track === "hits") {
@@ -222,6 +235,13 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         field: "system.hits.taken",
         current: this.actor.system.hits?.taken ?? 0,
         max: Math.min(6, Math.max(1, this.actor.system.hits?.max ?? 3)),
+      };
+    }
+    if (track === "stunt") {
+      return {
+        field: "system.stuntPoints.value",
+        current: this.actor.system.stuntPoints?.value ?? 0,
+        max: Math.min(STUNT_POINTS_MAX, Math.max(1, this.actor.system.stuntPoints?.max ?? 3)),
       };
     }
     return {
@@ -234,7 +254,8 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   /**
    * Left-click a track box. The world's "track click mode" setting decides
    * whether this adds a single box ("increment") or fills/clears up to the
-   * clicked box ("fill"). Applies identically to the Hits and XP tracks.
+   * clicked box ("fill"). Applies identically to the Hits, Stunt Points, and
+   * XP tracks.
    */
   static async _onTrackAdd(event, target) {
     if (!this.isEditable) return;
@@ -279,13 +300,13 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
    */
   static async _onSpendStuntPoint(_event, _target) {
     if (!this.isEditable) return;
-    const current = this.actor.system.stuntPoints ?? 0;
+    const current = this.actor.system.stuntPoints?.value ?? 0;
     if (current <= 0) {
       ui.notifications.warn(game.i18n.format("NCO.Sheet.NoStuntPoints", { name: this.actor.name }));
       return;
     }
     const remaining = current - 1;
-    await this.actor.update({ "system.stuntPoints": remaining });
+    await this.actor.update({ "system.stuntPoints.value": remaining });
 
     const options = ["Trademark", "Soak", "Adjust", "Detail"]
       .map((key) => `<li>${game.i18n.localize(`NCO.Chat.StuntPoint.Option${key}`)}</li>`)

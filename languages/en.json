@@ -1,6 +1,7 @@
 {
     "NCO.Sheet.Character": "NCO Character Sheet",
     "NCO.Sheet.Threat": "NCO Threat Sheet",
+    "NCO.Sheet.Vehicle": "NCO Vehicle Sheet",
     "NCO.Sheet.Trademark": "NCO Trademark Sheet",
     "NCO.Sheet.NamePlaceholder": "Name",
     "NCO.Sheet.EditImage": "Change portrait",
@@ -55,11 +56,12 @@
     "NCO.Chat.DeathCheck.Dying": "{name} is DYING and will die in {turns} turn(s)!",
 
     "NCO.Sheet.Conditions": "Conditions",
+    "NCO.Sheet.VehicleConditions": "Conditions / Criticals",
     "NCO.Sheet.AddCondition": "Condition",
     "NCO.Sheet.AddConditionTitle": "New Condition",
     "NCO.Sheet.ConditionNamePlaceholder": "Condition name…",
     "NCO.Sheet.DeleteCondition": "Delete Condition",
-    "NCO.Sheet.ToggleCondition": "Mark whether this Condition is affecting the character",
+    "NCO.Sheet.ToggleCondition": "Mark whether this Condition is currently active",
 
     "NCO.Condition.Angry": "Angry",
     "NCO.Condition.Exhausted": "Exhausted",
@@ -80,9 +82,10 @@
     "NCO.Sheet.ActionsPlaceholder": "What can this Threat do?",
     "NCO.Sheet.EmptyThreatTags": "No Tags yet. Unlock edit mode and click \"Tag\" to add one.",
 
-    "NCO.Sheet.StuntPoints": "Stunt Points",
+    "NCO.Sheet.StuntPoints": "Stunt",
     "NCO.Sheet.SpendStuntPoint": "Click to spend a Stunt Point",
     "NCO.Sheet.NoStuntPoints": "{name} has no Stunt Points left to spend.",
+    "NCO.Sheet.StuntPointsMax": "Total Stunt Points for this character",
 
     "NCO.Sheet.XP": "XP",
     "NCO.Sheet.TrackHintIncrement": "Left-click to add, right-click to remove",

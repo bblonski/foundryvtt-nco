@@ -40,7 +40,8 @@
       },
       "threat": {
         "htmlFields": ["drive", "actions"]
-      }
+      },
+      "vehicle": {}
     },
     "Item": {
       "condition": {},

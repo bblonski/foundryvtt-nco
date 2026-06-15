@@ -1,0 +1,162 @@
+{{!-- The sheet's root element is already a <form> (DocumentSheetV2), so this
+      wrapper must not be one: a nested form would capture the inputs and
+      break submitOnChange. --}}
+<div class="nco-vehicle-sheet nco-threat-sheet {{#if editing}}nco-editing{{/if}}">
+  <header class="nco-sheet-header">
+    {{#if editable}}
+      <img class="nco-portrait nco-portrait-editable" src="{{actor.img}}" alt="{{actor.name}}"
+           data-action="editImage" title="{{localize 'NCO.Sheet.EditImage'}}" />
+    {{else}}
+      <img class="nco-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+    {{/if}}
+    <div class="nco-header-fields">
+      {{!-- Danger Rating: a special negative Tag shown as a red circle. Clicking
+            it adds its rating's worth of Danger dice to the shared roll pool. --}}
+      <div class="nco-threat-namerow">
+        {{#if editing}}
+          <input type="number" class="nco-danger-rating nco-danger-rating-input"
+                 name="system.dangerRating" value="{{system.dangerRating}}" min="0" step="1"
+                 title="{{localize 'NCO.Sheet.DangerRating'}}" />
+        {{else}}
+          <button type="button" class="nco-danger-rating" data-action="invokeDanger"
+                  title="{{invokeDangerTitle}}">{{dangerRating}}</button>
+        {{/if}}
+        {{#if editing}}
+          <input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'NCO.Sheet.NamePlaceholder'}}" />
+        {{else}}
+          <h1 class="nco-name">{{actor.name}}</h1>
+        {{/if}}
+      </div>
+
+      <div class="nco-hits">
+        <span class="nco-section-label nco-danger-label nco-hits-label">{{localize "NCO.Sheet.Hits"}}</span>
+        {{!-- Click behavior (add/remove vs fill-to-level) is set in JS by the
+              world's track-click-mode setting, shared with the other sheets. --}}
+        <div class="nco-hits-track nco-track" data-action="trackAdd" title="{{trackHint}}">
+          {{#each hitBoxes as |box|}}
+            <span class="nco-hit-box {{#if box.checked}}nco-hit-box-filled{{/if}}"
+                  data-index="{{box.index}}"></span>
+          {{/each}}
+        </div>
+        {{#if editing}}
+          <input type="number" class="nco-hits-max" name="system.hits.max" value="{{system.hits.max}}"
+                 min="1" max="{{maxHits}}" step="1" title="{{localize 'NCO.Sheet.HitsMax'}}" />
+        {{/if}}
+      </div>
+    </div>
+    {{#if editable}}
+      <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"
+              data-action="toggleEdit" title="{{localize 'NCO.Sheet.ToggleEdit'}}"
+              aria-label="{{localize 'NCO.Sheet.ToggleEdit'}}">
+        <i class="fas {{#if editing}}fa-unlock{{else}}fa-lock{{/if}}"></i>
+      </button>
+    {{/if}}
+  </header>
+
+  <section class="nco-threat-tags">
+    <div class="nco-section-header">
+      <label class="nco-section-label">{{localize "NCO.Sheet.Tags"}}</label>
+      {{#if editing}}
+        <button type="button" class="nco-add" data-action="createTag">
+          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTag"}}
+        </button>
+      {{/if}}
+    </div>
+
+    {{#if editing}}
+      <ul class="nco-tags">
+        {{#each tags as |tag tagIndex|}}
+          <li class="nco-gear-tag">
+            <button type="button"
+                    class="nco-polarity-toggle {{#if tag.positive}}nco-polarity-positive{{else}}nco-polarity-negative{{/if}}"
+                    data-action="toggleTagPolarity" data-tag-index="{{tagIndex}}"
+                    title="{{localize 'NCO.Sheet.ToggleTagPolarity'}}">
+              <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i>
+            </button>
+            {{!-- Keep polarity in the form so a text-edit submit doesn't reset it
+                  to the schema default. --}}
+            <input type="hidden" name="system.tags.{{tagIndex}}.polarity" value="{{tag.polarity}}" />
+            <input type="text" class="nco-trigger-text" name="system.tags.{{tagIndex}}.text"
+                   value="{{tag.text}}" placeholder="{{localize 'NCO.Sheet.TagPlaceholder'}}" />
+            <button type="button" class="nco-icon-button nco-delete" data-action="deleteTag"
+                    data-tag-index="{{tagIndex}}"
+                    title="{{localize 'NCO.Sheet.DeleteTag'}}" aria-label="{{localize 'NCO.Sheet.DeleteTag'}}">
+              <i class="fas fa-times"></i>
+            </button>
+          </li>
+        {{else}}
+          <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyThreatTags"}}</p>
+        {{/each}}
+      </ul>
+    {{else}}
+      <ul class="nco-tags nco-tags-play">
+        {{#each tags as |tag|}}
+          <li>
+            {{#if tag.clickable}}
+              <button type="button"
+                      class="nco-chip nco-chip-tag {{#if tag.positive}}nco-chip-edge{{else}}nco-chip-flaw{{/if}}"
+                      data-action="invoke" data-text="{{tag.text}}"
+                      data-polarity="{{#if tag.positive}}positive{{else}}negative{{/if}}"
+                      title="{{#if tag.positive}}{{@root.invokePositiveTitle}}{{else}}{{@root.invokeNegativeTitle}}{{/if}}">
+                <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i> {{tag.text}}
+              </button>
+            {{else}}
+              <span class="nco-chip nco-chip-tag nco-chip-static">{{tag.text}}</span>
+            {{/if}}
+          </li>
+        {{else}}
+          <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyThreatTags"}}</p>
+        {{/each}}
+      </ul>
+    {{/if}}
+  </section>
+
+  <section class="nco-traumas">
+    <div class="nco-section-header">
+      <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.VehicleConditions"}}</label>
+      {{#if editable}}
+        <button type="button" class="nco-add" data-action="createCritical">
+          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddCondition"}}
+        </button>
+      {{/if}}
+    </div>
+    {{#if editing}}
+      {{#each criticals as |critical criticalIndex|}}
+        <div class="nco-trauma-row">
+          <input type="text" class="nco-flaw-text" name="system.criticals.{{criticalIndex}}"
+                 value="{{critical.text}}" placeholder="{{localize 'NCO.Sheet.ConditionNamePlaceholder'}}" />
+          <button type="button" class="nco-icon-button nco-delete" data-action="deleteCritical"
+                  data-critical-index="{{criticalIndex}}"
+                  title="{{localize 'NCO.Sheet.DeleteCondition'}}" aria-label="{{localize 'NCO.Sheet.DeleteCondition'}}">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      {{/each}}
+    {{else}}
+      <ul class="nco-tags nco-tags-play">
+        {{#each criticals as |critical criticalIndex|}}
+          <li>
+            <div class="nco-chip nco-chip-flaw {{#if @root.editable}}nco-chip-removable{{/if}}">
+              {{#if critical.clickable}}
+                <button type="button" class="nco-chip-label" data-action="invoke"
+                        data-polarity="negative" data-text="{{critical.text}}"
+                        title="{{@root.invokeNegativeTitle}}">
+                  <i class="fas fa-minus"></i> {{critical.text}}
+                </button>
+              {{else}}
+                <span class="nco-chip-label nco-chip-static">{{critical.text}}</span>
+              {{/if}}
+              {{#if @root.editable}}
+                <button type="button" class="nco-chip-remove" data-action="deleteCritical"
+                        data-critical-index="{{criticalIndex}}"
+                        title="{{localize 'NCO.Sheet.DeleteCondition'}}" aria-label="{{localize 'NCO.Sheet.DeleteCondition'}}">
+                  <i class="fas fa-times"></i>
+                </button>
+              {{/if}}
+            </div>
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  </section>
+</div>

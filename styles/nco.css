@@ -118,7 +118,8 @@
 }
 
 .nco-character-sheet .nco-hit-box,
-.nco-character-sheet .nco-xp-box {
+.nco-character-sheet .nco-xp-box,
+.nco-character-sheet .nco-stunt-box {
   width: 18px;
   height: 18px;
   flex: none;
@@ -175,7 +176,8 @@
   border-left: 1px solid var(--nco-border);
 }
 
-.nco-character-sheet .nco-xp-box-filled {
+.nco-character-sheet .nco-xp-box-filled,
+.nco-character-sheet .nco-stunt-box-filled {
   border-color: var(--nco-action);
   background: var(--nco-action);
   box-shadow: 0 0 5px 0 rgba(35, 213, 229, 0.7);
@@ -263,8 +265,9 @@
   margin: 0;
 }
 
-.nco-character-sheet .nco-stunt-input {
+.nco-character-sheet .nco-stunt-max {
   width: 48px;
+  margin-left: 8px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--nco-border);
   border-radius: 4px;
@@ -491,7 +494,8 @@ button.nco-chip:hover {
   flex: 1;
 }
 
-.nco-character-sheet .nco-flaw-text {
+.nco-character-sheet .nco-flaw-text,
+.nco-vehicle-sheet .nco-flaw-text {
   border-color: rgba(255, 46, 136, 0.4);
 }
 
@@ -505,6 +509,63 @@ button.nco-chip-flaw:hover {
   background: rgba(255, 46, 136, 0.25);
   border-color: var(--nco-danger);
   color: var(--nco-danger);
+}
+
+/* A "removable" chip is split into two segments: the label (the Tag itself,
+   clickable or static) and an integrated remove (x) button, divided by a
+   border — mirroring the old Condition toggle's integrated switch segment. */
+
+.nco-chip-removable {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.nco-chip-removable > .nco-chip-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+}
+
+.nco-chip-removable > button.nco-chip-label {
+  background: none;
+  border: none;
+  border-radius: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  min-height: 0;
+  height: auto;
+  cursor: pointer;
+}
+
+.nco-chip-flaw.nco-chip-removable > button.nco-chip-label:hover {
+  background: rgba(255, 46, 136, 0.25);
+}
+
+.nco-chip-removable > .nco-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border: none;
+  border-left: 1px solid var(--nco-border);
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  min-height: 0;
+  height: auto;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.nco-chip-removable > .nco-chip-remove:hover {
+  opacity: 1;
+  color: var(--nco-danger);
+  background: rgba(255, 46, 136, 0.15);
 }
 
 /* Traumas: lasting injuries, edited as rows and invoked like Flaws */
