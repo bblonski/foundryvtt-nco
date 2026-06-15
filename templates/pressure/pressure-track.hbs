@@ -10,9 +10,11 @@
       </button>
     {{/if}}
   </div>
-  <div class="nco-pressure-boxes">
+  <div class="nco-pressure-boxes{{#if isGM}} editable{{/if}}">
     {{#each boxes as |filled|}}
-      <span class="nco-pressure-box{{#if filled}} filled{{/if}}">
+      <span class="nco-pressure-box{{#if filled}} filled{{/if}}"
+            {{#if ../isGM}}data-action="setLevel" data-index="{{@index}}"
+              title="{{localize 'NCO.Pressure.SetLevel'}}"{{/if}}>
         {{#if filled}}<i class="fas fa-check"></i>{{/if}}
       </span>
     {{/each}}

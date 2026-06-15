@@ -121,6 +121,7 @@
 
     "NCO.Pressure.Title": "Pressure",
     "NCO.Pressure.Reset": "Reset Pressure",
+    "NCO.Pressure.SetLevel": "Click to set the Pressure level",
 
     "NCO.RollDialog.Title": "Neon City Overdrive — Roll",
     "NCO.RollDialog.OpenTool": "NCO Roll",

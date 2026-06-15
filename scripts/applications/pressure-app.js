@@ -18,6 +18,7 @@ export class PressureApp extends HandlebarsApplicationMixin(ApplicationV2) {
     position: { width: "auto", height: "auto" },
     actions: {
       reset: this._onReset,
+      setLevel: this._onSetLevel,
     },
   };
 
@@ -41,6 +42,18 @@ export class PressureApp extends HandlebarsApplicationMixin(ApplicationV2) {
   /** GM-only: clear the track. */
   static _onReset(_event, _target) {
     return PressureTrack.reset();
+  }
+
+  /**
+   * GM-only: click a box to set the level. Like the character sheet's "fill"
+   * tracks, clicking a filled box clears down to it while clicking an empty box
+   * fills up to it.
+   */
+  static _onSetLevel(_event, target) {
+    if (!game.user.isGM) return;
+    const index = Number(target.dataset.index);
+    const next = index < PressureTrack.value ? index : index + 1;
+    return PressureTrack.set(next);
   }
 
   /**

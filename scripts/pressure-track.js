@@ -84,6 +84,11 @@ export class PressureTrack {
     return this.#submit({ op: "add", amount });
   }
 
+  /** Set Pressure to an exact level (clamped to the track length). */
+  static async set(level) {
+    return this.#submit({ op: "set", level });
+  }
+
   /** Clear the Pressure track back to zero. */
   static async reset() {
     return this.#submit({ op: "reset" });
@@ -105,6 +110,9 @@ export class PressureTrack {
     switch (change.op) {
       case "add":
         value = Math.min(this.max, value + change.amount);
+        break;
+      case "set":
+        value = Math.max(0, Math.min(this.max, change.level));
         break;
       case "reset":
         value = 0;

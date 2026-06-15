@@ -1263,6 +1263,15 @@ button.nco-danger-rating:hover {
   box-shadow: 0 0 6px 1px rgba(255, 46, 136, 0.6);
 }
 
+.nco-pressure-boxes.editable .nco-pressure-box {
+  cursor: pointer;
+}
+
+.nco-pressure-boxes.editable .nco-pressure-box:hover {
+  border-color: #fff;
+  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.6);
+}
+
 /* ----------------------------------------------------------------------- */
 /* Chat messages (cyberpunk reskin of Foundry's default chat cards)         */
 /* ----------------------------------------------------------------------- */
