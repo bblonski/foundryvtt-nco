@@ -18,7 +18,8 @@ export class NCORollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     id: "nco-roll-dialog",
     classes: ["nco", "roll-dialog"],
     window: { title: "NCO.RollDialog.Title", icon: "fas fa-dice-d6" },
-    position: { width: 460, height: "auto" },
+    // Default to the top-right corner, clear of the scene navigation bar.
+    position: { width: 460, height: "auto", top: 70, left: window.innerWidth - 800 },
     actions: {
       removeDie: this._onRemoveDie,
       addBonus: this._onAddBonus,

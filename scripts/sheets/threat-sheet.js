@@ -25,7 +25,7 @@ export class ThreatSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static DEFAULT_OPTIONS = {
     classes: ["nco", "sheet", "actor"],
-    position: { width: 480, height: 560 },
+    position: { width: 480, height: 560, top: 80 },
     window: { resizable: true },
     form: { submitOnChange: true, closeOnSubmit: false },
     actions: {

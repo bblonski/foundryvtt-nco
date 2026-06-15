@@ -23,7 +23,7 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 export class VehicleSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
     classes: ["nco", "sheet", "actor"],
-    position: { width: 480, height: 480 },
+    position: { width: 480, height: 480, top: 80 },
     window: { resizable: true },
     form: { submitOnChange: true, closeOnSubmit: false },
     actions: {

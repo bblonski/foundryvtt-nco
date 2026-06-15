@@ -32,7 +32,8 @@ const DRIVE_STATES = ["empty", "ticked", "crossed"];
 export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
     classes: ["nco", "sheet", "actor"],
-    position: { width: 600, height: 800 },
+    // Default to the left side of the screen, clear of the scene controls toolbar.
+    position: { width: 600, height: 800, top: 80, left: 120 },
     window: { resizable: true },
     form: { submitOnChange: true, closeOnSubmit: false },
     actions: {
