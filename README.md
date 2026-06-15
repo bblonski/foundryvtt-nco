@@ -1,71 +1,127 @@
-![](https://img.shields.io/badge/Foundry-v10-informational)
-<!--- Downloads @ Latest Badge -->
-<!--- replace <user>/<repo> with your username/repository -->
-<!--- ![Latest Release Download Count](https://img.shields.io/github/downloads/<user>/<repo>/latest/module.zip) -->
+![Foundry v14](https://img.shields.io/badge/Foundry-v14-informational)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
 
-<!--- Forge Bazaar Install % Badge -->
-<!--- replace <your-module-name> with the `name` in your manifest -->
-<!--- ![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2F<your-module-name>&colorB=4aa94a) -->
+# Neon City Overdrive and other Action Tales!
 
+An unofficial [FoundryVTT](https://foundryvtt.com/) game system implementing
+**Neon City Overdrive** and the other *Action Tales!* games by
+[Peril Planet](https://perilplanet.com/).
 
-# How to use this Template to create a versioned Release
+The system primarily focuses on **Neon City Overdrive**, is configurable to support 
+other Action Tales! games such as **Star Scoundrels** and **Dungeon Crawlers**.
 
-1. Open your repository's releases page.
+## User Guide
 
-![Where to click to open repository releases.](https://user-images.githubusercontent.com/7644614/93409301-9fd25080-f864-11ea-9e0c-bdd09e4418e4.png)
+### Making Characters
 
-2. Click "Draft a new release"
+Click the lock icon at the top right of a sheet to toggle edit mode.
+Adjust Trademarks, Hits, Stunt Points, and more in edit mode, the lock the sheet to play.
 
-![Draft a new release button.](https://user-images.githubusercontent.com/7644614/93409364-c1333c80-f864-11ea-89f1-abfcb18a8d9f.png)
+### Rolling: click Tags to build a dice pool
 
-3. Fill out the release version as the tag name.
+This system uses a global dice pool that any player can add Tags to.
+You build that pool by **clicking the Tags on your sheet**:
 
-If you want to add details at this stage you can, or you can always come back later and edit them.
+- A character sheet in **play mode** shows your
+  Trademarks, Edges, Flaws, Traumas, Conditions, and Gear Tags as clickable
+  chips.
+- **Click a positive Tag** (a Trademark name or an Edge) to add an **Action**
+  die. **Click a negative Tag** (a Flaw, Trauma, or Condition) to add a
+  **Danger** die.
+- **Shift-click** any Tag to invert it — a positive Tag becomes a Danger die and
+  vice versa.
+- Clicking a Tag drops it into the **shared roll pool**. The GM can add Tags and
+  Danger Rating from threats while Players build their dice pools. Click roll on
+  the global dice pool to roll dice and get your result.
 
-![Release Creation Form](https://user-images.githubusercontent.com/7644614/93409543-225b1000-f865-11ea-9a19-f1906a724421.png)
+### Building Trademarks
 
-4. Hit submit.
+Build Trademarks and Gear as items to easily drag and drop them on the character sheet.
+Edit Trademarks to upgrade Triggers/Traits into Edges. 
+Custom Trademarks and Gear can also be created directly from the character sheet.
 
-5. Wait a few minutes.
+### Enabling the Pressure track
 
-A Github Action will run to populate the `module.json` and `module.zip` with the correct urls that you can then use to distribute this release. You can check on its status in the "Actions" tab.
+Pressure is an optional rule from Star Scoundrels which can be enabled from the system settings.
 
-![Actions Tab](https://user-images.githubusercontent.com/7644614/93409820-c1800780-f865-11ea-8c6b-c3792e35e0c8.png)
+Once enabled, the track appears for all players at the top of the scene. 
+Each uncancelled **6 on a Danger die** automatically ticks Pressure up by +1.
 
-6. Grab the module.json url from the release's details page.
+### On the character sheet
 
-![image](https://user-images.githubusercontent.com/7644614/93409960-10c63800-f866-11ea-83f6-270cc5d10b71.png)
+- **Hits, Stunt Points, XP, Stash** are click tracks — left-click to
+  fill, right-click to clear. You can change click behavior to direct
+  fill to clicked point in the system settings.
+- **The Drive Track** uses 3 state checkboxes that can be Ticked or Crossed.
+- **Click the Stunt Label** to post Stunt point usage to chat and reduce current stunt points by 1.
+- Adding a new **Trauma** automatically rolls a death check.
 
-This `module.json` will only ever point at this release's `module.zip`, making it useful for sharing a specific version for compatibility purposes.
+## Installation
 
-7. You can use the url `https://github.com/<user>/<repo>/releases/latest/download/module.json` to refer to the manifest.
+### From within Foundry VTT (recommended)
 
-This is the url you want to use to install the module typically, as it will get updated automatically.
+1. Open Foundry VTT and go to the **Game Systems** tab on the Setup screen.
+2. Click **Install System**.
+3. Paste the following manifest URL into the **Manifest URL** field:
 
-# How to List Your Releases on Package Admin
+   ```
+   https://github.com/bblonski/foundryvtt-nco/releases/latest/download/system.json
+   ```
 
-To request a package listing for your first release, go to the [Package Submission Form](https://foundryvtt.com/packages/submit) (accessible via a link at the bottom of the "[Systems and Modules](https://foundryvtt.com/packages/)" page on the Foundry website).
+4. Click **Install**. Foundry will always pull the latest released version from
+   this URL.
 
-Fill in the form. "Package Name" must match the name in the module manifest.  Package Title will be the display name for the package.  Package URL should be your repo URL.
-![image](https://user-images.githubusercontent.com/36359784/120664263-b49e5500-c482-11eb-9126-af7006389903.png)
+### Manual installation
 
+1. Download `system.zip` from the
+   [latest release](https://github.com/bblonski/foundryvtt-nco/releases/latest).
+2. Extract it into your Foundry `Data/systems/` directory so that the files live
+   in a `foundryvtt-nco/` folder (i.e. `Data/systems/foundryvtt-nco/system.json`).
+3. Restart Foundry VTT. The system will appear in the **Game Systems** list.
 
-One of the Foundry staff will typically get back to you with an approval or any further questions within a few days, and give you access to the package admin pages.
+**Compatibility:** Foundry VTT v12 minimum, verified on v14.
 
-Once you have access to the [module admin page](https://foundryvtt.com/admin/packages/package/), you can release a new version by going into the page for your module, scrolling to the bottom, and filling in a new Package Version.
+## Developers
 
-When listing a new version, Version should be the version number you set above, and the Manifest URL should be the manifest __for that specific version__ (do not use /latest/ here).
-![image](https://user-images.githubusercontent.com/36359784/120664346-c4b63480-c482-11eb-9d8b-731b50d70939.png)
+### Release process
 
-> ### :warning: Important :warning:
-> 
-> It is very important that you use the specific release manifest url, and not the `/latest` url here. For more details about why this is important and how Foundry Installs/Updates packages, read [this wiki article](https://foundryvtt.wiki/en/development/guides/releases-and-history).
+Releases are automated by the GitHub Action in
+[`.github/workflows/main.yml`](.github/workflows/main.yml), which runs whenever a
+GitHub Release is **published**.
 
-Clicking "Save" in the bottom right will save the new version, which means that anyone installing your module from within Foundry will get that version, and a post will be generated in the #release-announcements channel on the official Foundry VTT Discord.
+The manifest tracks release-specific values with replacement tokens
+(`#{VERSION}#`, `#{URL}#`, `#{MANIFEST}#`, `#{DOWNLOAD}#`) that are filled in at
+release time — **do not** commit literal values in their place.
 
+To cut a release:
 
-# FoundryVTT Module
+1. Create a new Git tag / GitHub Release using a version in the form
+   `v<major>.<minor>.<patch>` or `<major>.<minor>.<patch>` (e.g. `v1.2.3`).
+   The tag's version drives the `version` field in the released manifest.
+2. **Publish** the release.
+3. The workflow will:
+   - extract the version from the tag,
+   - substitute the manifest tokens with the version and release URLs,
+   - package `system.json`, `README.md`, `LICENSE`, and the
+     `templates/`, `scripts/`, `styles/`, `packs/`, and language directories
+     into `system.zip`,
+   - attach `system.json` and `system.zip` to the GitHub Release.
 
-Does something, probably
+The "latest" manifest URL
+(`.../releases/latest/download/system.json`) always points at the most recent
+published release, which is the URL used for in-Foundry installs and updates.
 
-## Changelog
+### Listing a new version on Foundry's package admin
+
+For releases to be offered to users who installed via Foundry's package
+directory, update the system's entry on the
+[Foundry package admin](https://foundryvtt.com/admin/packages/package/). When
+adding a version, use the manifest URL **for that specific version** (not the
+`/latest/` URL). See the
+[releases and history guide](https://foundryvtt.wiki/en/development/guides/releases-and-history)
+for why the version-specific manifest matters.
+
+## License
+
+Released under the [MIT License](LICENSE). Neon City Overdrive and the *Action
+Tales!* games are the property of Peril Planet; this is an unofficial, fan-made implementation.
