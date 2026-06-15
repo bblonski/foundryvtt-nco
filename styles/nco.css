@@ -1226,3 +1226,86 @@ button.nco-danger-rating:hover {
   color: #0a0c18;
   box-shadow: 0 0 6px 1px rgba(255, 46, 136, 0.6);
 }
+
+/* ----------------------------------------------------------------------- */
+/* Chat messages (cyberpunk reskin of Foundry's default chat cards)         */
+/* ----------------------------------------------------------------------- */
+.chat-message {
+  background: linear-gradient(160deg, #14172a 0%, #0b0d18 100%);
+  border: 1px solid var(--nco-border);
+  border-left: 3px solid var(--nco-action);
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(35, 213, 229, 0.12);
+  color: #e7e9f5;
+  padding: 8px 10px;
+}
+
+/* Whispers and private rolls lean on the danger accent instead of action. */
+.chat-message.whisper {
+  border-left-color: var(--nco-danger);
+  box-shadow: 0 0 10px rgba(255, 46, 136, 0.12);
+}
+
+.chat-message .message-header {
+  border-bottom: 1px solid var(--nco-border);
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.chat-message .message-sender {
+  color: var(--nco-action);
+  font-family: "Courier New", monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+  text-shadow: 0 0 6px rgba(35, 213, 229, 0.4);
+}
+
+.chat-message .message-metadata,
+.chat-message .message-timestamp,
+.chat-message .whisper-to {
+  color: rgba(231, 233, 245, 0.55);
+}
+
+.chat-message .flavor-text {
+  color: rgba(231, 233, 245, 0.8);
+}
+
+.chat-message .message-content {
+  color: #e7e9f5;
+}
+
+.chat-message a.content-link,
+.chat-message a.inline-roll {
+  background: rgba(35, 213, 229, 0.12);
+  border: 1px solid var(--nco-action);
+  color: var(--nco-action);
+}
+
+/* Roll results: darker panels so the formula and total stay legible against
+   the neon chat frame (Foundry defaults to a light card here). */
+.chat-message .dice-roll .dice-formula,
+.chat-message .dice-roll .dice-tooltip,
+.chat-message .dice-roll .part-formula,
+.chat-message .dice-roll .part-total {
+  background: #070910;
+  border: 1px solid var(--nco-border);
+  color: #e7e9f5;
+}
+
+.chat-message .dice-roll .dice-total {
+  background: #070910;
+  border: 1px solid var(--nco-action);
+  border-radius: 4px;
+  color: var(--nco-action);
+  text-shadow: 0 0 8px rgba(35, 213, 229, 0.5);
+}
+
+.chat-message .dice-roll .dice-tooltip .dice-rolls .roll {
+  color: #e7e9f5;
+}
+
+.chat-message .dice-roll .dice-flavor,
+.chat-message .dice-roll .part-flavor {
+  color: rgba(231, 233, 245, 0.7);
+}
