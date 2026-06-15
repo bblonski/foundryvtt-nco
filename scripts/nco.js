@@ -12,13 +12,15 @@ import { TrademarkSheet } from "./sheets/trademark-sheet.js";
 import { GearSheet } from "./sheets/gear-sheet.js";
 import { NCORollDialog } from "./applications/nco-roll-dialog.js";
 import { GlobalRollPool } from "./global-roll-pool.js";
+import { PressureTrack } from "./pressure-track.js";
+import { PressureApp } from "./applications/pressure-app.js";
 import { Tags } from "./tags.js";
 
 // Matches: /r a4d5  or  /r a4  (danger count optional)
 const NCO_CHAT_PATTERN = /^\/r\s+a(\d+)(?:d(\d+))?\s*$/i;
 
 Hooks.once("init", function () {
-  game.nco = { NCORoll, NCORollDialog, GlobalRollPool, Tags };
+  game.nco = { NCORoll, NCORollDialog, GlobalRollPool, PressureTrack, Tags };
 
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Actor.dataModels.threat = ThreatData;
@@ -59,6 +61,9 @@ Hooks.once("init", function () {
 
   GlobalRollPool.registerSettings();
   GlobalRollPool.registerSocket();
+
+  PressureTrack.registerSettings();
+  PressureTrack.registerSocket();
 
   game.settings.register("foundryvtt-nco", "startingHits", {
     name: "NCO.Settings.StartingHits.Name",
@@ -142,6 +147,11 @@ Hooks.on("preCreateActor", (actor, data) => {
 
 // World collections don't exist until ready, and only one client should
 // create the convenience macro (and only if it doesn't exist yet).
+// Show the Pressure display (if the optional rule is enabled) once the UI exists.
+Hooks.once("ready", function () {
+  PressureApp.refresh();
+});
+
 Hooks.once("ready", function () {
   if (!game.user.isGM || game.macros.getName("NCO Roll")) return;
   Macro.create({

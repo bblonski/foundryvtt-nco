@@ -1,3 +1,5 @@
+import { PressureTrack } from "../pressure-track.js";
+
 const ACTION_COLOR = "#23d5e5";
 const DANGER_COLOR = "#ff2e88";
 
@@ -99,9 +101,10 @@ export class NCORoll {
         "text-align:center", "margin:2px", `border:1px solid ${color}`,
         "border-radius:4px", `color:${color}`, "font-weight:bold",
       ];
+      const glow = danger ? DANGER_COLOR : this.resultColor;
       if (cancelled) styles.push("text-decoration:line-through", "opacity:0.35");
       else if (faded) styles.push("opacity:0.4");
-      if (hi) styles.push(`box-shadow:0 0 6px 2px ${this.resultColor}`, `border-color:${this.resultColor}`);
+      if (hi) styles.push(`box-shadow:0 0 6px 2px ${glow}`, `border-color:${glow}`);
       return `<span style="${styles.join(";")}">${v}</span>`;
     };
 
@@ -112,7 +115,14 @@ export class NCORoll {
       return pip(a.value, { cancelled: a.cancelled, hi: markHi });
     }).join("");
 
-    const dangerHtml = this.dangerDice.map(d => pip(d.value, { danger: true, faded: !d.used })).join("");
+    // Unused Danger dice (those that matched no Action die) are faded. With the
+    // optional Pressure rule on, an uncancelled 6 is what ticks Pressure, so
+    // glow it like the result die instead of fading it.
+    const pressureOn = PressureTrack.enabled;
+    const dangerHtml = this.dangerDice.map(d => {
+      const ticksPressure = pressureOn && !d.used && d.value === 6;
+      return pip(d.value, { danger: true, faded: !d.used && !ticksPressure, hi: ticksPressure });
+    }).join("");
 
     const edgeLine = (color, label, texts) => texts?.length
       ? `<div style="color:${color};">${label}: ${texts.map(escapeHTML).join(", ")}</div>`
@@ -148,6 +158,13 @@ export class NCORoll {
    */
   async toMessage(messageData = {}) {
     if (!this.evaluated) await this.evaluate();
+
+    // Optional "Pressure" rule: each uncancelled 6 on a Danger die (one that
+    // matched no Action die) ticks the GM's Pressure track up by one.
+    if (PressureTrack.enabled && this.dangerDice) {
+      const sixes = this.dangerDice.filter((d) => !d.used && d.value === 6).length;
+      if (sixes > 0) PressureTrack.add(sixes);
+    }
 
     const dsn = game.modules.get("dice-so-nice")?.active;
     if (dsn) {

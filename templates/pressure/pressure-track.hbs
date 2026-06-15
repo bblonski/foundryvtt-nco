@@ -1,0 +1,20 @@
+<div class="nco-pressure">
+  <div class="nco-pressure-header">
+    <i class="fas fa-radiation nco-pressure-icon"></i>
+    <span class="nco-pressure-title">{{localize "NCO.Pressure.Title"}}</span>
+    <span class="nco-pressure-count">{{value}} / {{max}}</span>
+    {{#if isGM}}
+      <button type="button" class="nco-pressure-reset" data-action="reset"
+              title="{{localize 'NCO.Pressure.Reset'}}">
+        <i class="fas fa-rotate-left"></i>
+      </button>
+    {{/if}}
+  </div>
+  <div class="nco-pressure-boxes">
+    {{#each boxes as |filled|}}
+      <span class="nco-pressure-box{{#if filled}} filled{{/if}}">
+        {{#if filled}}<i class="fas fa-check"></i>{{/if}}
+      </span>
+    {{/each}}
+  </div>
+</div>

@@ -41,6 +41,9 @@ export class GlobalRollPool {
 
   static registerSocket() {
     game.socket.on(SOCKET, (change) => {
+      // The system socket is shared; ignore traffic tagged for another feature
+      // (e.g. the Pressure track).
+      if (change?.channel) return;
       // Apply exactly once, on the designated active GM's client.
       if (game.users.activeGM?.isSelf) this.#apply(change);
     });
