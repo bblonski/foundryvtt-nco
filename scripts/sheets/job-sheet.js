@@ -1,33 +1,28 @@
+import { NCOSheetMixin } from "./nco-sheet-mixin.js";
 import { Tags, TAG_POLARITY } from "../tags.js";
 
-const { HandlebarsApplicationMixin } = foundry.applications.api;
-const { ActorSheetV2 } = foundry.applications.sheets;
+const { ItemSheetV2 } = foundry.applications.sheets;
 
 /**
- * Job actor sheet for Neon City Overdrive.
+ * Job sheet for Neon City Overdrive.
  *
  * A Job is the planning hub for a mission: freeform Concept/Objective/Obstacles/
- * Link text, plus two lists of related Actors — Scenes and Threats. Scene and
- * Threat Actors are added by dragging them onto the sheet; they are stored by
- * UUID and rendered inline so their Tags (and a Threat's Danger Rating) can be
- * invoked directly from the Job, exactly as they would be on the source sheet.
+ * Link text, plus two lists of related documents — Scenes (Items) and Threats
+ * (Actors). They are added by dragging them onto the sheet, stored by UUID, and
+ * rendered inline so their Tags (and a Threat's Danger Rating and Hits) can be
+ * driven directly from the Job, exactly as on the source sheet.
  *
- * Like the other tag-bearing sheets it has an edit mode (text inputs and remove
- * controls) and a play mode (enriched text and clickable chips).
+ * A Job is itself an Item (not an Actor) so it can be foldered alongside Scenes
+ * and shipped in compendia. Shared sheet behavior (title, edit toggle, portrait,
+ * Tag invocation) comes from {@link NCOSheetMixin}.
  */
-export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+export class JobSheet extends NCOSheetMixin(ItemSheetV2) {
   static DEFAULT_OPTIONS = {
-    classes: ["nco", "sheet", "actor"],
+    classes: ["nco", "sheet", "item"],
     position: { width: 560, height: 680, top: 80 },
-    window: { resizable: true },
-    form: { submitOnChange: true, closeOnSubmit: false },
     actions: {
-      editImage: this._onEditImage,
-      toggleEdit: this._onToggleEdit,
-      invoke: this._onInvoke,
-      invokeDanger: this._onInvokeDanger,
-      trackHits: this._onTrackHits,
       openActor: this._onOpenActor,
+      trackHits: this._onTrackHits,
       removeScene: this._onRemoveScene,
       removeThreat: this._onRemoveThreat,
     },
@@ -37,24 +32,28 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     // Preserve the body's scroll position across re-renders (e.g. when a linked
     // Threat's Hits change and the updateActor hook re-renders the sheet).
     sheet: {
-      template: "systems/foundryvtt-nco/templates/actor/job-sheet.hbs",
+      template: "systems/foundryvtt-nco/templates/item/job-sheet.hbs",
       scrollable: [".nco-sheet-body"],
     },
   };
+
+  /** How many Hits boxes Boss Threats group together (matches the Threat sheet). */
+  static HIT_GROUP_SIZE = 3;
 
   /** Bound once so the drop listener can be de-duplicated across renders. */
   #onDropBound = this.#onDrop.bind(this);
   #onDragOverBound = (event) => event.preventDefault();
 
-  /** Bound once so the related-Actor hooks can be unregistered on close. */
-  #onRelatedChangeBound = (actor) => this.#onRelatedChange(actor);
+  /** Bound once so the related-document hooks can be registered/unregistered. */
+  #onRelatedChangeBound = (doc) => this.#onRelatedChange(doc);
 
-  /** Whether the related-Actor hooks are currently registered. */
+  /** Whether the related-document hooks are currently registered. */
   #relatedHooksActive = false;
 
   /**
    * Re-render whenever a linked Scene/Threat is edited or deleted so its inline
-   * display (Tags, Danger Rating, etc.) stays in sync with the source.
+   * display (Tags, Danger Rating, etc.) stays in sync with the source. Scenes
+   * are Items and Threats are Actors, so both document classes are watched.
    *
    * Registered on render rather than in the constructor: Foundry caches the
    * sheet instance across close/reopen (it does not re-run the constructor), so
@@ -63,15 +62,17 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
    */
   #registerRelatedHooks() {
     if (this.#relatedHooksActive) return;
-    Hooks.on("updateActor", this.#onRelatedChangeBound);
-    Hooks.on("deleteActor", this.#onRelatedChangeBound);
+    for (const hook of ["updateActor", "deleteActor", "updateItem", "deleteItem"]) {
+      Hooks.on(hook, this.#onRelatedChangeBound);
+    }
     this.#relatedHooksActive = true;
   }
 
   #unregisterRelatedHooks() {
     if (!this.#relatedHooksActive) return;
-    Hooks.off("updateActor", this.#onRelatedChangeBound);
-    Hooks.off("deleteActor", this.#onRelatedChangeBound);
+    for (const hook of ["updateActor", "deleteActor", "updateItem", "deleteItem"]) {
+      Hooks.off(hook, this.#onRelatedChangeBound);
+    }
     this.#relatedHooksActive = false;
   }
 
@@ -81,31 +82,23 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     return super._onClose(options);
   }
 
-  /** Re-render if the changed Actor is one of this Job's linked Scenes/Threats. */
-  #onRelatedChange(actor) {
-    if (!this.rendered || !actor?.uuid) return;
-    const sys = this.actor.system;
-    if ([...(sys.scenes ?? []), ...(sys.threats ?? [])].includes(actor.uuid)) {
+  /** Re-render if the changed document is one of this Job's linked Scenes/Threats. */
+  #onRelatedChange(doc) {
+    if (!this.rendered || !doc?.uuid) return;
+    const sys = this.document.system;
+    if ([...(sys.scenes ?? []), ...(sys.threats ?? [])].includes(doc.uuid)) {
       this.render();
     }
   }
 
-  /** Show just the document name in the title bar, without the type prefix. */
-  get title() {
-    return this.document.name;
+  /** @override Start a blank Job in edit mode so there's something to fill in. */
+  _startsBlank() {
+    return !this.#hasContent();
   }
 
-  /** Whether this sheet is currently in edit mode. Starts editable for a blank Job. */
-  _editing;
-
-  get isEditing() {
-    this._editing ??= !this.#hasContent();
-    return this._editing && this.isEditable;
-  }
-
-  /** A Job has content once it has any related Actor or any text filled in. */
+  /** A Job has content once it has any related document or any text filled in. */
   #hasContent() {
-    const sys = this.actor.system;
+    const sys = this.document.system;
     return !!(
       sys.scenes?.length ||
       sys.threats?.length ||
@@ -123,74 +116,50 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     return {
       ...context,
-      actor: this.actor,
-      system: this.actor.system,
-      editing: this.isEditing,
-      editable: this.isEditable,
+      ...this._baseContext(),
       scenes: this.#resolveScenes(),
       threats: await this.#resolveThreats(TextEditorImpl),
-      invokePositiveTitle: game.i18n.localize("NCO.Sheet.InvokePositive"),
-      invokeNegativeTitle: game.i18n.localize("NCO.Sheet.InvokeNegative"),
-      invokeDangerTitle: game.i18n.localize("NCO.Sheet.InvokeDangerRating"),
-      trackHint: game.i18n.localize(
-        game.settings.get("foundryvtt-nco", "trackClickMode") === "fill"
-          ? "NCO.Sheet.TrackHintFill"
-          : "NCO.Sheet.TrackHintIncrement",
-      ),
     };
   }
 
-  /** Resolve a list of stored Actor UUIDs, dropping any that no longer exist. */
-  #resolveActors(uuids) {
+  /** Resolve a list of stored document UUIDs, dropping any that no longer exist. */
+  #resolveLinked(uuids) {
     return (uuids ?? [])
-      .map((uuid) => ({ uuid, actor: fromUuidSync(uuid) }))
-      .filter((entry) => entry.actor);
-  }
-
-  /** Map an Actor's Tags to the clickable-chip view model shared by the templates. */
-  #prepareTags(actor) {
-    return (actor.system.tags ?? []).map((tag) => ({
-      text: tag.text,
-      positive: tag.polarity !== TAG_POLARITY.NEGATIVE,
-      polarity: tag.polarity !== TAG_POLARITY.NEGATIVE ? TAG_POLARITY.POSITIVE : TAG_POLARITY.NEGATIVE,
-      clickable: !!tag.text?.trim(),
-    }));
+      .map((uuid) => ({ uuid, doc: fromUuidSync(uuid) }))
+      .filter((entry) => entry.doc);
   }
 
   /** Related Scenes: name, portrait, and clickable Tags. */
   #resolveScenes() {
-    return this.#resolveActors(this.actor.system.scenes).map(({ uuid, actor }) => ({
+    return this.#resolveLinked(this.document.system.scenes).map(({ uuid, doc }) => ({
       uuid,
-      name: actor.name,
-      img: actor.img,
-      tags: this.#prepareTags(actor),
+      name: doc.name,
+      img: doc.img,
+      tags: this._prepareTags(doc.system.tags),
     }));
   }
 
   /** Related Threats: name, portrait, Danger Rating, Hits, Drive/Actions, and Tags. */
   async #resolveThreats(TextEditorImpl) {
     const threats = [];
-    for (const { uuid, actor } of this.#resolveActors(this.actor.system.threats)) {
-      const sys = actor.system;
+    for (const { uuid, doc } of this.#resolveLinked(this.document.system.threats)) {
+      const sys = doc.system;
       const max = sys.hits?.effectiveMax ?? Math.max(1, sys.hits?.max ?? 0);
       threats.push({
         uuid,
-        name: actor.name,
-        img: actor.img,
+        name: doc.name,
+        img: doc.img,
         dangerRating: sys.dangerRating ?? 0,
         boss: !!sys.boss,
         hits: { taken: sys.hits?.taken ?? 0, max },
         hitGroups: this.#prepareHitGroups(sys),
-        tags: this.#prepareTags(actor),
-        driveHTML: await TextEditorImpl.enrichHTML(sys.drive ?? "", { relativeTo: actor }),
-        actionsHTML: await TextEditorImpl.enrichHTML(sys.actions ?? "", { relativeTo: actor }),
+        tags: this._prepareTags(sys.tags),
+        driveHTML: await TextEditorImpl.enrichHTML(sys.drive ?? "", { relativeTo: doc }),
+        actionsHTML: await TextEditorImpl.enrichHTML(sys.actions ?? "", { relativeTo: doc }),
       });
     }
     return threats;
   }
-
-  /** How many Hits boxes Boss Threats group together (matches the Threat sheet). */
-  static HIT_GROUP_SIZE = 3;
 
   /**
    * A Threat's Hits track split into groups for the template. Bosses triple
@@ -228,9 +197,15 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       el.addEventListener("dragover", this.#onDragOverBound);
       el.addEventListener("drop", this.#onDropBound);
     }
-    // Right-click isn't an ActionV2 trigger, so wire each Threat's Hits track
-    // contextmenu (decrement) manually. Tracks are rebuilt each render.
-    for (const track of el.querySelectorAll(".nco-related-card .nco-track")) {
+  }
+
+  /**
+   * @override The Job's `.nco-track` elements belong to linked Threats, not to
+   * the Job itself, so wire their right-click decrement to the linked-Threat
+   * handler rather than the mixin's own-document one.
+   */
+  _bindTrackContextMenu() {
+    for (const track of this.element.querySelectorAll(".nco-related-card .nco-track")) {
       track.addEventListener("contextmenu", this.#onTrackRemove.bind(this));
     }
   }
@@ -280,8 +255,8 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   /**
-   * Accept a dragged Scene or Threat Actor and add it to the matching list.
-   * Other Actor types (and non-Actor drops) are rejected with a notice.
+   * Accept a dragged Scene (Item) or Threat (Actor) and add it to the matching
+   * list. Other document types (and non-document drops) are rejected with a notice.
    */
   async #onDrop(event) {
     event.preventDefault();
@@ -292,11 +267,11 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     } catch {
       return;
     }
-    if (data?.type !== "Actor" || !data.uuid) return;
+    if ((data?.type !== "Actor" && data?.type !== "Item") || !data.uuid) return;
 
-    const actor = await fromUuid(data.uuid);
-    if (!actor) return;
-    const field = { scene: "scenes", threat: "threats" }[actor.type];
+    const doc = await fromUuid(data.uuid);
+    if (!doc) return;
+    const field = { scene: "scenes", threat: "threats" }[doc.type];
     if (!field) {
       ui.notifications?.warn(game.i18n.localize("NCO.Sheet.JobDropUnsupported"));
       return;
@@ -305,50 +280,40 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     // Flush any pending text edit before the structural change so submitOnChange
     // can't clobber it (or vice versa).
     if (this.isEditable) await this.submit();
-    const list = this.actor.toObject().system[field] ?? [];
-    if (list.includes(actor.uuid)) return; // already linked
-    list.push(actor.uuid);
-    await this.actor.update({ [`system.${field}`]: list });
+    const list = this.document.toObject().system[field] ?? [];
+    if (list.includes(doc.uuid)) return; // already linked
+    list.push(doc.uuid);
+    await this.document.update({ [`system.${field}`]: list });
   }
 
   /**
-   * Click a related Actor's Tag: add it to the shared roll pool, crediting the
-   * source Actor. Positive Tags add an Action die, negative a Danger die;
-   * shift-click inverts the polarity.
+   * @override Click a related document's Danger Rating: add that many Danger
+   * dice. The rating and crediting source come from the clicked chip, since a
+   * Job draws several Threats' ratings rather than its own.
    */
-  static async _onInvoke(event, target) {
-    await Tags.invoke({
-      text: target.dataset.text,
-      polarity: target.dataset.polarity ?? TAG_POLARITY.POSITIVE,
-      source: target.dataset.source ?? this.actor.name,
-      invert: event.shiftKey,
-    });
-  }
-
-  /** Click a related Threat's Danger Rating: add that many Danger dice. */
   static async _onInvokeDanger(event, target) {
     const rating = Number(target.dataset.rating) || 0;
     if (rating <= 0) return;
     await Tags.invoke({
       text: game.i18n.localize("NCO.Sheet.DangerRating"),
       polarity: TAG_POLARITY.NEGATIVE,
-      source: target.dataset.source ?? this.actor.name,
+      source: target.dataset.source ?? this.document.name,
       invert: event.shiftKey,
       count: rating,
     });
   }
 
-  /** Open a related Actor's own sheet. */
+  /** Open a related document's own sheet. */
   static async _onOpenActor(_event, target) {
-    const actor = await fromUuid(target.dataset.uuid);
-    actor?.sheet?.render(true);
+    const doc = await fromUuid(target.dataset.uuid);
+    doc?.sheet?.render(true);
   }
 
-  /** Remove a stored UUID from one of the related-Actor lists. */
+  /** Remove a stored UUID from one of the related-document lists. */
   async #removeFrom(field, uuid) {
     if (this.isEditable) await this.submit();
-    const list = (this.actor.toObject().system[field] ?? []).filter((u) => u !== uuid);
-    await this.actor.update({ [`system.${field}`]: list });
+    const list = (this.document.toObject().system[field] ?? []).filter((u) => u !== uuid);
+    await this.document.update({ [`system.${field}`]: list });
   }
 
   static async _onRemoveScene(_event, target) {
@@ -357,21 +322,5 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static async _onRemoveThreat(_event, target) {
     await this.#removeFrom("threats", target.dataset.uuid);
-  }
-
-  static _onToggleEdit(_event, _target) {
-    this._editing = !this.isEditing;
-    this.render();
-  }
-
-  /** Open a file picker for the Job portrait. */
-  static async _onEditImage(_event, _target) {
-    const FilePickerImpl = foundry.applications.apps?.FilePicker?.implementation ?? FilePicker;
-    const picker = new FilePickerImpl({
-      type: "image",
-      current: this.actor.img,
-      callback: (path) => this.actor.update({ img: path }),
-    });
-    return picker.browse();
   }
 }

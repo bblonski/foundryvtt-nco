@@ -4,10 +4,10 @@
 <div class="nco-vehicle-sheet nco-threat-sheet {{#if editing}}nco-editing{{/if}}">
   <header class="nco-sheet-header">
     {{#if editable}}
-      <img class="nco-portrait nco-portrait-editable" src="{{actor.img}}" alt="{{actor.name}}"
+      <img class="nco-portrait nco-portrait-editable" src="{{document.img}}" alt="{{document.name}}"
            data-action="editImage" title="{{localize 'NCO.Sheet.EditImage'}}" />
     {{else}}
-      <img class="nco-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+      <img class="nco-portrait" src="{{document.img}}" alt="{{document.name}}" />
     {{/if}}
     <div class="nco-header-fields">
       {{!-- Danger Rating: a special negative Tag shown as a red circle. Clicking
@@ -22,9 +22,9 @@
                   title="{{invokeDangerTitle}}">{{dangerRating}}</button>
         {{/if}}
         {{#if editing}}
-          <input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'NCO.Sheet.NamePlaceholder'}}" />
+          <input type="text" name="name" value="{{document.name}}" placeholder="{{localize 'NCO.Sheet.NamePlaceholder'}}" />
         {{else}}
-          <h1 class="nco-name">{{actor.name}}</h1>
+          <h1 class="nco-name">{{document.name}}</h1>
         {{/if}}
         {{#if editable}}
           <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"

@@ -1,10 +1,8 @@
-import { Tags, TAG_POLARITY } from "../tags.js";
+import { NCOSheetMixin } from "./nco-sheet-mixin.js";
+import { TAG_POLARITY } from "../tags.js";
+import { escapeHTML } from "../lib/lib.js";
 
-const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
-
-const ESCAPE_MAP = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
-const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (c) => ESCAPE_MAP[c]);
 
 /** Fixed number of boxes on the Drive track. */
 const DRIVE_TRACK_LENGTH = 10;
@@ -29,21 +27,16 @@ const DRIVE_STATES = ["empty", "ticked", "crossed"];
  *    and players. Shift-clicking inverts the polarity. Plain Triggers are not
  *    Tags and are not clickable.
  */
-export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
     classes: ["nco", "sheet", "actor"],
     // Default to the left side of the screen, clear of the scene controls toolbar.
     position: { width: 600, height: 800, top: 80, left: 120 },
-    window: { resizable: true },
-    form: { submitOnChange: true, closeOnSubmit: false },
+    // Shared actions (editImage, toggleEdit, invoke, trackAdd) come from NCOSheetMixin.
     actions: {
-      editImage: this._onEditImage,
-      toggleEdit: this._onToggleEdit,
       createTrademark: this._onCreateTrademark,
       editTrademark: this._onEditTrademark,
       deleteTrademark: this._onDeleteTrademark,
-      invoke: this._onInvoke,
-      trackAdd: this._onTrackAdd,
       driveClick: this._onDriveClick,
       spendStuntPoint: this._onSpendStuntPoint,
       toggleCondition: this._onToggleCondition,
@@ -66,22 +59,13 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     },
   };
 
-  /** Show just the document name in the title bar, without the type prefix. */
-  get title() {
-    return this.document.name;
-  }
-
   /**
-   * Whether this sheet is currently in edit mode. Starts in edit mode for a
-   * blank character so there is something to interact with, otherwise in
-   * play mode so Trademarks and Edges are immediately clickable.
-   * @type {boolean|undefined}
+   * @override Start a Trademark-less character in edit mode so there is
+   * something to interact with; otherwise open in play mode so Trademarks and
+   * Edges are immediately clickable.
    */
-  _editing;
-
-  get isEditing() {
-    this._editing ??= !this.#trademarkItems.length;
-    return this._editing && this.isEditable;
+  _startsBlank() {
+    return !this.#trademarkItems.length;
   }
 
   /** The character's embedded Trademark Items. */
@@ -101,10 +85,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     return {
       ...context,
-      actor: this.actor,
-      system: this.actor.system,
-      editing: this.isEditing,
-      editable: this.isEditable,
+      ...this._baseContext(),
       // In play mode a Trademark name is a positive Tag (always clickable when
       // named); a Trigger is only a Tag — and so only clickable — once it is an
       // Edge. Plain Triggers add no dice and render as static labels.
@@ -127,11 +108,6 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       driveEnabled: game.settings.get("foundryvtt-nco", "driveTrackEnabled"),
       driveBoxes: this.#prepareDriveBoxes(),
       driveHint: game.i18n.localize("NCO.Sheet.DriveHint"),
-      trackHint: game.i18n.localize(
-        game.settings.get("foundryvtt-nco", "trackClickMode") === "fill"
-          ? "NCO.Sheet.TrackHintFill"
-          : "NCO.Sheet.TrackHintIncrement",
-      ),
       conditions: this.actor.items
         .filter((item) => item.type === "condition")
         .map((item) => ({ id: item.id, name: item.name, active: !!item.system.active })),
@@ -156,8 +132,6 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
           clickable: !!tag.text?.trim(),
         })),
       })),
-      invokePositiveTitle: game.i18n.localize("NCO.Sheet.InvokePositive"),
-      invokeNegativeTitle: game.i18n.localize("NCO.Sheet.InvokeNegative"),
       descriptionHTML: await TextEditorImpl.enrichHTML(this.actor.system.description ?? "", {
         relativeTo: this.actor,
       }),
@@ -263,11 +237,12 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   /**
-   * Where a track's filled-box count is stored and how high it can go. The
-   * Hits, Stunt Points, and XP tracks share the same click behavior, differing
-   * only in this.
+   * @override Where a clicked track's filled-box count is stored and how high
+   * it can go. The character has several tracks (Hits, Stunt Points, Stash, XP)
+   * keyed by the clicked element's `data-track`; the click/right-click behavior
+   * itself is shared (see NCOSheetMixin).
    */
-  #trackConfig(track) {
+  _trackConfig(track) {
     if (track === "hits") {
       return {
         field: "system.hits.taken",
@@ -294,49 +269,6 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       current: this.actor.system.xp ?? 0,
       max: this.#xpTrackLength,
     };
-  }
-
-  /**
-   * Left-click a track box. The world's "track click mode" setting decides
-   * whether this adds a single box ("increment") or fills/clears up to the
-   * clicked box ("fill"). Applies identically to the Hits, Stunt Points, and
-   * XP tracks.
-   */
-  static async _onTrackAdd(event, target) {
-    if (!this.isEditable) return;
-    const cfg = this.#trackConfig(target.dataset.track);
-    let next;
-    if (game.settings.get("foundryvtt-nco", "trackClickMode") === "fill") {
-      const box = event.target.closest("[data-index]");
-      if (!box) return;
-      const index = Number(box.dataset.index);
-      // Clicking a filled box clears down to it; an empty box fills up to it.
-      next = index < cfg.current ? index : index + 1;
-    } else {
-      next = cfg.current + 1;
-    }
-    next = Math.max(0, Math.min(cfg.max, next));
-    if (next !== cfg.current) await this.actor.update({ [cfg.field]: next });
-  }
-
-  /** Right-click a track: clear the last filled box (only in "increment" mode). */
-  async #onTrackRemove(event) {
-    event.preventDefault();
-    if (!this.isEditable) return;
-    if (game.settings.get("foundryvtt-nco", "trackClickMode") !== "increment") return;
-    const cfg = this.#trackConfig(event.currentTarget.dataset.track);
-    const next = Math.max(0, cfg.current - 1);
-    if (next !== cfg.current) await this.actor.update({ [cfg.field]: next });
-  }
-
-  /** @override */
-  async _onRender(context, options) {
-    await super._onRender(context, options);
-    // Right-click isn't an ActionV2 trigger, so wire each track's contextmenu
-    // (decrement) manually. The element is rebuilt each render, so re-bind here.
-    for (const el of this.element.querySelectorAll(".nco-track")) {
-      el.addEventListener("contextmenu", this.#onTrackRemove.bind(this));
-    }
   }
 
   /**
@@ -483,37 +415,6 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static async _onDeleteCondition(_event, target) {
     const item = this.actor.items.get(target.dataset.itemId);
     if (item) await item.delete();
-  }
-
-  /**
-   * Click a Tag (a Trademark name, Edge, Flaw, Trauma, or Condition): add it to
-   * the shared roll pool and show the roll window. Polarity is intrinsic to the
-   * chip and the same for GMs and players — positive Tags add Action dice,
-   * negative Tags add Danger dice. Shift-clicking inverts the polarity.
-   */
-  static async _onInvoke(event, target) {
-    await Tags.invoke({
-      text: target.dataset.text,
-      polarity: target.dataset.polarity ?? TAG_POLARITY.POSITIVE,
-      source: this.actor.name,
-      invert: event.shiftKey,
-    });
-  }
-
-  static _onToggleEdit(_event, _target) {
-    this._editing = !this.isEditing;
-    this.render();
-  }
-
-  /** Open a file picker for the character portrait. */
-  static async _onEditImage(_event, _target) {
-    const FilePickerImpl = foundry.applications.apps?.FilePicker?.implementation ?? FilePicker;
-    const picker = new FilePickerImpl({
-      type: "image",
-      current: this.actor.img,
-      callback: (path) => this.actor.update({ img: path }),
-    });
-    return picker.browse();
   }
 
   /** Create a fresh embedded Trademark and open its sheet to fill it in. */

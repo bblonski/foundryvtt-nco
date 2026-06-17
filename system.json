@@ -41,14 +41,14 @@
       "threat": {
         "htmlFields": ["drive", "actions"]
       },
-      "vehicle": {},
-      "scene": {},
-      "job": {}
+      "vehicle": {}
     },
     "Item": {
       "condition": {},
       "trademark": {},
-      "gear": {}
+      "gear": {},
+      "scene": {},
+      "job": {}
     }
   },
   "initiative": "1d6",

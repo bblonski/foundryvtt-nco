@@ -1,10 +1,8 @@
 import { PressureTrack } from "../pressure-track.js";
+import { escapeHTML } from "../lib/lib.js";
 
 const ACTION_COLOR = "#23d5e5";
 const DANGER_COLOR = "#ff2e88";
-
-const ESCAPE_MAP = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
-const escapeHTML = (text) => String(text).replace(/[&<>"']/g, (c) => ESCAPE_MAP[c]);
 
 /**
  * Encapsulates a Neon City Overdrive dice check:

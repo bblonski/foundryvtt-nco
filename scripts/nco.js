@@ -30,11 +30,13 @@ Hooks.once("init", function () {
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Actor.dataModels.threat = ThreatData;
   CONFIG.Actor.dataModels.vehicle = VehicleData;
-  CONFIG.Actor.dataModels.scene = SceneData;
-  CONFIG.Actor.dataModels.job = JobData;
   CONFIG.Item.dataModels.condition = ConditionData;
   CONFIG.Item.dataModels.trademark = TrademarkData;
   CONFIG.Item.dataModels.gear = GearData;
+  // Scenes and Jobs are Items (not Actors): they have no token/canvas presence
+  // and live in folders and compendia alongside the Scenes a Job references.
+  CONFIG.Item.dataModels.scene = SceneData;
+  CONFIG.Item.dataModels.job = JobData;
 
   foundry.documents.collections.Actors.registerSheet("foundryvtt-nco", CharacterSheet, {
     types: ["character"],
@@ -54,13 +56,13 @@ Hooks.once("init", function () {
     label: "NCO.Sheet.Vehicle",
   });
 
-  foundry.documents.collections.Actors.registerSheet("foundryvtt-nco", SceneSheet, {
+  foundry.documents.collections.Items.registerSheet("foundryvtt-nco", SceneSheet, {
     types: ["scene"],
     makeDefault: true,
     label: "NCO.Sheet.Scene",
   });
 
-  foundry.documents.collections.Actors.registerSheet("foundryvtt-nco", JobSheet, {
+  foundry.documents.collections.Items.registerSheet("foundryvtt-nco", JobSheet, {
     types: ["job"],
     makeDefault: true,
     label: "NCO.Sheet.Job",
@@ -191,18 +193,19 @@ Hooks.on("preCreateActor", (actor, data) => {
   });
 });
 
-// Per-type default portraits, applied when a new Actor is created without an
-// explicit image (i.e. it still carries Foundry's generic placeholder).
+// Per-type default portraits, applied when a new Item is created without an
+// explicit image (i.e. it still carries Foundry's generic placeholder). Scenes
+// and Jobs are Items (see the data-model registration above).
 const DEFAULT_ICONS = {
   job: "icons/svg/hanging-sign.svg",
   scene: "icons/svg/village.svg",
 };
 
-Hooks.on("preCreateActor", (actor, data) => {
-  const icon = DEFAULT_ICONS[actor.type];
+Hooks.on("preCreateItem", (item, data) => {
+  const icon = DEFAULT_ICONS[item.type];
   if (!icon) return;
-  if (data.img && data.img !== foundry.documents.BaseActor.DEFAULT_ICON) return;
-  actor.updateSource({ img: icon });
+  if (data.img && data.img !== foundry.documents.BaseItem.DEFAULT_ICON) return;
+  item.updateSource({ img: icon });
 });
 
 // World collections don't exist until ready, and only one client should

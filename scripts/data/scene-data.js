@@ -1,10 +1,10 @@
 import { TAG_POLARITY } from "../tags.js";
 
 /**
- * System data for the "scene" Actor type.
+ * System data for the "scene" Item type.
  *
  * A Scene represents the situation or location the action takes place in. It is
- * the simplest tag-bearing Actor: just a Name (the Actor's own name) and a list
+ * the simplest tag-bearing element: just a Name (the Item's own name) and a list
  * of Tags. Each Tag is independently positive (an Action die when invoked) or
  * negative (a Danger die), like Vehicle and Threat Tags.
  *

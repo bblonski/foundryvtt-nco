@@ -1,11 +1,11 @@
 /**
- * System data for the "job" Actor type.
+ * System data for the "job" Item type.
  *
  * A Job is the planning hub for a mission/adventure. It is mostly freeform text
  * — a Concept, Objective, Obstacles, and a Link (the hook tying the PCs in) —
- * plus two lists of related Actors: the Scenes the Job takes place in and the
- * Threats opposing the PCs. The related Actors are stored by UUID and rendered
- * inline on the sheet so their Tags can be invoked without opening each one.
+ * plus two lists of related documents: the Scenes (Items) the Job takes place
+ * in and the Threats (Actors) opposing the PCs. They are stored by UUID and
+ * rendered inline on the sheet so their Tags can be invoked without opening each.
  */
 export class JobData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -18,8 +18,9 @@ export class JobData extends foundry.abstract.TypeDataModel {
       objective: new fields.StringField({ required: true, blank: true, initial: "" }),
       obstacles: new fields.StringField({ required: true, blank: true, initial: "" }),
       link: new fields.StringField({ required: true, blank: true, initial: "" }),
-      // Related Actors, stored by UUID. Scenes and Threats are dropped onto the
-      // sheet and resolved for display (and Tag invocation) at render time.
+      // Related documents, stored by UUID. Scenes (Items) and Threats (Actors)
+      // are dropped onto the sheet and resolved for display (and Tag invocation)
+      // at render time.
       scenes: new fields.ArrayField(new fields.StringField({ required: true, blank: false })),
       threats: new fields.ArrayField(new fields.StringField({ required: true, blank: false })),
     };
