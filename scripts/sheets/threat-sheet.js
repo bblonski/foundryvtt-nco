@@ -41,7 +41,12 @@ export class ThreatSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   };
 
   static PARTS = {
-    sheet: { template: "systems/foundryvtt-nco/templates/actor/threat-sheet.hbs" },
+    // Preserve the body's scroll position across re-renders (submitOnChange
+    // edits, track clicks, etc.).
+    sheet: {
+      template: "systems/foundryvtt-nco/templates/actor/threat-sheet.hbs",
+      scrollable: [".nco-sheet-body"],
+    },
   };
 
   /** Show just the document name in the title bar, without the type prefix. */

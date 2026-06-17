@@ -15,6 +15,9 @@
     </div>
   </header>
 
+  {{!-- Everything below the header scrolls as one unit; the portrait and name
+        stay pinned at the top. --}}
+  <div class="nco-sheet-body">
   <section class="nco-condition-active">
     <label class="nco-checkbox">
       <input type="checkbox" name="system.active" {{checked system.active}}
@@ -22,4 +25,5 @@
       {{localize "NCO.Sheet.ConditionActive"}}
     </label>
   </section>
+  </div>
 </div>

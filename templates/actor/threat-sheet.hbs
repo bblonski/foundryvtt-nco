@@ -66,6 +66,9 @@
     </div>
   </header>
 
+  {{!-- Everything below the header scrolls as one unit; the portrait, name,
+        Hits, and Danger Rating stay pinned at the top. --}}
+  <div class="nco-sheet-body">
   <section class="nco-drive">
     <label class="nco-section-label">{{localize "NCO.Sheet.Drive"}}</label>
     {{#if editing}}
@@ -141,4 +144,5 @@
       <div class="nco-description-text">{{{actionsHTML}}}</div>
     {{/if}}
   </section>
+  </div>
 </div>

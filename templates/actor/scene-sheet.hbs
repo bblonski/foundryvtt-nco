@@ -27,6 +27,9 @@
     </div>
   </header>
 
+  {{!-- Everything below the header scrolls as one unit; the portrait and name
+        stay pinned at the top. --}}
+  <div class="nco-sheet-body">
   <section class="nco-threat-tags">
     <div class="nco-section-header">
       <label class="nco-section-label">{{localize "NCO.Sheet.Tags"}}</label>
@@ -84,4 +87,5 @@
       </ul>
     {{/if}}
   </section>
+  </div>
 </div>

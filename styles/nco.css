@@ -16,7 +16,9 @@
 }
 
 .nco-character-sheet,
-.nco-trademark-sheet {
+.nco-trademark-sheet,
+.nco-gear-sheet,
+.nco-condition-sheet {
   display: flex;
   flex-direction: column;
   gap: 10px;

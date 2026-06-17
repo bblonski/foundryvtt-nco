@@ -21,7 +21,11 @@ export class ConditionSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   };
 
   static PARTS = {
-    sheet: { template: "systems/foundryvtt-nco/templates/item/condition-sheet.hbs" },
+    // Preserve the body's scroll position across re-renders.
+    sheet: {
+      template: "systems/foundryvtt-nco/templates/item/condition-sheet.hbs",
+      scrollable: [".nco-sheet-body"],
+    },
   };
 
   /** Show just the document name in the title bar, without the type prefix. */

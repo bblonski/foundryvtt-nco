@@ -31,7 +31,11 @@ export class SceneSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   };
 
   static PARTS = {
-    sheet: { template: "systems/foundryvtt-nco/templates/actor/scene-sheet.hbs" },
+    // Preserve the body's scroll position across re-renders.
+    sheet: {
+      template: "systems/foundryvtt-nco/templates/actor/scene-sheet.hbs",
+      scrollable: [".nco-sheet-body"],
+    },
   };
 
   /** Show just the document name in the title bar, without the type prefix. */
