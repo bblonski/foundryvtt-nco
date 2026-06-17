@@ -49,18 +49,35 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   /** Bound once so the related-Actor hooks can be unregistered on close. */
   #onRelatedChangeBound = (actor) => this.#onRelatedChange(actor);
 
-  constructor(...args) {
-    super(...args);
-    // Re-render whenever a linked Scene/Threat is edited or deleted so its
-    // inline display (Tags, Danger Rating, etc.) stays in sync with the source.
+  /** Whether the related-Actor hooks are currently registered. */
+  #relatedHooksActive = false;
+
+  /**
+   * Re-render whenever a linked Scene/Threat is edited or deleted so its inline
+   * display (Tags, Danger Rating, etc.) stays in sync with the source.
+   *
+   * Registered on render rather than in the constructor: Foundry caches the
+   * sheet instance across close/reopen (it does not re-run the constructor), so
+   * constructor-time registration would be lost for good once `_onClose`
+   * removed it. Tying it to the render lifecycle keeps it correct across reopens.
+   */
+  #registerRelatedHooks() {
+    if (this.#relatedHooksActive) return;
     Hooks.on("updateActor", this.#onRelatedChangeBound);
     Hooks.on("deleteActor", this.#onRelatedChangeBound);
+    this.#relatedHooksActive = true;
+  }
+
+  #unregisterRelatedHooks() {
+    if (!this.#relatedHooksActive) return;
+    Hooks.off("updateActor", this.#onRelatedChangeBound);
+    Hooks.off("deleteActor", this.#onRelatedChangeBound);
+    this.#relatedHooksActive = false;
   }
 
   /** @override */
   _onClose(options) {
-    Hooks.off("updateActor", this.#onRelatedChangeBound);
-    Hooks.off("deleteActor", this.#onRelatedChangeBound);
+    this.#unregisterRelatedHooks();
     return super._onClose(options);
   }
 
@@ -199,6 +216,9 @@ export class JobSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   /** @override */
   async _onRender(context, options) {
     await super._onRender(context, options);
+    // Keep the linked Scene/Threat live-sync hooks tied to the render lifecycle
+    // (idempotent), so they survive a close/reopen of the cached sheet instance.
+    this.#registerRelatedHooks();
     // ApplicationV2 keeps the root element across renders, so de-dupe the drop
     // listeners (same bound reference) rather than stacking a new pair each time.
     const el = this.element;
