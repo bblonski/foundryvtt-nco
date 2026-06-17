@@ -2,12 +2,16 @@ import { NCORoll } from "./dice/nco-roll.js";
 import { CharacterData } from "./data/character-data.js";
 import { ThreatData } from "./data/threat-data.js";
 import { VehicleData } from "./data/vehicle-data.js";
+import { SceneData } from "./data/scene-data.js";
+import { JobData } from "./data/job-data.js";
 import { ConditionData } from "./data/condition-data.js";
 import { TrademarkData } from "./data/trademark-data.js";
 import { GearData } from "./data/gear-data.js";
 import { CharacterSheet } from "./sheets/character-sheet.js";
 import { ThreatSheet } from "./sheets/threat-sheet.js";
 import { VehicleSheet } from "./sheets/vehicle-sheet.js";
+import { SceneSheet } from "./sheets/scene-sheet.js";
+import { JobSheet } from "./sheets/job-sheet.js";
 import { TrademarkSheet } from "./sheets/trademark-sheet.js";
 import { GearSheet } from "./sheets/gear-sheet.js";
 import { ConditionSheet } from "./sheets/condition-sheet.js";
@@ -26,6 +30,8 @@ Hooks.once("init", function () {
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Actor.dataModels.threat = ThreatData;
   CONFIG.Actor.dataModels.vehicle = VehicleData;
+  CONFIG.Actor.dataModels.scene = SceneData;
+  CONFIG.Actor.dataModels.job = JobData;
   CONFIG.Item.dataModels.condition = ConditionData;
   CONFIG.Item.dataModels.trademark = TrademarkData;
   CONFIG.Item.dataModels.gear = GearData;
@@ -46,6 +52,18 @@ Hooks.once("init", function () {
     types: ["vehicle"],
     makeDefault: true,
     label: "NCO.Sheet.Vehicle",
+  });
+
+  foundry.documents.collections.Actors.registerSheet("foundryvtt-nco", SceneSheet, {
+    types: ["scene"],
+    makeDefault: true,
+    label: "NCO.Sheet.Scene",
+  });
+
+  foundry.documents.collections.Actors.registerSheet("foundryvtt-nco", JobSheet, {
+    types: ["job"],
+    makeDefault: true,
+    label: "NCO.Sheet.Job",
   });
 
   foundry.documents.collections.Items.registerSheet("foundryvtt-nco", TrademarkSheet, {
@@ -171,6 +189,20 @@ Hooks.on("preCreateActor", (actor, data) => {
       img: "icons/svg/downgrade.svg",
     })),
   });
+});
+
+// Per-type default portraits, applied when a new Actor is created without an
+// explicit image (i.e. it still carries Foundry's generic placeholder).
+const DEFAULT_ICONS = {
+  job: "icons/svg/hanging-sign.svg",
+  scene: "icons/svg/village.svg",
+};
+
+Hooks.on("preCreateActor", (actor, data) => {
+  const icon = DEFAULT_ICONS[actor.type];
+  if (!icon) return;
+  if (data.img && data.img !== foundry.documents.BaseActor.DEFAULT_ICON) return;
+  actor.updateSource({ img: icon });
 });
 
 // World collections don't exist until ready, and only one client should

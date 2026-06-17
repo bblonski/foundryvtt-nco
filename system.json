@@ -41,7 +41,9 @@
       "threat": {
         "htmlFields": ["drive", "actions"]
       },
-      "vehicle": {}
+      "vehicle": {},
+      "scene": {},
+      "job": {}
     },
     "Item": {
       "condition": {},

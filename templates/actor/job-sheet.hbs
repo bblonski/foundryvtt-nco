@@ -1,0 +1,201 @@
+{{!-- The sheet's root element is already a <form> (DocumentSheetV2), so this
+      wrapper must not be one: a nested form would capture the inputs and
+      break submitOnChange. --}}
+<div class="nco-job-sheet {{#if editing}}nco-editing{{/if}}">
+  <header class="nco-sheet-header">
+    {{#if editable}}
+      <img class="nco-portrait nco-portrait-editable" src="{{actor.img}}" alt="{{actor.name}}"
+           data-action="editImage" title="{{localize 'NCO.Sheet.EditImage'}}" />
+    {{else}}
+      <img class="nco-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+    {{/if}}
+    <div class="nco-header-fields">
+      <div class="nco-threat-namerow">
+        {{#if editing}}
+          <input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'NCO.Sheet.NamePlaceholder'}}" />
+        {{else}}
+          <h1 class="nco-name">{{actor.name}}</h1>
+        {{/if}}
+        {{#if editable}}
+          <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"
+                  data-action="toggleEdit" title="{{localize 'NCO.Sheet.ToggleEdit'}}"
+                  aria-label="{{localize 'NCO.Sheet.ToggleEdit'}}">
+            <i class="fas {{#if editing}}fa-unlock{{else}}fa-lock{{/if}}"></i>
+          </button>
+        {{/if}}
+      </div>
+    </div>
+  </header>
+
+  {{!-- Everything below the header scrolls as one unit; the portrait and name
+        stay pinned at the top. --}}
+  <div class="nco-sheet-body">
+  {{!-- Freeform text fields describing the Job. --}}
+  <section class="nco-job-fields">
+    <div class="nco-job-field">
+      <label class="nco-section-label">{{localize "NCO.Sheet.JobConcept"}}</label>
+      {{#if editing}}
+        <textarea name="system.concept" rows="2" placeholder="{{localize 'NCO.Sheet.JobConceptPlaceholder'}}">{{system.concept}}</textarea>
+      {{else}}
+        <p class="nco-job-text">{{system.concept}}</p>
+      {{/if}}
+    </div>
+    <div class="nco-job-field">
+      <label class="nco-section-label">{{localize "NCO.Sheet.JobObjective"}}</label>
+      {{#if editing}}
+        <textarea name="system.objective" rows="2" placeholder="{{localize 'NCO.Sheet.JobObjectivePlaceholder'}}">{{system.objective}}</textarea>
+      {{else}}
+        <p class="nco-job-text">{{system.objective}}</p>
+      {{/if}}
+    </div>
+    <div class="nco-job-field">
+      <label class="nco-section-label">{{localize "NCO.Sheet.JobObstacles"}}</label>
+      {{#if editing}}
+        <textarea name="system.obstacles" rows="2" placeholder="{{localize 'NCO.Sheet.JobObstaclesPlaceholder'}}">{{system.obstacles}}</textarea>
+      {{else}}
+        <p class="nco-job-text">{{system.obstacles}}</p>
+      {{/if}}
+    </div>
+    <div class="nco-job-field">
+      <label class="nco-section-label">{{localize "NCO.Sheet.JobLink"}}</label>
+      {{#if editing}}
+        <input type="text" name="system.link" value="{{system.link}}" placeholder="{{localize 'NCO.Sheet.JobLinkPlaceholder'}}" />
+      {{else}}
+        <p class="nco-job-text">{{system.link}}</p>
+      {{/if}}
+    </div>
+  </section>
+
+  {{#if editing}}
+    <p class="nco-empty-hint nco-job-drophint">{{localize "NCO.Sheet.JobDropHint"}}</p>
+  {{/if}}
+
+  {{!-- Related Scenes. --}}
+  <section class="nco-job-related">
+    <div class="nco-section-header">
+      <label class="nco-section-label">{{localize "NCO.Sheet.JobScenes"}}</label>
+    </div>
+    {{#each scenes as |scene|}}
+      <div class="nco-related-card nco-related-scene">
+        <header class="nco-related-head">
+          <img class="nco-related-portrait" src="{{scene.img}}" alt="{{scene.name}}"
+               data-action="openActor" data-uuid="{{scene.uuid}}" title="{{localize 'NCO.Sheet.JobOpenActor'}}" />
+          <button type="button" class="nco-related-name" data-action="openActor" data-uuid="{{scene.uuid}}"
+                  title="{{localize 'NCO.Sheet.JobOpenActor'}}">{{scene.name}}</button>
+          {{#if @root.editing}}
+            <button type="button" class="nco-icon-button nco-delete" data-action="removeScene"
+                    data-uuid="{{scene.uuid}}" title="{{localize 'NCO.Sheet.JobRemove'}}"
+                    aria-label="{{localize 'NCO.Sheet.JobRemove'}}">
+              <i class="fas fa-times"></i>
+            </button>
+          {{/if}}
+        </header>
+        <ul class="nco-tags nco-tags-play">
+          {{#each scene.tags as |tag|}}
+            <li>
+              {{#if tag.clickable}}
+                <button type="button"
+                        class="nco-chip nco-chip-tag {{#if tag.positive}}nco-chip-edge{{else}}nco-chip-flaw{{/if}}"
+                        data-action="invoke" data-text="{{tag.text}}" data-polarity="{{tag.polarity}}"
+                        data-source="{{scene.name}}"
+                        title="{{#if tag.positive}}{{@root.invokePositiveTitle}}{{else}}{{@root.invokeNegativeTitle}}{{/if}}">
+                  <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i> {{tag.text}}
+                </button>
+              {{else}}
+                <span class="nco-chip nco-chip-tag nco-chip-static">{{tag.text}}</span>
+              {{/if}}
+            </li>
+          {{else}}
+            <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyThreatTags"}}</p>
+          {{/each}}
+        </ul>
+      </div>
+    {{else}}
+      <p class="nco-empty-hint">{{localize "NCO.Sheet.JobNoScenes"}}</p>
+    {{/each}}
+  </section>
+
+  {{!-- Related Threats. --}}
+  <section class="nco-job-related">
+    <div class="nco-section-header">
+      <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.JobThreats"}}</label>
+    </div>
+    {{#each threats as |threat|}}
+      <div class="nco-related-card nco-related-threat">
+        <header class="nco-related-head">
+          <img class="nco-related-portrait" src="{{threat.img}}" alt="{{threat.name}}"
+               data-action="openActor" data-uuid="{{threat.uuid}}" title="{{localize 'NCO.Sheet.JobOpenActor'}}" />
+          <button type="button" class="nco-related-name" data-action="openActor" data-uuid="{{threat.uuid}}"
+                  title="{{localize 'NCO.Sheet.JobOpenActor'}}">
+            {{threat.name}}
+          </button>
+          <button type="button" class="nco-danger-rating" data-action="invokeDanger"
+                  data-rating="{{threat.dangerRating}}" data-source="{{threat.name}}"
+                  title="{{@root.invokeDangerTitle}}">{{threat.dangerRating}}</button>
+          {{#if @root.editing}}
+            <button type="button" class="nco-icon-button nco-delete" data-action="removeThreat"
+                    data-uuid="{{threat.uuid}}" title="{{localize 'NCO.Sheet.JobRemove'}}"
+                    aria-label="{{localize 'NCO.Sheet.JobRemove'}}">
+              <i class="fas fa-times"></i>
+            </button>
+          {{/if}}
+        </header>
+
+        <div class="nco-hits">
+          <span class="nco-section-label nco-danger-label nco-hits-label">{{localize "NCO.Sheet.Hits"}}</span>
+          {{!-- Click behavior (add/remove vs fill-to-level) is set in JS by the
+                world's track-click-mode setting, shared with the Threat sheet.
+                The track carries its Threat's UUID so the click updates it. --}}
+          <div class="nco-hits-track nco-track" data-action="trackHits" data-uuid="{{threat.uuid}}"
+               title="{{@root.trackHint}}">
+            {{#each threat.hitGroups as |group|}}
+              {{#unless @first}}<hr class="nco-hit-divider" />{{/unless}}
+              <div class="nco-hit-group">
+                {{#each group as |box|}}
+                  <span class="nco-hit-box {{#if box.checked}}nco-hit-box-filled{{/if}}"
+                        data-index="{{box.index}}"></span>
+                {{/each}}
+              </div>
+            {{/each}}
+          </div>
+        </div>
+
+        <ul class="nco-tags nco-tags-play">
+          {{#each threat.tags as |tag|}}
+            <li>
+              {{#if tag.clickable}}
+                <button type="button"
+                        class="nco-chip nco-chip-tag {{#if tag.positive}}nco-chip-edge{{else}}nco-chip-flaw{{/if}}"
+                        data-action="invoke" data-text="{{tag.text}}" data-polarity="{{tag.polarity}}"
+                        data-source="{{threat.name}}"
+                        title="{{#if tag.positive}}{{@root.invokePositiveTitle}}{{else}}{{@root.invokeNegativeTitle}}{{/if}}">
+                  <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i> {{tag.text}}
+                </button>
+              {{else}}
+                <span class="nco-chip nco-chip-tag nco-chip-static">{{tag.text}}</span>
+              {{/if}}
+            </li>
+          {{else}}
+            <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyThreatTags"}}</p>
+          {{/each}}
+        </ul>
+
+        {{#if threat.driveHTML}}
+          <div class="nco-related-prose">
+            <span class="nco-section-label">{{localize "NCO.Sheet.Drive"}}</span>
+            <div class="nco-prose">{{{threat.driveHTML}}}</div>
+          </div>
+        {{/if}}
+        {{#if threat.actionsHTML}}
+          <div class="nco-related-prose">
+            <span class="nco-section-label">{{localize "NCO.Sheet.Actions"}}</span>
+            <div class="nco-prose">{{{threat.actionsHTML}}}</div>
+          </div>
+        {{/if}}
+      </div>
+    {{else}}
+      <p class="nco-empty-hint">{{localize "NCO.Sheet.JobNoThreats"}}</p>
+    {{/each}}
+  </section>
+  </div>
+</div>

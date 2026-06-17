@@ -880,7 +880,8 @@ button.nco-condition-name:hover {
 /* Danger Rating: a red circle holding a single integer. As a button (play
    mode) it adds that many Danger dice; as an input (edit mode) it sets the
    rating. Both share the circular red look. */
-.nco-threat-sheet .nco-danger-rating {
+.nco-threat-sheet .nco-danger-rating,
+.nco-job-sheet .nco-danger-rating {
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -952,14 +953,16 @@ button.nco-danger-rating:hover {
   cursor: pointer;
 }
 
-.nco-threat-sheet .nco-hits {
+.nco-threat-sheet .nco-hits,
+.nco-job-sheet .nco-hits {
   display: flex;
   align-items: center;
   gap: 5px;
   margin-top: 6px;
 }
 
-.nco-threat-sheet .nco-hit-box {
+.nco-threat-sheet .nco-hit-box,
+.nco-job-sheet .nco-hit-box {
   width: 18px;
   height: 18px;
   flex: none;
@@ -970,7 +973,8 @@ button.nco-danger-rating:hover {
   transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-.nco-threat-sheet .nco-hit-box-filled {
+.nco-threat-sheet .nco-hit-box-filled,
+.nco-job-sheet .nco-hit-box-filled {
   border-color: var(--nco-danger);
   background: var(--nco-danger);
   box-shadow: 0 0 5px 0 rgba(255, 46, 136, 0.7);
@@ -1376,4 +1380,110 @@ button.nco-danger-rating:hover {
 .chat-message .dice-roll .dice-flavor,
 .chat-message .dice-roll .part-flavor {
   color: rgba(231, 233, 245, 0.7);
+}
+
+/* ===== Job sheet ===== */
+.nco-job-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 8px;
+}
+
+.nco-job-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.nco-job-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.nco-job-field textarea,
+.nco-job-field input[type="text"] {
+  width: 100%;
+  resize: vertical;
+}
+
+.nco-job-text {
+  margin: 0;
+  min-height: 1.2em;
+  white-space: pre-wrap;
+}
+
+.nco-job-drophint {
+  text-align: center;
+}
+
+.nco-job-related {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nco-related-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  border: 1px solid var(--nco-border);
+  border-radius: 6px;
+  background: var(--nco-bg);
+}
+
+.nco-related-threat {
+  border-left: 3px solid var(--nco-danger);
+}
+
+.nco-related-scene {
+  border-left: 3px solid var(--nco-action);
+}
+
+.nco-related-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nco-related-portrait {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border: 1px solid var(--nco-border);
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.nco-related-name {
+  flex: 1 1 auto;
+  text-align: left;
+  background: none;
+  border: none;
+  color: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+}
+
+.nco-related-name:hover {
+  color: var(--nco-action);
+  text-shadow: none;
+}
+
+.nco-related-hits {
+  flex: 0 0 auto;
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+.nco-related-prose {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.9em;
 }
