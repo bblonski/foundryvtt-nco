@@ -49,9 +49,9 @@ export class Tags {
     if (!text?.trim()) return;
     const effective = invert ? this.invert(polarity) : polarity;
     const type = this.dieType(effective);
-    for (let i = 0; i < Math.max(1, count); i++) {
-      await GlobalRollPool.add(type, text, source);
-    }
+    // Add all dice in one write so a multi-die invoke (e.g. a Danger Rating)
+    // can't lose dice to a race on the GM's shared-pool setting.
+    await GlobalRollPool.addMany(type, text, source, Math.max(1, count));
     NCORollDialog.open();
   }
 }
