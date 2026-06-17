@@ -182,28 +182,36 @@ export class NCORoll {
   }
 
   /**
-   * Opens a DialogV2 prompt for action/danger counts, then returns a new
-   * unevaluated NCORoll, or null if the dialog was cancelled.
+   * Opens a DialogV2 prompt for a direct count of Action and Danger dice — a
+   * simple entry point for macros, separate from the shared-pool NCORollDialog.
+   *
+   * @param {object}  [options]
+   * @param {boolean} [options.post]  When true, evaluate the roll and post it to
+   *   chat before returning, so a macro is a one-liner. When false (default),
+   *   return the unevaluated NCORoll for the caller to drive.
+   * @returns {Promise<NCORoll|null>} The roll, or null if the dialog was cancelled.
    */
-  static async fromDialog() {
+  static async fromDialog({ post = false } = {}) {
+    const actionLabel = game.i18n.localize("NCO.RollDialog.ActionDice");
+    const dangerLabel = game.i18n.localize("NCO.RollDialog.DangerDice");
     const content = `
       <form style="display:flex;gap:12px;padding:6px 2px;">
         <div style="flex:1;">
-          <label style="display:block;font-weight:bold;color:${ACTION_COLOR};">Action Dice</label>
+          <label style="display:block;font-weight:bold;color:${ACTION_COLOR};">${actionLabel}</label>
           <input type="number" name="action" value="1" min="1" max="30" step="1" style="width:100%;"/>
         </div>
         <div style="flex:1;">
-          <label style="display:block;font-weight:bold;color:${DANGER_COLOR};">Danger Dice</label>
+          <label style="display:block;font-weight:bold;color:${DANGER_COLOR};">${dangerLabel}</label>
           <input type="number" name="danger" value="0" min="0" max="30" step="1" style="width:100%;"/>
         </div>
       </form>`;
 
     const result = await foundry.applications.api.DialogV2.prompt({
-      window: { title: "Neon City Overdrive — Check" },
+      window: { title: game.i18n.localize("NCO.RollDialog.Title") },
       content,
       ok: {
         icon: "fas fa-dice-d6",
-        label: "Roll",
+        label: game.i18n.localize("NCO.RollDialog.Roll"),
         callback: (_event, _button, dialog) => {
           const form = dialog.element.querySelector("form");
           return new FormDataExtended(form).object;
@@ -212,9 +220,11 @@ export class NCORoll {
     });
 
     if (!result) return null;
-    return new NCORoll(
+    const roll = new NCORoll(
       Math.max(1, parseInt(result.action) || 1),
       Math.max(0, parseInt(result.danger) || 0),
     );
+    if (post) await roll.toMessage();
+    return roll;
   }
 }
