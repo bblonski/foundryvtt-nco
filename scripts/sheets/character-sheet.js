@@ -291,8 +291,8 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
       content: `
-        <div style="border:1px solid #23d5e5;border-radius:6px;padding:8px 10px;background:rgba(10,12,24,0.55);">
-          <div style="font-family:'Courier New',monospace;letter-spacing:1px;color:#23d5e5;font-size:11px;text-transform:uppercase;">
+        <div style="border:1px solid var(--nco-action);border-radius:6px;padding:8px 10px;background:var(--nco-bg);">
+          <div style="font-family:'Courier New',monospace;letter-spacing:1px;color:var(--nco-action);font-size:11px;text-transform:uppercase;">
             ${game.i18n.localize("NCO.Chat.StuntPoint.Title")}
           </div>
           <ul style="margin:6px 0;padding-left:18px;font-size:12px;line-height:1.6;">${options}</ul>
@@ -350,7 +350,7 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
       trauma: escapeHTML(trauma),
     });
     let outcome;
-    let outcomeColor = "#23d5e5";
+    let outcomeColor = "var(--nco-action)";
     if (check.total === 1) {
       const turnsRoll = new Roll("1d6");
       await turnsRoll.evaluate();
@@ -359,7 +359,7 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
         name: escapeHTML(this.actor.name),
         turns: turnsRoll.total,
       });
-      outcomeColor = "#ff2e88";
+      outcomeColor = "var(--nco-danger)";
     } else {
       outcome = game.i18n.format("NCO.Chat.DeathCheck.Safe", {
         name: escapeHTML(this.actor.name),
@@ -372,12 +372,12 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
       rolls,
       sound: CONFIG.sounds.dice,
       content: `
-        <div style="border:1px solid ${outcomeColor};border-radius:6px;padding:8px 10px;background:rgba(10,12,24,0.55);">
-          <div style="font-family:'Courier New',monospace;letter-spacing:1px;color:#23d5e5;font-size:11px;text-transform:uppercase;">
+        <div style="border:1px solid ${outcomeColor};border-radius:6px;padding:8px 10px;background:var(--nco-bg);">
+          <div style="font-family:'Courier New',monospace;letter-spacing:1px;color:var(--nco-action);font-size:11px;text-transform:uppercase;">
             ${game.i18n.localize("NCO.Chat.DeathCheck.Title")}
           </div>
           <div style="margin:6px 0 2px;font-size:12px;">${suffered}</div>
-          <div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.15);
+          <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--nco-border);
             font-size:14px;font-weight:bold;color:${outcomeColor};text-align:center;">
             ${outcome}
           </div>

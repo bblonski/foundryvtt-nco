@@ -1,6 +1,8 @@
 :root {
   --nco-action: #23d5e5;
   --nco-danger: #ff2e88;
+  --nco-partial: #ffd23f;
+  --nco-failure: #ff8c42;
   --nco-bg: rgba(10, 12, 24, 0.55);
   --nco-border: rgba(255, 255, 255, 0.15);
 }

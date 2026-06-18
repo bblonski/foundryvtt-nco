@@ -1,8 +1,6 @@
 import { PressureTrack } from "../pressure-track.js";
 import { escapeHTML } from "../lib/lib.js";
 
-const ACTION_COLOR = "#23d5e5";
-const DANGER_COLOR = "#ff2e88";
 
 /**
  * Encapsulates a Neon City Overdrive dice check:
@@ -44,17 +42,21 @@ export class NCORoll {
   }
 
   get resultLabel() {
-    if (this.isBotch) return "BOTCH — Critical Failure";
-    if (this.high === 6) return this.boons > 0 ? `Success — ${this.boons} Boon${this.boons > 1 ? "s" : ""}` : "Success";
-    if (this.high >= 4) return "Partial Success — at a cost";
-    return "Failure";
+    if (this.isBotch) return game.i18n.localize("NCO.Roll.Result.Botch");
+    if (this.high === 6) {
+      if (this.boons === 0) return game.i18n.localize("NCO.Roll.Result.Success");
+      if (this.boons === 1) return game.i18n.localize("NCO.Roll.Result.SuccessBoon");
+      return game.i18n.format("NCO.Roll.Result.SuccessBoons", { boons: this.boons });
+    }
+    if (this.high >= 4) return game.i18n.localize("NCO.Roll.Result.Partial");
+    return game.i18n.localize("NCO.Roll.Result.Failure");
   }
 
   get resultColor() {
-    if (this.isBotch) return DANGER_COLOR;
-    if (this.high === 6) return ACTION_COLOR;
-    if (this.high >= 4) return "#ffd23f";
-    return "#ff8c42";
+    if (this.isBotch) return "var(--nco-danger)";
+    if (this.high === 6) return "var(--nco-action)";
+    if (this.high >= 4) return "var(--nco-partial)";
+    return "var(--nco-failure)";
   }
 
   async evaluate() {
@@ -93,13 +95,13 @@ export class NCORoll {
     if (!this.evaluated) throw new Error("NCORoll must be evaluated before rendering.");
 
     const pip = (v, { cancelled = false, faded = false, danger = false, hi = false } = {}) => {
-      const color = danger ? DANGER_COLOR : ACTION_COLOR;
+      const color = danger ? "var(--nco-danger)" : "var(--nco-action)";
       const styles = [
         "display:inline-block", "width:26px", "height:26px", "line-height:26px",
         "text-align:center", "margin:2px", `border:1px solid ${color}`,
         "border-radius:4px", `color:${color}`, "font-weight:bold",
       ];
-      const glow = danger ? DANGER_COLOR : this.resultColor;
+      const glow = danger ? "var(--nco-danger)" : this.resultColor;
       if (cancelled) styles.push("text-decoration:line-through", "opacity:0.35");
       else if (faded) styles.push("opacity:0.4");
       if (hi) styles.push(`box-shadow:0 0 6px 2px ${glow}`, `border-color:${glow}`);
@@ -127,23 +129,23 @@ export class NCORoll {
       : "";
     const edgesHtml = this.edges
       ? `<div style="margin:6px 0 2px;font-size:11px;line-height:1.5;">
-          ${edgeLine(ACTION_COLOR, "Action Edges", this.edges.action)}
-          ${edgeLine(DANGER_COLOR, "Danger Edges", this.edges.danger)}
+          ${edgeLine("var(--nco-action)", game.i18n.localize("NCO.Roll.ActionEdges"), this.edges.action)}
+          ${edgeLine("var(--nco-danger)", game.i18n.localize("NCO.Roll.DangerEdges"), this.edges.danger)}
         </div>`
       : "";
 
     return `
-      <div style="border:1px solid ${ACTION_COLOR};border-radius:6px;padding:8px 10px;background:rgba(10,12,24,0.55);">
-        <div style="font-family:'Courier New',monospace;letter-spacing:1px;color:${ACTION_COLOR};font-size:11px;text-transform:uppercase;">
-          Neon City Overdrive · Check
+      <div style="border:1px solid var(--nco-action);border-radius:6px;padding:8px 10px;background:var(--nco-bg);">
+        <div style="font-family:'Courier New',monospace;letter-spacing:1px;color:var(--nco-action);font-size:11px;text-transform:uppercase;">
+          ${game.i18n.localize("NCO.Roll.Title")}
         </div>
         ${edgesHtml}
-        <div style="margin:6px 0 2px;color:${ACTION_COLOR};font-size:11px;">Action (${this.actionCount})</div>
+        <div style="margin:6px 0 2px;color:var(--nco-action);font-size:11px;">${game.i18n.localize("NCO.Roll.Action")} (${this.actionCount})</div>
         <div>${actionHtml}</div>
         ${this.dangerCount > 0
-          ? `<div style="margin:6px 0 2px;color:${DANGER_COLOR};font-size:11px;">Danger (${this.dangerCount})</div><div>${dangerHtml}</div>`
+          ? `<div style="margin:6px 0 2px;color:var(--nco-danger);font-size:11px;">${game.i18n.localize("NCO.Roll.Danger")} (${this.dangerCount})</div><div>${dangerHtml}</div>`
           : ""}
-        <div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.15);
+        <div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--nco-border);
           font-size:16px;font-weight:bold;color:${this.resultColor};text-align:center;">
           ${this.high !== null ? `[${this.high}] ` : ""}${this.resultLabel}
         </div>
@@ -195,11 +197,11 @@ export class NCORoll {
     const content = `
       <form style="display:flex;gap:12px;padding:6px 2px;">
         <div style="flex:1;">
-          <label style="display:block;font-weight:bold;color:${ACTION_COLOR};">${actionLabel}</label>
+          <label style="display:block;font-weight:bold;color:var(--nco-action);">${actionLabel}</label>
           <input type="number" name="action" value="1" min="1" max="30" step="1" style="width:100%;"/>
         </div>
         <div style="flex:1;">
-          <label style="display:block;font-weight:bold;color:${DANGER_COLOR};">${dangerLabel}</label>
+          <label style="display:block;font-weight:bold;color:var(--nco-danger);">${dangerLabel}</label>
           <input type="number" name="danger" value="0" min="0" max="30" step="1" style="width:100%;"/>
         </div>
       </form>`;
