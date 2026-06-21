@@ -39,6 +39,7 @@ export class VehicleSheet extends NCOSheetMixin(ActorSheetV2) {
   /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    const TextEditorImpl = foundry.applications.ux?.TextEditor?.implementation ?? TextEditor;
 
     return {
       ...context,
@@ -51,6 +52,9 @@ export class VehicleSheet extends NCOSheetMixin(ActorSheetV2) {
         clickable: !!text?.trim(),
       })),
       dangerRating: this.actor.system.dangerRating ?? 0,
+      descriptionHTML: await TextEditorImpl.enrichHTML(this.actor.system.description ?? "", {
+        relativeTo: this.actor,
+      }),
     };
   }
 

@@ -22,6 +22,7 @@ export class VehicleData extends foundry.abstract.TypeDataModel {
     const fields = foundry.data.fields;
 
     return {
+      description: new fields.HTMLField({ required: false, blank: true, initial: "" }),
       // A special negative Tag: invoking it adds this many Danger dice.
       dangerRating: new fields.NumberField({ required: true, integer: true, min: 0, initial: 1 }),
       // Hits are a damage track: `taken` boxes are checked off as the Vehicle

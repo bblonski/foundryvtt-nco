@@ -56,6 +56,15 @@
   {{!-- Everything below the header scrolls as one unit; the portrait, name,
         Hits, and Danger Rating stay pinned at the top. --}}
   <div class="nco-sheet-body">
+  <section class="nco-description">
+    <label class="nco-section-label">{{localize "NCO.Sheet.Description"}}</label>
+    {{#if editing}}
+      <textarea name="system.description" rows="4">{{system.description}}</textarea>
+    {{else}}
+      <div class="nco-description-text">{{{descriptionHTML}}}</div>
+    {{/if}}
+  </section>
+
   <section class="nco-threat-tags">
     <div class="nco-section-header">
       <label class="nco-section-label">{{localize "NCO.Sheet.Tags"}}</label>
