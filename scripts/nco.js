@@ -110,6 +110,7 @@ Hooks.once("init", function () {
     type: Number,
     range: { min: 1, max: 6, step: 1 },
     default: 4,
+    requiresReload: true,
   });
 
   game.settings.register("foundryvtt-nco", "xpTrackLength", {
@@ -120,6 +121,7 @@ Hooks.once("init", function () {
     type: Number,
     range: { min: 5, max: 20, step: 1 },
     default: 15,
+    requiresReload: true,
   });
 
   // Controls how the Hits and XP tracks respond to clicks (see CharacterSheet).
@@ -144,6 +146,7 @@ Hooks.once("init", function () {
     config: true,
     type: Boolean,
     default: true,
+    requiresReload: true,
   });
 
   // Whether the optional Stash track appears on character sheets.
@@ -154,6 +157,7 @@ Hooks.once("init", function () {
     config: true,
     type: Boolean,
     default: true,
+    requiresReload: true,
   });
 
   // How many Stash boxes appear on each character's Stash track.
@@ -165,6 +169,7 @@ Hooks.once("init", function () {
     type: Number,
     range: { min: 1, max: 20, step: 1 },
     default: 5,
+    requiresReload: true,
   });
 
   // Foundry's built-in "Create Actor" dialog only fills in a default `type`
