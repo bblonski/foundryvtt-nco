@@ -44,6 +44,8 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
       deleteCondition: this._onDeleteCondition,
       createTrauma: this._onCreateTrauma,
       deleteTrauma: this._onDeleteTrauma,
+      createAdvantage: this._onCreateAdvantage,
+      deleteAdvantage: this._onDeleteAdvantage,
       createUniqueGear: this._onCreateUniqueGear,
       editUniqueGear: this._onEditUniqueGear,
       deleteUniqueGear: this._onDeleteUniqueGear,
@@ -138,6 +140,16 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
       gearHTML: await TextEditorImpl.enrichHTML(this.actor.system.gear ?? "", {
         relativeTo: this.actor,
       }),
+      tiesEnabled: game.settings.get("foundryvtt-nco", "tiesEnabled"),
+      tiesHTML: await TextEditorImpl.enrichHTML(this.actor.system.ties ?? "", {
+        relativeTo: this.actor,
+      }),
+      advantagesEnabled: game.settings.get("foundryvtt-nco", "advantagesEnabled"),
+      // Open-ended list of positive Tags, mirroring `traumas` (which are negative).
+      advantages: (this.actor.system.advantages ?? []).map((text) => ({
+        text,
+        clickable: !!text?.trim(),
+      })),
     };
   }
 
@@ -327,7 +339,9 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     const traumas = this.actor.toObject().system.traumas ?? [];
     traumas.push(name.trim());
     await this.actor.update({ "system.traumas": traumas });
-    await this.#rollDeathCheck(name.trim());
+    if (game.settings.get("foundryvtt-nco", "deathCheckEnabled")) {
+      await this.#rollDeathCheck(name.trim());
+    }
   }
 
   static async _onDeleteTrauma(_event, target) {
@@ -337,6 +351,40 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     if (index < 0 || index >= traumas.length) return;
     traumas.splice(index, 1);
     await this.actor.update({ "system.traumas": traumas });
+  }
+
+  /**
+   * Add a new Advantage: prompt for a name and append it. Unlike a Trauma, an
+   * Advantage is a positive Tag and adding one rolls no death check.
+   */
+  static async _onCreateAdvantage(_event, _target) {
+    const placeholder = game.i18n.localize("NCO.Sheet.AdvantageNamePlaceholder");
+    const name = await foundry.applications.api.DialogV2.prompt({
+      window: { title: "NCO.Sheet.AddAdvantageTitle" },
+      content: `<input type="text" name="name" placeholder="${placeholder}" autofocus />`,
+      rejectClose: false,
+      ok: {
+        icon: "fas fa-plus",
+        label: "NCO.Sheet.AddAdvantage",
+        callback: (_event, _button, dialog) =>
+          dialog.element.querySelector('input[name="name"]')?.value ?? "",
+      },
+    });
+    if (!name?.trim()) return;
+
+    if (this.isEditable) await this.submit();
+    const advantages = this.actor.toObject().system.advantages ?? [];
+    advantages.push(name.trim());
+    await this.actor.update({ "system.advantages": advantages });
+  }
+
+  static async _onDeleteAdvantage(_event, target) {
+    const index = Number(target.dataset.advantageIndex);
+    if (this.isEditable) await this.submit();
+    const advantages = this.actor.toObject().system.advantages ?? [];
+    if (index < 0 || index >= advantages.length) return;
+    advantages.splice(index, 1);
+    await this.actor.update({ "system.advantages": advantages });
   }
 
   /** Roll the death check for a freshly suffered Trauma and post the outcome. */

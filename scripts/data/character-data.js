@@ -64,6 +64,17 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // their own positive and negative Tags, for items significant enough to
       // warrant that detail.
       gear: new fields.HTMLField({ required: false, blank: true, initial: "" }),
+      // Optional Ties box (off by default; toggled per world). Like Gear, this
+      // is a plain freeform notes box — not invocable Tags — for game lines that
+      // surface Ties/relationships (e.g. Hard City, Tomorrow City). Shown only
+      // when its world setting is enabled.
+      ties: new fields.HTMLField({ required: false, blank: true, initial: "" }),
+      // Optional Advantages (off by default; toggled per world). An open-ended
+      // list like Traumas, but each is a positive Tag: invoking one adds an
+      // Action die (the mirror of a Flaw). No death check on adding one.
+      advantages: new fields.ArrayField(
+        new fields.StringField({ required: true, blank: true, initial: "" }),
+      ),
       // Drive track: a description plus a fixed row of ten tri-state boxes. Each
       // box cycles empty (0) -> ticked (1) -> crossed (2). The number of ticked
       // and crossed boxes are derived character stats (see prepareDerivedData).

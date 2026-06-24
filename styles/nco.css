@@ -674,6 +674,16 @@ button.nco-chip-flaw:hover {
   background: rgb(var(--nco-danger-rgb) /0.25);
 }
 
+/* Advantages: edited as rows (like Traumas) but invoked as positive (Action)
+   Tags. The edit input borrows the Flaw input's flex sizing with an Action tint. */
+.nco-advantage-text {
+  flex: 1;
+}
+
+.nco-character-sheet .nco-advantage-text {
+  border-color: rgb(var(--nco-action-rgb) /0.4);
+}
+
 .nco-chip-removable > .nco-chip-remove {
   display: inline-flex;
   align-items: center;
@@ -710,9 +720,12 @@ button.nco-chip-flaw:hover {
   flex: 1;
 }
 
-/* Simple Gear: a freeform notes box, styled like the Description field */
+/* Simple Gear / Ties / Advantages: freeform notes boxes, styled like the
+   Description field and stretched to the full sheet width. */
 
-.nco-gear textarea {
+.nco-gear textarea,
+.nco-ties textarea,
+.nco-advantages textarea {
   width: 100%;
   resize: vertical;
 }

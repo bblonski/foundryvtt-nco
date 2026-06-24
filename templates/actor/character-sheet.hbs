@@ -172,15 +172,76 @@
     {{/each}}
   </section>
 
-  {{!-- Gear is a freeform notes box that stays writable during play (when the
-        sheet is locked), so it follows `editable` (permission) rather than
-        `editing` (the lock toggle). --}}
-  <section class="nco-gear">
-    <label class="nco-section-label">{{localize "NCO.Sheet.SimpleGear"}}</label>
-    {{#if editable}}
-      <textarea name="system.gear" rows="3" placeholder="{{localize 'NCO.Sheet.GearPlaceholder'}}">{{system.gear}}</textarea>
+  {{!-- Advantages: an open-ended list mirroring Traumas, but each is a positive
+        Tag (invoked as an Action die). Added and removed only while the sheet is
+        unlocked; in play mode they are plain clickable Tags. --}}
+  {{#if advantagesEnabled}}
+    <section class="nco-advantages">
+      <div class="nco-section-header">
+        <label class="nco-section-label">{{localize "NCO.Sheet.Advantages"}}</label>
+        {{#if editing}}
+          <button type="button" class="nco-add" data-action="createAdvantage">
+            <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddAdvantage"}}
+          </button>
+        {{/if}}
+      </div>
+      {{#if editing}}
+        {{#each advantages as |advantage advantageIndex|}}
+          <div class="nco-trauma-row">
+            <input type="text" class="nco-advantage-text" name="system.advantages.{{advantageIndex}}"
+                   value="{{advantage.text}}" placeholder="{{localize 'NCO.Sheet.AdvantageNamePlaceholder'}}" />
+            <button type="button" class="nco-icon-button nco-delete" data-action="deleteAdvantage"
+                    data-advantage-index="{{advantageIndex}}"
+                    title="{{localize 'NCO.Sheet.DeleteAdvantage'}}" aria-label="{{localize 'NCO.Sheet.DeleteAdvantage'}}">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        {{/each}}
+      {{else}}
+        <ul class="nco-tags nco-tags-play">
+          {{#each advantages as |advantage|}}
+            <li>
+              {{#if advantage.clickable}}
+                <button type="button" class="nco-chip nco-chip-edge"
+                        data-action="invoke" data-polarity="positive" data-text="{{advantage.text}}"
+                        title="{{@root.invokePositiveTitle}}">
+                  <i class="fas fa-plus"></i> {{advantage.text}}
+                </button>
+              {{else}}
+                <span class="nco-chip nco-chip-edge nco-chip-static">{{advantage.text}}</span>
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </section>
+  {{/if}}
+
+  <section class="nco-flaws">
+    <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Flaws"}}</label>
+    {{#if editing}}
+      <div class="nco-flaw-inputs">
+        {{#each flaws as |flaw flawIndex|}}
+          <input type="text" class="nco-flaw-text" name="system.flaws.{{flawIndex}}"
+                 value="{{flaw.text}}" placeholder="{{localize 'NCO.Sheet.FlawPlaceholder'}}" />
+        {{/each}}
+      </div>
     {{else}}
-      <div class="nco-description-text">{{{gearHTML}}}</div>
+      <ul class="nco-tags nco-tags-play">
+        {{#each flaws as |flaw|}}
+          <li>
+            {{#if flaw.clickable}}
+              <button type="button" class="nco-chip nco-chip-flaw"
+                      data-action="invoke" data-polarity="negative" data-text="{{flaw.text}}"
+                      title="{{@root.invokeNegativeTitle}}">
+                <i class="fas fa-minus"></i> {{flaw.text}}
+              </button>
+            {{else}}
+              <span class="nco-chip nco-chip-flaw nco-chip-static">—</span>
+            {{/if}}
+          </li>
+        {{/each}}
+      </ul>
     {{/if}}
   </section>
 
@@ -232,53 +293,45 @@
     {{/each}}
   </section>
 
-  {{#if stashEnabled}}
-    {{!-- Stash track: a positive (blue) row of boxes filled from the left. Boxes
-          are grouped in fives with a divider between groups, like XP. Click
-          behavior is shared with the Hits/Stunt/XP tracks (see JS / setting). --}}
-    <section class="nco-stash">
-      <label class="nco-section-label">{{localize "NCO.Sheet.Stash"}}</label>
-      <div class="nco-stash-track nco-track" data-action="trackAdd" data-track="stash"
-           title="{{trackHint}}">
-        {{#each stashGroups as |group|}}
-          {{#unless @first}}<hr class="nco-stash-divider" />{{/unless}}
-          <div class="nco-stash-group">
-            {{#each group as |box|}}
-              <span class="nco-stash-box {{#if box.checked}}nco-stash-box-filled{{/if}}"
-                    data-index="{{box.index}}"></span>
-            {{/each}}
-          </div>
-        {{/each}}
-      </div>
-    </section>
-  {{/if}}
-
-  <section class="nco-flaws">
-    <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Flaws"}}</label>
-    {{#if editing}}
-      <div class="nco-flaw-inputs">
-        {{#each flaws as |flaw flawIndex|}}
-          <input type="text" class="nco-flaw-text" name="system.flaws.{{flawIndex}}"
-                 value="{{flaw.text}}" placeholder="{{localize 'NCO.Sheet.FlawPlaceholder'}}" />
-        {{/each}}
-      </div>
-    {{else}}
-      <ul class="nco-tags nco-tags-play">
-        {{#each flaws as |flaw|}}
-          <li>
-            {{#if flaw.clickable}}
-              <button type="button" class="nco-chip nco-chip-flaw"
-                      data-action="invoke" data-polarity="negative" data-text="{{flaw.text}}"
-                      title="{{@root.invokeNegativeTitle}}">
-                <i class="fas fa-minus"></i> {{flaw.text}}
+  <section class="nco-conditions">
+    <div class="nco-section-header">
+      <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Conditions"}}</label>
+      {{#if editable}}
+        <button type="button" class="nco-add" data-action="createCondition">
+          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddCondition"}}
+        </button>
+      {{/if}}
+    </div>
+    <ul class="nco-conditions-list">
+      {{#each conditions as |condition|}}
+        <li class="nco-condition">
+          {{!-- One pill per Condition with an integrated toggle: ticking the
+                checkbox flips it on/off without rolling; when on, clicking the
+                name invokes it as a Danger die. --}}
+          <div class="nco-chip nco-chip-condition {{#if condition.active}}nco-condition-on{{/if}}">
+            <label class="nco-condition-switch" title="{{localize 'NCO.Sheet.ToggleCondition'}}">
+              <input type="checkbox" data-action="toggleCondition" data-item-id="{{condition.id}}"
+                     {{checked condition.active}} {{#unless @root.editable}}disabled{{/unless}} />
+            </label>
+            {{!-- Always a button (disabled when inactive) so the pill keeps the
+                  same size whether or not the Condition is toggled on. --}}
+            <button type="button" class="nco-condition-name" data-action="invoke"
+                    data-polarity="negative" data-text="{{condition.name}}"
+                    title="{{@root.invokeNegativeTitle}}"
+                    {{#unless condition.active}}disabled{{/unless}}>
+              <i class="fas fa-minus"></i> {{condition.name}}
+            </button>
+            {{#if @root.editing}}
+              <button type="button" class="nco-icon-button nco-delete" data-action="deleteCondition"
+                      data-item-id="{{condition.id}}"
+                      title="{{localize 'NCO.Sheet.DeleteCondition'}}" aria-label="{{localize 'NCO.Sheet.DeleteCondition'}}">
+                <i class="fas fa-times"></i>
               </button>
-            {{else}}
-              <span class="nco-chip nco-chip-flaw nco-chip-static">—</span>
             {{/if}}
-          </li>
-        {{/each}}
-      </ul>
-    {{/if}}
+          </div>
+        </li>
+      {{/each}}
+    </ul>
   </section>
 
   <section class="nco-traumas">
@@ -330,45 +383,50 @@
     {{/if}}
   </section>
 
-  <section class="nco-conditions">
-    <div class="nco-section-header">
-      <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Conditions"}}</label>
-      {{#if editable}}
-        <button type="button" class="nco-add" data-action="createCondition">
-          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddCondition"}}
-        </button>
-      {{/if}}
-    </div>
-    <ul class="nco-conditions-list">
-      {{#each conditions as |condition|}}
-        <li class="nco-condition">
-          {{!-- One pill per Condition with an integrated toggle: ticking the
-                checkbox flips it on/off without rolling; when on, clicking the
-                name invokes it as a Danger die. --}}
-          <div class="nco-chip nco-chip-condition {{#if condition.active}}nco-condition-on{{/if}}">
-            <label class="nco-condition-switch" title="{{localize 'NCO.Sheet.ToggleCondition'}}">
-              <input type="checkbox" data-action="toggleCondition" data-item-id="{{condition.id}}"
-                     {{checked condition.active}} {{#unless @root.editable}}disabled{{/unless}} />
-            </label>
-            {{!-- Always a button (disabled when inactive) so the pill keeps the
-                  same size whether or not the Condition is toggled on. --}}
-            <button type="button" class="nco-condition-name" data-action="invoke"
-                    data-polarity="negative" data-text="{{condition.name}}"
-                    title="{{@root.invokeNegativeTitle}}"
-                    {{#unless condition.active}}disabled{{/unless}}>
-              <i class="fas fa-minus"></i> {{condition.name}}
-            </button>
-            {{#if @root.editing}}
-              <button type="button" class="nco-icon-button nco-delete" data-action="deleteCondition"
-                      data-item-id="{{condition.id}}"
-                      title="{{localize 'NCO.Sheet.DeleteCondition'}}" aria-label="{{localize 'NCO.Sheet.DeleteCondition'}}">
-                <i class="fas fa-times"></i>
-              </button>
-            {{/if}}
+  {{#if stashEnabled}}
+    {{!-- Stash track: a positive (blue) row of boxes filled from the left. Boxes
+          are grouped in fives with a divider between groups, like XP. Click
+          behavior is shared with the Hits/Stunt/XP tracks (see JS / setting). --}}
+    <section class="nco-stash">
+      <label class="nco-section-label">{{localize "NCO.Sheet.Stash"}}</label>
+      <div class="nco-stash-track nco-track" data-action="trackAdd" data-track="stash"
+           title="{{trackHint}}">
+        {{#each stashGroups as |group|}}
+          {{#unless @first}}<hr class="nco-stash-divider" />{{/unless}}
+          <div class="nco-stash-group">
+            {{#each group as |box|}}
+              <span class="nco-stash-box {{#if box.checked}}nco-stash-box-filled{{/if}}"
+                    data-index="{{box.index}}"></span>
+            {{/each}}
           </div>
-        </li>
-      {{/each}}
-    </ul>
+        {{/each}}
+      </div>
+    </section>
+  {{/if}}
+
+  {{!-- Gear is a freeform notes box that stays writable during play (when the
+        sheet is locked), so it follows `editable` (permission) rather than
+        `editing` (the lock toggle). --}}
+  <section class="nco-gear">
+    <label class="nco-section-label">{{localize "NCO.Sheet.SimpleGear"}}</label>
+    {{#if editable}}
+      <textarea name="system.gear" rows="3" placeholder="{{localize 'NCO.Sheet.GearPlaceholder'}}">{{system.gear}}</textarea>
+    {{else}}
+      <div class="nco-description-text">{{{gearHTML}}}</div>
+    {{/if}}
   </section>
+
+  {{!-- Optional freeform Ties box (toggled per world). Mirrors the Gear box:
+        editable textarea in edit mode, enriched HTML in play. --}}
+  {{#if tiesEnabled}}
+    <section class="nco-ties">
+      <label class="nco-section-label">{{localize "NCO.Sheet.Ties"}}</label>
+      {{#if editable}}
+        <textarea name="system.ties" rows="3" placeholder="{{localize 'NCO.Sheet.TiesPlaceholder'}}">{{system.ties}}</textarea>
+      {{else}}
+        <div class="nco-description-text">{{{tiesHTML}}}</div>
+      {{/if}}
+    </section>
+  {{/if}}
   </div>
 </div>

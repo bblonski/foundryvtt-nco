@@ -84,6 +84,8 @@ export const GAME_LINES = {
       "NCO.Sheet.DeleteTrauma": "Delete Injury",
       "NCO.Chat.DeathCheck.Suffered": "{name} suffered an Injury: {trauma}",
       "NCO.RollDialog.Hint": "Click Tags on character sheets to add dice — positive Tags (Trademarks, Edges) add Action dice; negative Tags (Flaws, Injuries, Conditions) add Danger dice. Shift-click to invert. This pool is shared by all players.",
+      "NCO.Settings.DeathCheck.Name": "Death Check on Injury",
+      "NCO.Settings.DeathCheck.Hint": "Automatically roll a death check when a character suffers a new Injury.",
     },
   },
 
@@ -119,6 +121,8 @@ export const GAME_LINES = {
       "NCO.Sheet.DeleteTrauma": "Delete Injury",
       "NCO.Chat.DeathCheck.Suffered": "{name} suffered an Injury: {trauma}",
       "NCO.RollDialog.Hint": "Click Tags on character sheets to add dice — positive Tags (Trademarks, Edges) add Action dice; negative Tags (Flaws, Injuries, Conditions) add Danger dice. Shift-click to invert. This pool is shared by all players.",
+      "NCO.Settings.DeathCheck.Name": "Death Check on Injury",
+      "NCO.Settings.DeathCheck.Hint": "Automatically roll a death check when a character suffers a new Injury.",
     },
   },
 };

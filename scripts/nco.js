@@ -181,6 +181,38 @@ Hooks.once("init", function () {
     requiresReload: true,
   });
 
+  // Whether the optional Ties (relationships) freeform box appears on sheets.
+  game.settings.register("foundryvtt-nco", "tiesEnabled", {
+    name: "NCO.Settings.Ties.Name",
+    hint: "NCO.Settings.Ties.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    requiresReload: true,
+  });
+
+  // Whether the optional Advantages freeform box appears on sheets.
+  game.settings.register("foundryvtt-nco", "advantagesEnabled", {
+    name: "NCO.Settings.Advantages.Name",
+    hint: "NCO.Settings.Advantages.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    requiresReload: true,
+  });
+
+  // Whether suffering a new Trauma automatically rolls a death check.
+  game.settings.register("foundryvtt-nco", "deathCheckEnabled", {
+    name: "NCO.Settings.DeathCheck.Name",
+    hint: "NCO.Settings.DeathCheck.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
   // How many Stash boxes appear on each character's Stash track.
   game.settings.register("foundryvtt-nco", "stashTrackLength", {
     name: "NCO.Settings.StashTrackLength.Name",
