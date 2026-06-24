@@ -75,6 +75,15 @@ export const GAME_LINES = {
       "NCO.Settings.MaxHits.Name": "Grit",
       "NCO.Settings.MaxHits.Hint": "The most Hits any character can grow to through advancement — their Grit.",
       "NCO.Sheet.HitsMax": "Grit — total Hits for this character",
+      // Hard City calls Traumas "Injuries". Rename every string that names the
+      // concept across the sheet, the add/delete controls, and chat output.
+      "NCO.Sheet.Traumas": "Injuries",
+      "NCO.Sheet.AddTrauma": "Injury",
+      "NCO.Sheet.AddTraumaTitle": "New Injury",
+      "NCO.Sheet.TraumaNamePlaceholder": "Injury…",
+      "NCO.Sheet.DeleteTrauma": "Delete Injury",
+      "NCO.Chat.DeathCheck.Suffered": "{name} suffered an Injury: {trauma}",
+      "NCO.RollDialog.Hint": "Click Tags on character sheets to add dice — positive Tags (Trademarks, Edges) add Action dice; negative Tags (Flaws, Injuries, Conditions) add Danger dice. Shift-click to invert. This pool is shared by all players.",
     },
   },
 
@@ -94,6 +103,22 @@ export const GAME_LINES = {
       "NCO.Settings.MaxHits.Name": "Grit",
       "NCO.Settings.MaxHits.Hint": "The most Hits any character can grow to through advancement — their Grit.",
       "NCO.Sheet.HitsMax": "Grit — total Hits for this character",
+      // Tomorrow City calls the Stash track "Cred". Rename the sheet label and
+      // the track's world settings so the concept reads coherently throughout.
+      "NCO.Sheet.Stash": "Cred",
+      "NCO.Settings.StashTrack.Name": "Cred Track",
+      "NCO.Settings.StashTrack.Hint": "Show the optional Cred track on character sheets.",
+      "NCO.Settings.StashTrackLength.Name": "Cred Track Length",
+      "NCO.Settings.StashTrackLength.Hint": "How many Cred boxes appear on each character's Cred track.",
+      // Tomorrow City calls Traumas "Injuries". Rename every string that names the
+      // concept across the sheet, the add/delete controls, and chat output.
+      "NCO.Sheet.Traumas": "Injuries",
+      "NCO.Sheet.AddTrauma": "Injury",
+      "NCO.Sheet.AddTraumaTitle": "New Injury",
+      "NCO.Sheet.TraumaNamePlaceholder": "Injury…",
+      "NCO.Sheet.DeleteTrauma": "Delete Injury",
+      "NCO.Chat.DeathCheck.Suffered": "{name} suffered an Injury: {trauma}",
+      "NCO.RollDialog.Hint": "Click Tags on character sheets to add dice — positive Tags (Trademarks, Edges) add Action dice; negative Tags (Flaws, Injuries, Conditions) add Danger dice. Shift-click to invert. This pool is shared by all players.",
     },
   },
 };
