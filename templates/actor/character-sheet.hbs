@@ -287,6 +287,21 @@
             <i class="fas fa-trash"></i>
           </button>
         </div>
+        {{!-- Optional damage track, present only when the Gear was given a length.
+              Clickable here on the character sheet; the update is routed to the
+              embedded Item via the "gearHits:<id>" track key (see _trackConfig). --}}
+        {{#if gearItem.hitBoxes}}
+          <div class="nco-gear-hits">
+            <span class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Hits"}}</span>
+            <div class="nco-gear-hits-track nco-track" data-action="trackAdd"
+                 data-track="gearHits:{{gearItem.id}}" title="{{trackHint}}">
+              {{#each gearItem.hitBoxes as |box|}}
+                <span class="nco-hit-box {{#if box.checked}}nco-hit-box-filled{{/if}}"
+                      data-index="{{box.index}}"></span>
+              {{/each}}
+            </div>
+          </div>
+        {{/if}}
       </div>
     {{else}}
       <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyUniqueGear"}}</p>

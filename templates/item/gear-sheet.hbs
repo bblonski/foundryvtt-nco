@@ -18,6 +18,15 @@
   {{!-- Everything below the header scrolls as one unit; the portrait and name
         stay pinned at the top. --}}
   <div class="nco-sheet-body">
+  {{!-- Optional Hits track length: 0 means no track. When >0 the track is drawn
+        and is clickable on the character sheet (e.g. Armour with its own Hits). --}}
+  <section class="nco-gear-hits-length">
+    <label class="nco-section-label" for="nco-gear-hits-max">{{localize "NCO.Sheet.GearHitsLength"}}</label>
+    <input type="number" id="nco-gear-hits-max" name="system.hits.max" value="{{system.hits.max}}"
+           min="0" max="6" step="1" title="{{localize 'NCO.Sheet.GearHitsLengthHint'}}"
+           {{#unless editable}}disabled{{/unless}} />
+  </section>
+
   <section class="nco-gear-tags">
     <div class="nco-section-header">
       <label class="nco-section-label">{{localize "NCO.Sheet.Tags"}}</label>

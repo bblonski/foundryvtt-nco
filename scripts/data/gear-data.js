@@ -16,6 +16,13 @@ export class GearData extends foundry.abstract.TypeDataModel {
     const fields = foundry.data.fields;
 
     return {
+      // Optional damage track (e.g. Armour with its own Hits). `max` is the
+      // track length: it defaults to 0 (no track) and the track only renders on
+      // the character sheet when `max > 0`. `taken` boxes fill as it is damaged.
+      hits: new fields.SchemaField({
+        taken: new fields.NumberField({ required: true, integer: true, min: 0, max: 6, initial: 0 }),
+        max: new fields.NumberField({ required: true, integer: true, min: 0, max: 6, initial: 0 }),
+      }),
       tags: new fields.ArrayField(
         new fields.SchemaField({
           text: new fields.StringField({ required: true, blank: true, initial: "" }),

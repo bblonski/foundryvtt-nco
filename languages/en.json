@@ -50,6 +50,8 @@
     "NCO.Sheet.DeleteTrauma": "Delete Trauma",
 
     "NCO.Sheet.SimpleGear": "Basic Gear and Notes",
+    "NCO.Sheet.GearHitsLength": "Hits Track Length",
+    "NCO.Sheet.GearHitsLengthHint": "Length of this item's Hits track (0 hides it). When set, the track shows and is clickable on the character sheet.",
     "NCO.Sheet.GearPlaceholder": "List everyday gear here…",
     "NCO.Sheet.Ties": "Ties",
     "NCO.Sheet.TiesPlaceholder": "List relationships and connections here…",

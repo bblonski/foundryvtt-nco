@@ -128,6 +128,8 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
       uniqueGear: this.#gearItems.map((item) => ({
         id: item.id,
         name: item.name,
+        // A damage track is only present when the Gear was given a length (>0).
+        hitBoxes: this.#prepareGearHitBoxes(item),
         tags: (item.system.tags ?? []).map((tag) => ({
           text: tag.text,
           positive: tag.polarity !== TAG_POLARITY.NEGATIVE,
@@ -158,6 +160,18 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     const hits = this.actor.system.hits ?? {};
     const max = Math.min(6, Math.max(1, hits.max ?? 3));
     const taken = Math.min(max, hits.taken ?? 0);
+    return Array.from({ length: max }, (_, i) => ({ index: i, checked: i < taken }));
+  }
+
+  /**
+   * A Unique Gear item's optional damage track, as {index, checked} boxes —
+   * or null when the Gear has no track (length 0), so the template can omit it.
+   */
+  #prepareGearHitBoxes(item) {
+    const hits = item.system.hits ?? {};
+    const max = Math.min(6, Math.max(0, hits.max ?? 0));
+    if (max <= 0) return null;
+    const taken = Math.min(max, Math.max(0, hits.taken ?? 0));
     return Array.from({ length: max }, (_, i) => ({ index: i, checked: i < taken }));
   }
 
@@ -274,6 +288,18 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
         field: "system.stash",
         current: this.actor.system.stash ?? 0,
         max: this.#stashTrackLength,
+      };
+    }
+    // Unique Gear damage track: `data-track` carries the item id ("gearHits:<id>")
+    // so the update is routed to that embedded Item rather than the character.
+    if (track?.startsWith("gearHits:")) {
+      const item = this.actor.items.get(track.slice("gearHits:".length));
+      if (!item) return null;
+      return {
+        document: item,
+        field: "system.hits.taken",
+        current: item.system.hits?.taken ?? 0,
+        max: Math.min(6, Math.max(0, item.system.hits?.max ?? 0)),
       };
     }
     return {

@@ -745,6 +745,14 @@ button.nco-chip-flaw:hover {
   gap: 8px;
 }
 
+/* Optional Gear damage track, shown beneath the Gear's header when it has one. */
+.nco-gear-hits {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
 .nco-unique-gear-name {
   flex: none;
   font-weight: bold;

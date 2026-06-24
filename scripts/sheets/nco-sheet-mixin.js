@@ -188,9 +188,11 @@ export function NCOSheetMixin(Base) {
     /**
      * Where a clicked track's filled-box count is stored and how high it can go.
      * Return `null` when the named track is unknown (the default, for sheets
-     * with no own tracks). Subclasses with damage tracks override this.
+     * with no own tracks). Subclasses with damage tracks override this. An
+     * optional `document` redirects the update to another document (e.g. an
+     * embedded Item's track); it defaults to this sheet's document.
      * @param {string} [_track]  The clicked track's `data-track` value.
-     * @returns {{field: string, current: number, max: number}|null}
+     * @returns {{field: string, current: number, max: number, document?: foundry.abstract.Document}|null}
      */
     _trackConfig(_track) {
       return null;
@@ -216,7 +218,7 @@ export function NCOSheetMixin(Base) {
         next = cfg.current + 1;
       }
       next = Math.max(0, Math.min(cfg.max, next));
-      if (next !== cfg.current) await this.document.update({ [cfg.field]: next });
+      if (next !== cfg.current) await (cfg.document ?? this.document).update({ [cfg.field]: next });
     }
 
     /** Right-click a track: clear the last filled box (only in "increment" mode). */
@@ -227,7 +229,7 @@ export function NCOSheetMixin(Base) {
       const cfg = this._trackConfig(event.currentTarget.dataset.track);
       if (!cfg) return;
       const next = Math.max(0, cfg.current - 1);
-      if (next !== cfg.current) await this.document.update({ [cfg.field]: next });
+      if (next !== cfg.current) await (cfg.document ?? this.document).update({ [cfg.field]: next });
     }
 
     /**
