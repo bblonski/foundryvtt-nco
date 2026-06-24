@@ -1437,8 +1437,13 @@ button.nco-danger-rating:hover {
   text-shadow: 0 0 8px rgb(var(--nco-action-rgb) /0.5);
 }
 
+/* Individual die results in the expandable tooltip sit on top of Foundry's
+   light die-face icons, so they need a dark digit regardless of theme — the
+   themed --nco-text is light on the dark themes and washed the numbers out. A
+   faint light halo keeps them legible where a digit overhangs the panel edge. */
 .chat-message .dice-roll .dice-tooltip .dice-rolls .roll {
-  color: var(--nco-text);
+  color: #16151a;
+  text-shadow: 0 0 3px rgb(255 255 255 / 0.55);
 }
 
 .chat-message .dice-roll .dice-flavor,
