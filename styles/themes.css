@@ -18,6 +18,7 @@
 @font-face { font-family: "NCO Orbitron";       src: url("../fonts/Orbitron.woff2")      format("woff2"); font-display: swap; }
 @font-face { font-family: "NCO Share Tech Mono"; src: url("../fonts/ShareTechMono.woff2") format("woff2"); font-display: swap; }
 @font-face { font-family: "NCO Cinzel";      src: url("../fonts/Cinzel.woff2")       format("woff2"); font-display: swap; }
+@font-face { font-family: "NCO Sancreek";    src: url("../fonts/Sancreek.woff2")     format("woff2"); font-display: swap; }
 @font-face { font-family: "NCO Oswald";      src: url("../fonts/Oswald.woff2")       format("woff2"); font-display: swap; }
 @font-face { font-family: "NCO Anton";       src: url("../fonts/Anton.woff2")        format("woff2"); font-display: swap; }
 @font-face { font-family: "NCO Typewriter";  src: url("../fonts/SpecialElite.woff2")  format("woff2"); font-display: swap; }
@@ -53,30 +54,32 @@ body.nco-theme-space-opera {
 }
 
 /* =======================================================================
-   Dungeon Crawlers — classic OSR sword & sorcery
-   Ink on parchment (a LIGHT theme): the neutral overlay flips to dark so
-   borders/washes read on the light ground.
+   Dungeon Crawlers — classic OSR sword & sorcery  (sampled from the official
+   Dungeon Crawlers sheet) Black ink on light parchment with an amber-gold
+   accent on the title and every section header; oxblood marks harm. A LIGHT
+   theme — the neutral overlay flips dark so borders/washes read on the ground.
+   Rustic Tuscan display (the sheet's Sancreek) over an old-tome serif body.
    ======================================================================= */
 body.nco-theme-osr {
-  --nco-action-rgb: 46 107 63;     /* deep forest green */
-  --nco-danger-rgb: 158 27 27;     /* blood red */
-  --nco-text-rgb: 43 33 23;        /* sepia ink */
-  --nco-neutral-rgb: 40 30 20;     /* dark overlay on light ground */
+  --nco-action-rgb: 200 124 28;    /* amber-gold (titles / section headers) */
+  --nco-danger-rgb: 150 30 24;     /* oxblood */
+  --nco-text-rgb: 38 28 20;        /* black-brown ink */
+  --nco-neutral-rgb: 60 44 28;     /* dark overlay on light ground */
 
   --nco-partial: #b8860b;
-  --nco-failure: #a0522d;
+  --nco-failure: #9c4a1a;
 
-  --nco-surface: #e8dcc4;          /* parchment */
-  --nco-surface-2: #ddceb0;
-  --nco-surface-deep: #cdbb95;
-  --nco-bg: rgba(60, 45, 25, 0.06);
+  --nco-surface: #ece0c6;          /* parchment */
+  --nco-surface-2: #e2d3b2;
+  --nco-surface-deep: #d8c8a4;
+  --nco-bg: rgb(60 44 28 / 0.06);
 
   --nco-danger-light: #c95b5b;
-  --nco-danger-mid: #b53030;
-  --nco-on-accent: #f5ecd8;
-  --nco-on-danger: #f5ecd8;
+  --nco-danger-mid: #a83232;
+  --nco-on-accent: #f6edd6;         /* cream atop amber/oxblood */
+  --nco-on-danger: #f6edd6;
 
-  --nco-font-display: "NCO Cinzel", "Trajan Pro", "Palatino Linotype", serif;
+  --nco-font-display: "NCO Sancreek", "NCO Cinzel", "Trajan Pro", "Palatino Linotype", serif;
   --nco-font-mono: "NCO EBGaramond", "Iowan Old Style", "Georgia", serif;
   --nco-font-body: "NCO EBGaramond", "Iowan Old Style", "Georgia", serif;
 }

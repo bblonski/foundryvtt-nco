@@ -15,7 +15,8 @@ rename to the exact filename, and place it here.
 |------|------|---------|---------|--------|
 | `Orbitron.woff2`    | Orbitron (700)       | Neon City Overdrive & Star Scoundrels — display | OFL 1.1 | https://fonts.google.com/specimen/Orbitron |
 | `ShareTechMono.woff2`| Share Tech Mono (400) | Neon City Overdrive — dice / numerals | OFL 1.1 | https://fonts.google.com/specimen/Share+Tech+Mono |
-| `Cinzel.woff2`      | Cinzel (600)         | Dungeon Crawlers — display | OFL 1.1 | https://fonts.google.com/specimen/Cinzel |
+| `Sancreek.woff2`    | Sancreek (400)       | Dungeon Crawlers — display (matches the sheet's title face) | OFL 1.1 | https://fonts.google.com/specimen/Sancreek |
+| `Cinzel.woff2`      | Cinzel (600)         | Dungeon Crawlers — display fallback | OFL 1.1 | https://fonts.google.com/specimen/Cinzel |
 | `EBGaramond.woff2`  | EB Garamond (400)    | Dungeon Crawlers — body/numerals | OFL 1.1 | https://fonts.google.com/specimen/EB+Garamond |
 | `Anton.woff2`       | Anton (400)          | Hard City — display (matches the sheet's Phosphate title) | OFL 1.1 | https://fonts.google.com/specimen/Anton |
 | `SpecialElite.woff2`| Special Elite (400)  | Hard City — typewriter body & numerals (matches TypewriterRevo) | Apache 2.0 | https://fonts.google.com/specimen/Special+Elite |
