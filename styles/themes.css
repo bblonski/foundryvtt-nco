@@ -1,0 +1,142 @@
+/* =======================================================================
+   Game-line themes
+   -----------------------------------------------------------------------
+   Each game line (scripts/config.js) maps to a `nco-theme-*` class that the
+   system adds to <body> at startup. A theme is nothing more than an override
+   of the design tokens declared in nco.css `:root` — the rest of the
+   stylesheet is written entirely against those tokens, so a palette/typography
+   swap re-skins every sheet, dialog, chat card and dice roll at once.
+
+   Neon City Overdrive (cyberpunk) is the default and lives in nco.css `:root`;
+   `nco-theme-cyberpunk` therefore needs no overrides. The @font-face faces
+   below reference files under ./fonts (see fonts/README.md); any face whose
+   file is absent simply falls back to the next family in the stack, so the
+   themes remain usable before the optional font files are added.
+   ======================================================================= */
+
+/* --- Bundled display / accent faces (graceful-fallback) ---------------- */
+@font-face { font-family: "NCO Orbitron";       src: url("../fonts/Orbitron.woff2")      format("woff2"); font-display: swap; }
+@font-face { font-family: "NCO Share Tech Mono"; src: url("../fonts/ShareTechMono.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "NCO Cinzel";      src: url("../fonts/Cinzel.woff2")       format("woff2"); font-display: swap; }
+@font-face { font-family: "NCO Oswald";      src: url("../fonts/Oswald.woff2")       format("woff2"); font-display: swap; }
+@font-face { font-family: "NCO Anton";       src: url("../fonts/Anton.woff2")        format("woff2"); font-display: swap; }
+@font-face { font-family: "NCO Typewriter";  src: url("../fonts/SpecialElite.woff2")  format("woff2"); font-display: swap; }
+@font-face { font-family: "NCO Limelight";   src: url("../fonts/Limelight.woff2")    format("woff2"); font-display: swap; }
+@font-face { font-family: "NCO EBGaramond";  src: url("../fonts/EBGaramond.woff2")   format("woff2"); font-display: swap; }
+
+/* =======================================================================
+   Star Scoundrels — space opera
+   Gold scoundrel accent, blaster-red hazards, deep-space navy.
+   ======================================================================= */
+body.nco-theme-space-opera {
+  --nco-action-rgb: 255 199 64;
+  --nco-danger-rgb: 255 61 61;
+  --nco-text-rgb: 243 234 211;
+  --nco-neutral-rgb: 255 255 255;
+
+  --nco-partial: #ffd23f;
+  --nco-failure: #ff8c42;
+
+  --nco-surface: #0a0e1f;
+  --nco-surface-2: #070a17;
+  --nco-surface-deep: #05070f;
+  --nco-bg: rgba(12, 18, 38, 0.55);
+
+  --nco-danger-light: #ff9a9a;
+  --nco-danger-mid: #ff5a5a;
+  --nco-on-accent: #1a1205;
+  --nco-on-danger: #1a0606;
+
+  --nco-font-display: "NCO Orbitron", "Eurostile", "Bank Gothic", sans-serif;
+  --nco-font-mono: "Consolas", "Courier New", monospace;
+  --nco-font-body: "Titillium Web", "Segoe UI", sans-serif;
+}
+
+/* =======================================================================
+   Dungeon Crawlers — classic OSR sword & sorcery
+   Ink on parchment (a LIGHT theme): the neutral overlay flips to dark so
+   borders/washes read on the light ground.
+   ======================================================================= */
+body.nco-theme-osr {
+  --nco-action-rgb: 46 107 63;     /* deep forest green */
+  --nco-danger-rgb: 158 27 27;     /* blood red */
+  --nco-text-rgb: 43 33 23;        /* sepia ink */
+  --nco-neutral-rgb: 40 30 20;     /* dark overlay on light ground */
+
+  --nco-partial: #b8860b;
+  --nco-failure: #a0522d;
+
+  --nco-surface: #e8dcc4;          /* parchment */
+  --nco-surface-2: #ddceb0;
+  --nco-surface-deep: #cdbb95;
+  --nco-bg: rgba(60, 45, 25, 0.06);
+
+  --nco-danger-light: #c95b5b;
+  --nco-danger-mid: #b53030;
+  --nco-on-accent: #f5ecd8;
+  --nco-on-danger: #f5ecd8;
+
+  --nco-font-display: "NCO Cinzel", "Trajan Pro", "Palatino Linotype", serif;
+  --nco-font-mono: "NCO EBGaramond", "Iowan Old Style", "Georgia", serif;
+  --nco-font-body: "NCO EBGaramond", "Iowan Old Style", "Georgia", serif;
+}
+
+/* =======================================================================
+   Hard City — 1950s noir  (sampled from the official Hard City sheet)
+   A LIGHT "case-file" theme: warm cream paper, dusty-rose panels, black
+   typewriter ink, maroon labels. The neutral overlay flips dark so borders
+   and washes read on the pale ground. Heavy condensed deco title (Phosphate ->
+   Anton) over a typewriter body (TypewriterRevo -> Special Elite).
+   ======================================================================= */
+body.nco-theme-noir {
+  --nco-action-rgb: 150 60 52;     /* dusty maroon — section labels / accents */
+  --nco-danger-rgb: 140 34 28;     /* blood red */
+  --nco-text-rgb: 42 32 30;        /* typewriter ink */
+  --nco-neutral-rgb: 70 50 44;     /* dark overlay on paper */
+
+  --nco-partial: #b8742a;
+  --nco-failure: #8c3a24;
+
+  --nco-surface: #f4e3d6;          /* cream paper */
+  --nco-surface-2: #f0d8cf;
+  --nco-surface-deep: #eccfc6;     /* dusty-rose panel */
+  --nco-bg: rgb(150 60 50 / 0.06);
+
+  --nco-danger-light: #d98a82;
+  --nco-danger-mid: #b8463c;
+  --nco-on-accent: #f4e3d6;        /* cream atop maroon/red */
+  --nco-on-danger: #f4e3d6;
+
+  --nco-font-display: "NCO Anton", "NCO Oswald", "Haettenschweiler", "Impact", sans-serif;
+  --nco-font-mono: "NCO Typewriter", "Courier New", monospace;
+  --nco-font-body: "NCO Typewriter", "Courier New", monospace;
+}
+
+/* =======================================================================
+   Tomorrow City — 1984 dieselpunk  (sampled from the official Tomorrow City
+   sheet) Art-Deco gold leading over warm near-black, with aged-cream panels;
+   rust-red marks hazards. Inline-deco title (On Air -> Limelight).
+   ======================================================================= */
+body.nco-theme-dieselpunk {
+  --nco-action-rgb: 230 196 70;    /* art-deco gold */
+  --nco-danger-rgb: 184 64 36;     /* oxide rust-red */
+  --nco-text-rgb: 236 226 196;     /* warm cream */
+  --nco-neutral-rgb: 255 246 220;  /* warm overlay tint */
+
+  --nco-partial: #d8a43a;
+  --nco-failure: #b5651d;
+
+  --nco-surface: #211c1c;          /* warm near-black */
+  --nco-surface-2: #181414;
+  --nco-surface-deep: #120f0f;
+  --nco-bg: rgba(40, 32, 28, 0.55);
+
+  --nco-danger-light: #e8896a;
+  --nco-danger-mid: #d0593a;
+  --nco-on-accent: #1a1408;        /* dark ink atop gold */
+  --nco-on-danger: #f4ead2;
+
+  --nco-font-display: "NCO Limelight", "Broadway", "Copperplate", serif;
+  --nco-font-mono: "NCO Share Tech Mono", "Share Tech Mono", "Courier New", monospace;
+  --nco-font-body: "Jura", "Century Gothic", "Segoe UI", sans-serif;
+}

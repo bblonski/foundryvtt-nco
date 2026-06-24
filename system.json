@@ -17,7 +17,8 @@
     "scripts/nco.js"
   ],
   "styles": [
-    "styles/nco.css"
+    "styles/nco.css",
+    "styles/themes.css"
   ],
   "languages": [
     {

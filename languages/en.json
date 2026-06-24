@@ -143,6 +143,8 @@
     "NCO.Settings.Pressure.Hint": "Show a shared GM Pressure track near the top of the screen. Each uncancelled 6 on a Danger die adds one Pressure, up to the track length.",
     "NCO.Settings.PressureTrackLength.Name": "Pressure Track Length",
     "NCO.Settings.PressureTrackLength.Hint": "How many boxes long the Pressure track is (its maximum value).",
+    "NCO.Settings.GameLine.Name": "Game Line",
+    "NCO.Settings.GameLine.Hint": "Which Action Tales game this world is running. Sets the visual theme and setting-specific terminology. Changing it reloads the world.",
 
     "NCO.Pressure.Title": "Pressure",
     "NCO.Pressure.Reset": "Reset Pressure",

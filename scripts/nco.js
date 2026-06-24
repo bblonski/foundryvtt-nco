@@ -20,12 +20,33 @@ import { GlobalRollPool } from "./global-roll-pool.js";
 import { PressureTrack } from "./pressure-track.js";
 import { PressureApp } from "./applications/pressure-app.js";
 import { Tags } from "./tags.js";
+import {
+  GAME_LINES,
+  DEFAULT_GAME_LINE,
+  gameLineChoices,
+  gameLineThemeClass,
+  applyGameLineTerms,
+} from "./config.js";
 
 // Matches: /r a4d5  or  /r a4  (danger count optional)
 const NCO_CHAT_PATTERN = /^\/r\s+a(\d+)(?:d(\d+))?\s*$/i;
 
 Hooks.once("init", function () {
   game.nco = { NCORoll, NCORollDialog, GlobalRollPool, PressureTrack, Tags };
+  CONFIG.NCO = { gameLines: GAME_LINES };
+
+  // The active game line drives the visual theme and terminology (see config.js).
+  // Changing it re-skins every sheet and chat card, so a reload is required.
+  game.settings.register("foundryvtt-nco", "gameLine", {
+    name: "NCO.Settings.GameLine.Name",
+    hint: "NCO.Settings.GameLine.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: gameLineChoices(),
+    default: DEFAULT_GAME_LINE,
+    requiresReload: true,
+  });
 
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Actor.dataModels.threat = ThreatData;
@@ -181,6 +202,17 @@ Hooks.once("init", function () {
   documentClass.createDialog = function (data = {}, ...args) {
     return baseCreateDialog.call(this, { type: "character", ...data }, ...args);
   };
+});
+
+// Apply the active game line as early as the translations exist (before any
+// sheet renders): merge its terminology overrides over the base English strings
+// and tag <body> with its theme class, so the token overrides in
+// styles/themes.css cascade into every sheet, dialog, chat card and dice roll
+// without a flash of the default theme.
+Hooks.once("i18nInit", function () {
+  const line = game.settings.get("foundryvtt-nco", "gameLine");
+  applyGameLineTerms(line);
+  document.body.classList.add(gameLineThemeClass(line));
 });
 
 // Every new character starts with the standard set of (unmarked) Conditions.

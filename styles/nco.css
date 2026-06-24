@@ -1,10 +1,52 @@
+/* Design tokens. Everything below this block is themeable: each game line
+   (see scripts/config.js) ships a `body.nco-theme-*` override that resets these
+   variables. The defaults here are the Neon City Overdrive (cyberpunk) theme.
+
+   Colors are stored as space-separated RGB *channels* so the many translucent
+   variants in this file can be composed from one value via `rgb(R G B / a)`. */
 :root {
-  --nco-action: #23d5e5;
-  --nco-danger: #ff2e88;
+  /* Themeable color channels */
+  --nco-action-rgb: 35 213 229;   /* primary accent (Action) */
+  --nco-danger-rgb: 255 46 136;   /* hazard accent (Danger)  */
+  --nco-text-rgb: 231 233 245;    /* body text               */
+  --nco-neutral-rgb: 255 255 255; /* generic overlay tint     */
+
   --nco-partial: #ffd23f;
   --nco-failure: #ff8c42;
-  --nco-bg: rgba(10, 12, 24, 0.55);
-  --nco-border: rgba(255, 255, 255, 0.15);
+
+  /* Surfaces */
+  --nco-surface: #14172a;            /* sheet / window background     */
+  --nco-surface-2: #0b0d18;          /* secondary surface (gradients) */
+  --nco-surface-deep: #070910;       /* deep panels (dice results)    */
+  --nco-bg: rgba(10, 12, 24, 0.55);  /* translucent inner panel       */
+
+  /* Accent highlights */
+  --nco-danger-light: #ff9ac4;  /* lightest stop on the danger dot   */
+  --nco-danger-mid: #ff6aa6;    /* mid stop on the danger circle     */
+  --nco-on-accent: #fff;        /* text/edges atop a bright accent   */
+  --nco-on-danger: #0a0c18;     /* text atop a danger-filled box     */
+
+  /* Typography. Cyberpunk base: a geometric techno face for headers (shared
+     with Star Scoundrels) over a terminal monospace for dice/numerals (faces
+     declared in themes.css; each stack falls back to a system face if the
+     .woff2 isn't present). */
+  --nco-font-display: "NCO Orbitron", "Eurostile", "Bank Gothic", sans-serif;
+  --nco-font-mono: "NCO Share Tech Mono", "Share Tech Mono", "Courier New", monospace;
+  --nco-font-body: "Rajdhani", "Titillium Web", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Tokens derived from the channels via var() MUST be declared here, not on
+   :root. A theme overrides only the channels (--nco-*-rgb) on <body>, and a
+   custom property's nested var() resolves on the element where the property is
+   *declared*. If these lived on :root they would resolve once against the base
+   channels and inherit that frozen value — so theme switches wouldn't recolor
+   them. Declared on <body> (the same element the theme class lands on), they
+   resolve against each theme's channels and recolor correctly. */
+body {
+  --nco-action: rgb(var(--nco-action-rgb));
+  --nco-danger: rgb(var(--nco-danger-rgb));
+  --nco-text: rgb(var(--nco-text-rgb));
+  --nco-border: rgb(var(--nco-neutral-rgb) / 0.15);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -13,8 +55,9 @@
 
 .nco.sheet.actor .window-content,
 .nco.sheet.item .window-content {
-  background: #14172a;
-  color: #e7e9f5;
+  background: var(--nco-surface);
+  color: var(--nco-text);
+  font-family: var(--nco-font-body);
 }
 
 .nco-character-sheet,
@@ -32,7 +75,7 @@
 .nco-character-sheet input[type="text"],
 .nco-character-sheet textarea,
 .nco-trademark-sheet input[type="text"] {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--nco-neutral-rgb) /0.04);
   border: 1px solid var(--nco-border);
   border-radius: 4px;
   color: inherit;
@@ -91,7 +134,7 @@
   font-weight: bold;
   line-height: 22px;
   box-sizing: border-box;
-  color: #e7e9f5;
+  color: var(--nco-text);
 }
 
 /* Name and its edit-lock share a row; the name takes the slack so the lock
@@ -113,7 +156,7 @@
 }
 
 .nco-portrait-editable:hover {
-  box-shadow: 0 0 8px 1px rgba(35, 213, 229, 0.6);
+  box-shadow: 0 0 8px 1px rgb(var(--nco-action-rgb) /0.6);
 }
 
 /* Hits on the left, Stunt Points pushed to the right, sharing one row. */
@@ -160,14 +203,14 @@
   box-sizing: border-box;
   border: 1px solid var(--nco-border);
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--nco-neutral-rgb) /0.04);
   transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .nco-character-sheet .nco-hit-box-filled {
   border-color: var(--nco-danger);
   background: var(--nco-danger);
-  box-shadow: 0 0 5px 0 rgba(255, 46, 136, 0.7);
+  box-shadow: 0 0 5px 0 rgb(var(--nco-danger-rgb) /0.7);
 }
 
 .nco-character-sheet .nco-hits-max {
@@ -175,7 +218,7 @@
   height: 18px;
   box-sizing: border-box;
   margin-left: 8px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--nco-neutral-rgb) /0.04);
   border: 1px solid var(--nco-border);
   border-radius: 4px;
   color: inherit;
@@ -218,7 +261,7 @@
 .nco-character-sheet .nco-stash-box-filled {
   border-color: var(--nco-action);
   background: var(--nco-action);
-  box-shadow: 0 0 5px 0 rgba(35, 213, 229, 0.7);
+  box-shadow: 0 0 5px 0 rgb(var(--nco-action-rgb) /0.7);
 }
 
 /* Stash track: a label above a row of boxes grouped in fives, mirroring the XP
@@ -247,7 +290,7 @@
 .nco-drive-desc {
   width: 100%;
   margin-bottom: 6px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--nco-neutral-rgb) /0.04);
   border: 1px solid var(--nco-border);
   border-radius: 4px;
   color: inherit;
@@ -270,11 +313,11 @@
   box-sizing: border-box;
   border: 1px solid var(--nco-border);
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--nco-neutral-rgb) /0.04);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Courier New", monospace;
+  font-family: var(--nco-font-mono);
   font-size: 16px;
   font-weight: bold;
   line-height: 1;
@@ -291,7 +334,7 @@
   font-weight: 900;
   font-size: 11px;
   color: var(--nco-action);
-  text-shadow: 0 0 5px rgba(35, 213, 229, 0.7);
+  text-shadow: 0 0 5px rgb(var(--nco-action-rgb) /0.7);
 }
 
 .nco-character-sheet .nco-drive-box-crossed {
@@ -311,7 +354,7 @@
     linear-gradient(to bottom right,
       transparent calc(50% - 1.1px), var(--nco-danger) calc(50% - 1.1px),
       var(--nco-danger) calc(50% + 1.1px), transparent calc(50% + 1.1px));
-  filter: drop-shadow(0 0 3px rgba(255, 46, 136, 0.7));
+  filter: drop-shadow(0 0 3px rgb(var(--nco-danger-rgb) /0.7));
 }
 
 .nco-character-sheet .nco-stunt-label {
@@ -321,7 +364,7 @@
   height: auto;
   min-height: 0;
   padding: 0;
-  font-family: "Courier New", monospace;
+  font-family: var(--nco-font-display);
   letter-spacing: 1px;
   text-transform: uppercase;
   font-size: 16px;
@@ -330,7 +373,7 @@
 }
 
 .nco-character-sheet .nco-stunt-label:hover {
-  text-shadow: 0 0 6px rgba(35, 213, 229, 0.8);
+  text-shadow: 0 0 6px rgb(var(--nco-action-rgb) /0.8);
 }
 
 .nco-stunt-static {
@@ -342,7 +385,7 @@
   height: 18px;
   box-sizing: border-box;
   margin-left: 8px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--nco-neutral-rgb) /0.04);
   border: 1px solid var(--nco-border);
   border-radius: 4px;
   color: inherit;
@@ -368,7 +411,7 @@
 
 .nco-section-label {
   display: block;
-  font-family: "Courier New", monospace;
+  font-family: var(--nco-font-display);
   letter-spacing: 1px;
   text-transform: uppercase;
   font-size: 16px;
@@ -446,7 +489,7 @@
 
 .nco-trigger.nco-trigger-edge .nco-trigger-text {
   border-color: var(--nco-action);
-  box-shadow: 0 0 4px 0 rgba(35, 213, 229, 0.4);
+  box-shadow: 0 0 4px 0 rgb(var(--nco-action-rgb) /0.4);
 }
 
 .nco-edge-toggle {
@@ -458,7 +501,7 @@
   border: 1px solid var(--nco-border);
   border-radius: 4px;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgb(var(--nco-neutral-rgb) /0.4);
 }
 
 .nco-edge-toggle input {
@@ -468,7 +511,7 @@
 .nco-edge-toggle:has(input:checked) {
   color: var(--nco-action);
   border-color: var(--nco-action);
-  box-shadow: 0 0 6px 0 rgba(35, 213, 229, 0.5);
+  box-shadow: 0 0 6px 0 rgb(var(--nco-action-rgb) /0.5);
 }
 
 .nco-icon-button {
@@ -487,7 +530,7 @@
 }
 
 .nco-add {
-  background: rgba(35, 213, 229, 0.08);
+  background: rgb(var(--nco-action-rgb) /0.08);
   border: 1px solid var(--nco-action);
   color: var(--nco-action);
   border-radius: 4px;
@@ -497,7 +540,7 @@
 }
 
 .nco-add:hover {
-  background: rgba(35, 213, 229, 0.2);
+  background: rgb(var(--nco-action-rgb) /0.2);
   text-shadow: none;
 }
 
@@ -519,8 +562,8 @@
   gap: 5px;
   border: 1px solid var(--nco-border);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #e7e9f5;
+  background: rgb(var(--nco-neutral-rgb) /0.05);
+  color: var(--nco-text);
   font-size: 14px;
   padding: 3px 10px;
   max-width: 100%;
@@ -535,17 +578,17 @@ button.nco-chip {
   font-size: 16px;
   border-color: var(--nco-action);
   color: var(--nco-action);
-  background: rgba(35, 213, 229, 0.08);
+  background: rgb(var(--nco-action-rgb) /0.08);
 }
 
 .nco-chip-edge {
   border-color: var(--nco-action);
   color: var(--nco-action);
-  box-shadow: 0 0 4px 0 rgba(35, 213, 229, 0.4);
+  box-shadow: 0 0 4px 0 rgb(var(--nco-action-rgb) /0.4);
 }
 
 button.nco-chip:hover {
-  background: rgba(35, 213, 229, 0.25);
+  background: rgb(var(--nco-action-rgb) /0.25);
   text-shadow: none;
 }
 
@@ -566,17 +609,17 @@ button.nco-chip:hover {
 
 .nco-character-sheet .nco-flaw-text,
 .nco-vehicle-sheet .nco-flaw-text {
-  border-color: rgba(255, 46, 136, 0.4);
+  border-color: rgb(var(--nco-danger-rgb) /0.4);
 }
 
 .nco-chip-flaw {
   border-color: var(--nco-danger);
   color: var(--nco-danger);
-  background: rgba(255, 46, 136, 0.08);
+  background: rgb(var(--nco-danger-rgb) /0.08);
 }
 
 button.nco-chip-flaw:hover {
-  background: rgba(255, 46, 136, 0.25);
+  background: rgb(var(--nco-danger-rgb) /0.25);
   border-color: var(--nco-danger);
   color: var(--nco-danger);
 }
@@ -612,7 +655,7 @@ button.nco-chip-flaw:hover {
 }
 
 .nco-chip-flaw.nco-chip-removable > button.nco-chip-label:hover {
-  background: rgba(255, 46, 136, 0.25);
+  background: rgb(var(--nco-danger-rgb) /0.25);
 }
 
 .nco-chip-removable > .nco-chip-remove {
@@ -635,7 +678,7 @@ button.nco-chip-flaw:hover {
 .nco-chip-removable > .nco-chip-remove:hover {
   opacity: 1;
   color: var(--nco-danger);
-  background: rgba(255, 46, 136, 0.15);
+  background: rgb(var(--nco-danger-rgb) /0.15);
 }
 
 /* Traumas: lasting injuries, edited as rows and invoked like Flaws */
@@ -701,20 +744,20 @@ button.nco-chip-flaw:hover {
   border: 1px solid var(--nco-border);
   border-radius: 4px;
   background: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgb(var(--nco-neutral-rgb) /0.4);
   cursor: pointer;
 }
 
 .nco-polarity-toggle.nco-polarity-positive {
   color: var(--nco-action);
   border-color: var(--nco-action);
-  box-shadow: 0 0 6px 0 rgba(35, 213, 229, 0.5);
+  box-shadow: 0 0 6px 0 rgb(var(--nco-action-rgb) /0.5);
 }
 
 .nco-polarity-toggle.nco-polarity-negative {
   color: var(--nco-danger);
   border-color: var(--nco-danger);
-  box-shadow: 0 0 6px 0 rgba(255, 46, 136, 0.5);
+  box-shadow: 0 0 6px 0 rgb(var(--nco-danger-rgb) /0.5);
 }
 
 .nco-polarity-toggle:disabled {
@@ -778,20 +821,20 @@ button.nco-chip-flaw:hover {
   margin: 0;
   flex: none;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.5));
+  border: 1px solid rgb(var(--nco-neutral-rgb) /0.25);
+  background: radial-gradient(circle at 50% 50%, rgb(var(--nco-neutral-rgb) /0.08), rgba(0, 0, 0, 0.5));
   cursor: pointer;
   transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .nco-character-sheet .nco-condition-switch input[type="checkbox"]:hover:not(:disabled) {
-  border-color: rgba(255, 46, 136, 0.6);
+  border-color: rgb(var(--nco-danger-rgb) /0.6);
 }
 
 .nco-character-sheet .nco-condition-switch input[type="checkbox"]:checked {
   border-color: var(--nco-danger);
-  background: radial-gradient(circle at 50% 35%, #ff9ac4, var(--nco-danger) 70%);
-  box-shadow: 0 0 7px 1px rgba(255, 46, 136, 0.85), inset 0 0 2px rgba(255, 255, 255, 0.7);
+  background: radial-gradient(circle at 50% 35%, var(--nco-danger-light), var(--nco-danger) 70%);
+  box-shadow: 0 0 7px 1px rgb(var(--nco-danger-rgb) /0.85), inset 0 0 2px rgb(var(--nco-neutral-rgb) /0.7);
 }
 
 .nco-character-sheet .nco-condition-switch input[type="checkbox"]:disabled {
@@ -829,7 +872,7 @@ button.nco-chip-flaw:hover {
   opacity: 1;
   border-color: var(--nco-danger);
   color: var(--nco-danger);
-  background: rgba(255, 46, 136, 0.08);
+  background: rgb(var(--nco-danger-rgb) /0.08);
 }
 
 .nco-chip-condition.nco-condition-on .nco-condition-switch {
@@ -837,7 +880,7 @@ button.nco-chip-flaw:hover {
 }
 
 button.nco-condition-name:hover {
-  background: rgba(255, 46, 136, 0.25);
+  background: rgb(var(--nco-danger-rgb) /0.25);
   text-shadow: none;
 }
 
@@ -857,7 +900,7 @@ button.nco-condition-name:hover {
 .nco-threat-sheet input[type="text"],
 .nco-threat-sheet input[type="number"],
 .nco-threat-sheet textarea {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--nco-neutral-rgb) /0.04);
   border: 1px solid var(--nco-border);
   border-radius: 4px;
   color: inherit;
@@ -895,9 +938,9 @@ button.nco-condition-name:hover {
   box-sizing: border-box;
   border-radius: 50%;
   border: 1px solid var(--nco-danger);
-  background: radial-gradient(circle at 50% 35%, #ff6aa6, var(--nco-danger) 75%);
-  box-shadow: 0 0 8px 0 rgba(255, 46, 136, 0.7);
-  color: #fff;
+  background: radial-gradient(circle at 50% 35%, var(--nco-danger-mid), var(--nco-danger) 75%);
+  box-shadow: 0 0 8px 0 rgb(var(--nco-danger-rgb) /0.7);
+  color: var(--nco-on-accent);
   font-size: 20px;
   font-weight: bold;
   text-align: center;
@@ -909,7 +952,7 @@ button.nco-danger-rating {
 }
 
 button.nco-danger-rating:hover {
-  box-shadow: 0 0 12px 2px rgba(255, 46, 136, 0.9);
+  box-shadow: 0 0 12px 2px rgb(var(--nco-danger-rgb) /0.9);
   text-shadow: none;
 }
 
@@ -931,7 +974,7 @@ button.nco-danger-rating:hover {
   align-items: center;
   gap: 5px;
   margin-top: 6px;
-  font-family: "Courier New", monospace;
+  font-family: var(--nco-font-display);
   letter-spacing: 1px;
   text-transform: uppercase;
   font-size: 14px;
@@ -973,7 +1016,7 @@ button.nco-danger-rating:hover {
   box-sizing: border-box;
   border: 1px solid var(--nco-border);
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--nco-neutral-rgb) /0.04);
   transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
@@ -981,7 +1024,7 @@ button.nco-danger-rating:hover {
 .nco-job-sheet .nco-hit-box-filled {
   border-color: var(--nco-danger);
   background: var(--nco-danger);
-  box-shadow: 0 0 5px 0 rgba(255, 46, 136, 0.7);
+  box-shadow: 0 0 5px 0 rgb(var(--nco-danger-rgb) /0.7);
 }
 
 /* A Boss's Hits are grouped in threes, separated by a vertical divider. */
@@ -1028,8 +1071,9 @@ button.nco-danger-rating:hover {
 /* ----------------------------------------------------------------------- */
 
 .nco.roll-dialog .window-content {
-  background: #14172a;
-  color: #e7e9f5;
+  background: var(--nco-surface);
+  color: var(--nco-text);
+  font-family: var(--nco-font-body);
 }
 
 .nco-roll-dialog-content {
@@ -1076,13 +1120,13 @@ button.nco-danger-rating:hover {
 
 /* Penalty button mirrors .nco-add in the danger palette. */
 .nco-add-danger {
-  background: rgba(255, 46, 136, 0.08);
+  background: rgb(var(--nco-danger-rgb) /0.08);
   border-color: var(--nco-danger);
   color: var(--nco-danger);
 }
 
 .nco-add-danger:hover {
-  background: rgba(255, 46, 136, 0.2);
+  background: rgb(var(--nco-danger-rgb) /0.2);
 }
 
 /* Ad-hoc modifier buttons sit in a row beneath the two pools, one button per
@@ -1102,13 +1146,13 @@ button.nco-danger-rating:hover {
 
 /* Penalty button mirrors .nco-add in the danger palette. */
 .nco-add-danger {
-  background: rgba(255, 46, 136, 0.08);
+  background: rgb(var(--nco-danger-rgb) /0.08);
   border-color: var(--nco-danger);
   color: var(--nco-danger);
 }
 
 .nco-add-danger:hover {
-  background: rgba(255, 46, 136, 0.2);
+  background: rgb(var(--nco-danger-rgb) /0.2);
 }
 
 .nco-action-label {
@@ -1133,12 +1177,12 @@ button.nco-danger-rating:hover {
   font-size: 14px;
   padding: 3px 6px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgb(var(--nco-neutral-rgb) /0.06);
   cursor: pointer;
 }
 
 .nco-pool-item:hover {
-  background: rgba(255, 46, 136, 0.25);
+  background: rgb(var(--nco-danger-rgb) /0.25);
   text-decoration: line-through;
 }
 
@@ -1170,7 +1214,7 @@ button.nco-danger-rating:hover {
   gap: 6px;
   background: transparent;
   border: 1px solid var(--nco-border);
-  color: rgba(255, 255, 255, 0.7);
+  color: rgb(var(--nco-neutral-rgb) /0.7);
   border-radius: 4px;
   padding: 6px 12px;
   cursor: pointer;
@@ -1186,7 +1230,7 @@ button.nco-danger-rating:hover {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(35, 213, 229, 0.12);
+  background: rgb(var(--nco-action-rgb) /0.12);
   border: 1px solid var(--nco-action);
   color: var(--nco-action);
   border-radius: 4px;
@@ -1196,7 +1240,7 @@ button.nco-danger-rating:hover {
 }
 
 .nco-roll-submit:hover {
-  background: rgba(35, 213, 229, 0.25);
+  background: rgb(var(--nco-action-rgb) /0.25);
   text-shadow: none;
 }
 
@@ -1227,8 +1271,8 @@ button.nco-danger-rating:hover {
   background: var(--nco-bg);
   border: 1px solid var(--nco-danger);
   border-radius: 6px;
-  box-shadow: 0 0 12px rgba(255, 46, 136, 0.35);
-  font-family: "Courier New", monospace;
+  box-shadow: 0 0 12px rgb(var(--nco-danger-rgb) /0.35);
+  font-family: var(--nco-font-display);
 }
 
 .nco-pressure-header {
@@ -1259,7 +1303,7 @@ button.nco-danger-rating:hover {
   line-height: 1;
   margin: 0 0 0 4px;
   padding: 2px 6px;
-  background: rgba(255, 46, 136, 0.12);
+  background: rgb(var(--nco-danger-rgb) /0.12);
   border: 1px solid var(--nco-danger);
   border-radius: 4px;
   color: var(--nco-danger);
@@ -1267,7 +1311,7 @@ button.nco-danger-rating:hover {
 }
 
 .nco-pressure-reset:hover {
-  background: rgba(255, 46, 136, 0.3);
+  background: rgb(var(--nco-danger-rgb) /0.3);
   text-shadow: none;
 }
 
@@ -1290,8 +1334,8 @@ button.nco-danger-rating:hover {
 
 .nco-pressure-box.filled {
   background: var(--nco-danger);
-  color: #0a0c18;
-  box-shadow: 0 0 6px 1px rgba(255, 46, 136, 0.6);
+  color: var(--nco-on-danger);
+  box-shadow: 0 0 6px 1px rgb(var(--nco-danger-rgb) /0.6);
 }
 
 .nco-pressure-boxes.editable .nco-pressure-box {
@@ -1299,27 +1343,27 @@ button.nco-danger-rating:hover {
 }
 
 .nco-pressure-boxes.editable .nco-pressure-box:hover {
-  border-color: #fff;
-  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.6);
+  border-color: var(--nco-on-accent);
+  box-shadow: 0 0 6px 1px rgb(var(--nco-neutral-rgb) /0.6);
 }
 
 /* ----------------------------------------------------------------------- */
 /* Chat messages (cyberpunk reskin of Foundry's default chat cards)         */
 /* ----------------------------------------------------------------------- */
 .chat-message {
-  background: linear-gradient(160deg, #14172a 0%, #0b0d18 100%);
+  background: linear-gradient(160deg, var(--nco-surface) 0%, var(--nco-surface-2) 100%);
   border: 1px solid var(--nco-border);
   border-left: 3px solid var(--nco-action);
   border-radius: 6px;
-  box-shadow: 0 0 10px rgba(35, 213, 229, 0.12);
-  color: #e7e9f5;
+  box-shadow: 0 0 10px rgb(var(--nco-action-rgb) /0.12);
+  color: var(--nco-text);
   padding: 8px 10px;
 }
 
 /* Whispers and private rolls lean on the danger accent instead of action. */
 .chat-message.whisper {
   border-left-color: var(--nco-danger);
-  box-shadow: 0 0 10px rgba(255, 46, 136, 0.12);
+  box-shadow: 0 0 10px rgb(var(--nco-danger-rgb) /0.12);
 }
 
 .chat-message .message-header {
@@ -1330,30 +1374,30 @@ button.nco-danger-rating:hover {
 
 .chat-message .message-sender {
   color: var(--nco-action);
-  font-family: "Courier New", monospace;
+  font-family: var(--nco-font-display);
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 13px;
-  text-shadow: 0 0 6px rgba(35, 213, 229, 0.4);
+  text-shadow: 0 0 6px rgb(var(--nco-action-rgb) /0.4);
 }
 
 .chat-message .message-metadata,
 .chat-message .message-timestamp,
 .chat-message .whisper-to {
-  color: rgba(231, 233, 245, 0.55);
+  color: rgb(var(--nco-text-rgb) /0.55);
 }
 
 .chat-message .flavor-text {
-  color: rgba(231, 233, 245, 0.8);
+  color: rgb(var(--nco-text-rgb) /0.8);
 }
 
 .chat-message .message-content {
-  color: #e7e9f5;
+  color: var(--nco-text);
 }
 
 .chat-message a.content-link,
 .chat-message a.inline-roll {
-  background: rgba(35, 213, 229, 0.12);
+  background: rgb(var(--nco-action-rgb) /0.12);
   border: 1px solid var(--nco-action);
   color: var(--nco-action);
 }
@@ -1364,26 +1408,26 @@ button.nco-danger-rating:hover {
 .chat-message .dice-roll .dice-tooltip,
 .chat-message .dice-roll .part-formula,
 .chat-message .dice-roll .part-total {
-  background: #070910;
+  background: var(--nco-surface-deep);
   border: 1px solid var(--nco-border);
-  color: #e7e9f5;
+  color: var(--nco-text);
 }
 
 .chat-message .dice-roll .dice-total {
-  background: #070910;
+  background: var(--nco-surface-deep);
   border: 1px solid var(--nco-action);
   border-radius: 4px;
   color: var(--nco-action);
-  text-shadow: 0 0 8px rgba(35, 213, 229, 0.5);
+  text-shadow: 0 0 8px rgb(var(--nco-action-rgb) /0.5);
 }
 
 .chat-message .dice-roll .dice-tooltip .dice-rolls .roll {
-  color: #e7e9f5;
+  color: var(--nco-text);
 }
 
 .chat-message .dice-roll .dice-flavor,
 .chat-message .dice-roll .part-flavor {
-  color: rgba(231, 233, 245, 0.7);
+  color: rgb(var(--nco-text-rgb) /0.7);
 }
 
 /* ===== Job sheet ===== */

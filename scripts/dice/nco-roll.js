@@ -136,7 +136,7 @@ export class NCORoll {
 
     return `
       <div style="border:1px solid var(--nco-action);border-radius:6px;padding:8px 10px;background:var(--nco-bg);">
-        <div style="font-family:'Courier New',monospace;letter-spacing:1px;color:var(--nco-action);font-size:11px;text-transform:uppercase;">
+        <div style="font-family:var(--nco-font-display);letter-spacing:1px;color:var(--nco-action);font-size:11px;text-transform:uppercase;">
           ${game.i18n.localize("NCO.Roll.Title")}
         </div>
         ${edgesHtml}
