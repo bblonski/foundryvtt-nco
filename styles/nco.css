@@ -60,6 +60,22 @@ body {
   font-family: var(--nco-font-body);
 }
 
+/* Form controls don't inherit font-family from the page, so without this the
+   add-buttons, Trademark/Edge/Tag chips, and text inputs across our sheets and
+   dialogs would render in the browser/Foundry default instead of the active
+   theme's body font (set on .window-content above).
+
+   Scoped to our content roots (never the window frame): the header controls —
+   close, copy-document-id, etc. — are Foundry buttons that carry their Font
+   Awesome glyph via a class on the button itself, so forcing font-family on
+   them would break the icons. Kept to one class of specificity so the few
+   controls that opt into the display font (e.g. .nco-stunt-label) still win. */
+:is(.nco-character-sheet, .nco-threat-sheet, .nco-vehicle-sheet, .nco-trademark-sheet,
+    .nco-gear-sheet, .nco-condition-sheet, .nco-job-sheet, .nco-scene-sheet,
+    .nco-roll-dialog-content) :is(button, input, textarea, select) {
+  font-family: inherit;
+}
+
 .nco-character-sheet,
 .nco-trademark-sheet,
 .nco-gear-sheet,
