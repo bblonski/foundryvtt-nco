@@ -40,13 +40,6 @@ Build Trademarks and Gear as items to easily drag and drop them on the character
 Edit Trademarks to upgrade Triggers/Traits into Edges. 
 Custom Trademarks and Gear can also be created directly from the character sheet.
 
-### Enabling the Pressure track
-
-Pressure is an optional rule from Star Scoundrels which can be enabled from the system settings.
-
-Once enabled, the track appears for all players at the top of the scene. 
-Each uncancelled **6 on a Danger die** automatically ticks Pressure up by +1.
-
 ### On the character sheet
 
 - **Hits, Stunt Points, XP, Stash** are click tracks — left-click to
@@ -55,6 +48,49 @@ Each uncancelled **6 on a Danger die** automatically ticks Pressure up by +1.
 - **The Drive Track** uses 3 state checkboxes that can be Ticked or Crossed.
 - **Click the Stunt Label** to post Stunt point usage to chat and reduce current stunt points by 1.
 - Adding a new **Trauma** automatically rolls a death check.
+
+## System Settings
+
+All of these live under **Game Settings → Configure Settings → System Settings**
+
+### Game Line (theme selector)
+
+The **Game Line** dropdown changes the theme and terminology to a specific *Action Tales!* game.
+
+Available lines and their themes:
+
+| Game Line             | Theme        |
+| --------------------- | ------------ |
+| Neon City Overdrive   | Cyberpunk    |
+| Star Scoundrels       | Space Opera  |
+| Dungeon Crawlers      | OSR Fantasy  |
+| Hard City             | Noir         |
+| Tomorrow City         | Dieselpunk   |
+
+Changing game line does not automatically enable the optional rules associated with that game.
+Review the optional rules to enable all required elements.
+
+### Optional rules and sheet sections
+
+Several rules and character-sheet sections are optional and can be toggled on or
+off to match the game you're running:
+
+- **Drive Track** — show the optional Drive track on character sheets. For Neon City Overdrive.
+- **Stash/Cred Track** — show the optional Stash track on character sheets, and set
+  its length. For Neon City Overdrive and Tomorrow City.
+- **Ties Box** — show the optional Ties (relationships) section. For Hard City and Tomorrow City.
+- **Advantages Box** — show the optional Advantages section. For Tomorrow City.
+- **Pressure (optional rule)** — show a shared GM Pressure track near the top of
+  the screen, and set it's length. For Star Scoundrels.
+- **Death Check on Trauma** — automatically roll a death check when a character
+  takes a new Trauma according to the Neon City Overdrive rules.
+- **Starting Hits** — how many Hits a newly created character begins with.
+- **Maximum Hits** — the most Hits any character can attain.
+- **XP Track Length** — how many XP boxes appear on each character's advancement
+  track.
+- **Track Click Behavior** — how the Hits and XP click tracks respond to clicks:
+  either *left-click adds, right-click removes*, or *click a box to fill to that
+  level*.
 
 ## Installation
 
