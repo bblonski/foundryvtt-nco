@@ -17,9 +17,7 @@
 /* --- Bundled display / accent faces (graceful-fallback) ---------------- */
 @font-face { font-family: "NCO Orbitron";       src: url("../fonts/Orbitron.woff2")      format("woff2"); font-display: swap; }
 @font-face { font-family: "NCO Share Tech Mono"; src: url("../fonts/ShareTechMono.woff2") format("woff2"); font-display: swap; }
-@font-face { font-family: "NCO Cinzel";      src: url("../fonts/Cinzel.woff2")       format("woff2"); font-display: swap; }
 @font-face { font-family: "NCO Sancreek";    src: url("../fonts/Sancreek.woff2")     format("woff2"); font-display: swap; }
-@font-face { font-family: "NCO Oswald";      src: url("../fonts/Oswald.woff2")       format("woff2"); font-display: swap; }
 @font-face { font-family: "NCO Anton";       src: url("../fonts/Anton.woff2")        format("woff2"); font-display: swap; }
 @font-face { font-family: "NCO Typewriter";  src: url("../fonts/SpecialElite.woff2")  format("woff2"); font-display: swap; }
 @font-face { font-family: "NCO Limelight";   src: url("../fonts/Limelight.woff2")    format("woff2"); font-display: swap; }
@@ -79,7 +77,7 @@ body.nco-theme-osr {
   --nco-on-accent: #f6edd6;         /* cream atop amber/oxblood */
   --nco-on-danger: #f6edd6;
 
-  --nco-font-display: "NCO Sancreek", "NCO Cinzel", "Trajan Pro", "Palatino Linotype", serif;
+  --nco-font-display: "NCO Sancreek", "Trajan Pro", "Palatino Linotype", serif;
   --nco-font-mono: "NCO EBGaramond", "Iowan Old Style", "Georgia", serif;
   --nco-font-body: "NCO EBGaramond", "Iowan Old Style", "Georgia", serif;
 }
@@ -110,7 +108,7 @@ body.nco-theme-noir {
   --nco-on-accent: #f4e3d6;        /* cream atop maroon/red */
   --nco-on-danger: #f4e3d6;
 
-  --nco-font-display: "NCO Anton", "NCO Oswald", "Haettenschweiler", "Impact", sans-serif;
+  --nco-font-display: "NCO Anton", "Haettenschweiler", "Impact", sans-serif;
   --nco-font-mono: "NCO Typewriter", "Courier New", monospace;
   --nco-font-body: "NCO Typewriter", "Courier New", monospace;
 }
