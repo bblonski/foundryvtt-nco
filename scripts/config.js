@@ -31,22 +31,18 @@ export const GAME_LINES = {
     terms: {
       "NCO.Roll.Title": "Star Scoundrels · Check",
       "NCO.RollDialog.Title": "Star Scoundrels — Roll",
-      // Example concept rename: Star Scoundrels calls Stunt (Points) "Flow".
-      // Override every user-facing string that names the concept so the rename
-      // reads coherently across the sheet and chat — this is the pattern to copy
-      // for any other per-line terminology change.
       "NCO.Sheet.StuntPoints": "Flow",
       "NCO.Sheet.SpendStuntPoint": "Click to spend a point of Flow",
       "NCO.Sheet.NoStuntPoints": "{name} has no Flow left to spend.",
       "NCO.Sheet.StuntPointsMax": "Total Flow for this character",
       "NCO.Chat.StuntPoint.Title": "Flow Spent",
       "NCO.Chat.StuntPoint.Remaining": "{name} has {remaining} Flow remaining.",
-      // Example concept rename: Star Scoundrels calls a character's Max Hits
-      // their "Grit" — the setting that caps it, its hint, and the sheet's
-      // max-Hits field tooltip.
       "NCO.Settings.MaxHits.Name": "Grit",
       "NCO.Settings.MaxHits.Hint": "The most Hits any character can grow to through advancement — their Grit.",
       "NCO.Sheet.HitsMax": "Grit — total Hits for this character",
+      "NCO.Sheet.UniqueGear": "Unique Gear",
+      "NCO.Sheet.AddUniqueGear": "Unique Gear",
+      "NCO.Sheet.EmptyUniqueGear": "No Unique Gear yet. Unlock edit mode and click \"Unique Gear\" to add one.",
     },
   },
 
@@ -65,7 +61,6 @@ export const GAME_LINES = {
     terms: {
       "NCO.Roll.Title": "Hard City · Check",
       "NCO.RollDialog.Title": "Hard City — Roll",
-      // Hard City calls Stunt (Points) "Moxie" and a character's Max Hits "Grit".
       "NCO.Sheet.StuntPoints": "Moxie",
       "NCO.Sheet.SpendStuntPoint": "Click to spend a point of Moxie",
       "NCO.Sheet.NoStuntPoints": "{name} has no Moxie left to spend.",
@@ -75,8 +70,6 @@ export const GAME_LINES = {
       "NCO.Settings.MaxHits.Name": "Grit",
       "NCO.Settings.MaxHits.Hint": "The most Hits any character can grow to through advancement — their Grit.",
       "NCO.Sheet.HitsMax": "Grit — total Hits for this character",
-      // Hard City calls Traumas "Injuries". Rename every string that names the
-      // concept across the sheet, the add/delete controls, and chat output.
       "NCO.Sheet.Traumas": "Injuries",
       "NCO.Sheet.AddTrauma": "Injury",
       "NCO.Sheet.AddTraumaTitle": "New Injury",
@@ -95,7 +88,6 @@ export const GAME_LINES = {
     terms: {
       "NCO.Roll.Title": "Tomorrow City · Check",
       "NCO.RollDialog.Title": "Tomorrow City — Roll",
-      // Tomorrow City calls Stunt (Points) "Moxie" and a character's Max Hits "Grit".
       "NCO.Sheet.StuntPoints": "Moxie",
       "NCO.Sheet.SpendStuntPoint": "Click to spend a point of Moxie",
       "NCO.Sheet.NoStuntPoints": "{name} has no Moxie left to spend.",
@@ -105,15 +97,11 @@ export const GAME_LINES = {
       "NCO.Settings.MaxHits.Name": "Grit",
       "NCO.Settings.MaxHits.Hint": "The most Hits any character can grow to through advancement — their Grit.",
       "NCO.Sheet.HitsMax": "Grit — total Hits for this character",
-      // Tomorrow City calls the Stash track "Cred". Rename the sheet label and
-      // the track's world settings so the concept reads coherently throughout.
       "NCO.Sheet.Stash": "Cred",
       "NCO.Settings.StashTrack.Name": "Cred Track",
       "NCO.Settings.StashTrack.Hint": "Show the optional Cred track on character sheets.",
       "NCO.Settings.StashTrackLength.Name": "Cred Track Length",
       "NCO.Settings.StashTrackLength.Hint": "How many Cred boxes appear on each character's Cred track.",
-      // Tomorrow City calls Traumas "Injuries". Rename every string that names the
-      // concept across the sheet, the add/delete controls, and chat output.
       "NCO.Sheet.Traumas": "Injuries",
       "NCO.Sheet.AddTrauma": "Injury",
       "NCO.Sheet.AddTraumaTitle": "New Injury",

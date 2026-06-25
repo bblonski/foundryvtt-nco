@@ -4,11 +4,13 @@
 # Neon City Overdrive and other Action Tales!
 
 An unofficial [FoundryVTT](https://foundryvtt.com/) game system implementing
-**Neon City Overdrive** and the other *Action Tales!* games by
+**Neon City Overdrive** and the other *Action Tales* games by
 [Peril Planet](https://perilplanet.com/).
 
 The system primarily focuses on **Neon City Overdrive**, is configurable to support 
-other Action Tales! games such as **Star Scoundrels** and **Dungeon Crawlers**.
+other Action Tales games such as **Star Scoundrels** and **Dungeon Crawlers**.
+I do not own all Action Tales games, such as Hard City and Tomorrow City, so 
+not all rules from those games are implemented.
 
 ## User Guide
 

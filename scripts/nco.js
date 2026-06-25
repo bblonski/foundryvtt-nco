@@ -123,6 +123,16 @@ Hooks.once("init", function () {
     default: 3,
   });
 
+  game.settings.register("foundryvtt-nco", "startingStuntPoints", {
+    name: "NCO.Settings.StartingStuntPoints.Name",
+    hint: "NCO.Settings.StartingStuntPoints.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 1, max: 5, step: 1 },
+    default: 3,
+  });
+
   game.settings.register("foundryvtt-nco", "maxHits", {
     name: "NCO.Settings.MaxHits.Name",
     hint: "NCO.Settings.MaxHits.Hint",

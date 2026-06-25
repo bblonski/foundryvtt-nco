@@ -45,11 +45,36 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       ),
       // Meta-currency spent for stunts; clicking the sheet label spends one
       // and posts the spending options to chat. Drawn as a Hits-like track
-      // (filled boxes = available points) in blue. NCO characters start with
-      // 3 and the pool can grow to 5 through advancement.
+      // (filled boxes = available points) in blue. New characters start with
+      // the world's starting-stunt-points setting (NCO default 3) and the pool
+      // can grow to 5 through advancement.
       stuntPoints: new fields.SchemaField({
-        value: new fields.NumberField({ required: true, integer: true, min: 0, max: 5, initial: 3 }),
-        max: new fields.NumberField({ required: true, integer: true, min: 1, max: 5, initial: 3 }),
+        value: new fields.NumberField({
+          required: true,
+          integer: true,
+          min: 0,
+          max: 5,
+          initial: () => {
+            try {
+              return game.settings.get("foundryvtt-nco", "startingStuntPoints");
+            } catch (e) {
+              return 3;
+            }
+          },
+        }),
+        max: new fields.NumberField({
+          required: true,
+          integer: true,
+          min: 1,
+          max: 5,
+          initial: () => {
+            try {
+              return game.settings.get("foundryvtt-nco", "startingStuntPoints");
+            } catch (e) {
+              return 3;
+            }
+          },
+        }),
       }),
       // Advancement track: how many XP boxes are filled. The track's length
       // (total boxes) is a world setting, so it isn't stored per character;
