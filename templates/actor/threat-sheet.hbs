@@ -82,8 +82,9 @@
     <div class="nco-section-header">
       <label class="nco-section-label">{{localize "NCO.Sheet.Tags"}}</label>
       {{#if editing}}
-        <button type="button" class="nco-add" data-action="createTag">
-          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTag"}}
+        <button type="button" class="nco-add-icon" data-action="createTag"
+                title="{{localize 'NCO.Sheet.AddTag'}}" aria-label="{{localize 'NCO.Sheet.AddTag'}}">
+          <i class="fas fa-plus"></i>
         </button>
       {{/if}}
     </div>

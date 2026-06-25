@@ -150,7 +150,7 @@ Hooks.once("init", function () {
     scope: "world",
     config: true,
     type: Number,
-    range: { min: 5, max: 20, step: 1 },
+    range: { min: 5, max: 30, step: 1 },
     default: 15,
     requiresReload: true,
   });

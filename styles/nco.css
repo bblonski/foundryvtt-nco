@@ -190,10 +190,13 @@ body {
 }
 
 /* Hits and XP labels share a fixed width so their tracks begin at the same x
-   and the boxes line up in a column beneath one another. */
+   and the boxes line up in a column beneath one another. Width must clear the
+   longest label ("HITS") at the display font size, or its track is pushed right
+   while the shorter "XP" stays put. */
 .nco-hits-label,
 .nco-xp .nco-section-label {
-  min-width: 48px;
+  width: 60px;
+  min-width: 60px;
   margin: 0;
   flex: none;
 }
@@ -383,7 +386,7 @@ body {
   font-family: var(--nco-font-display);
   letter-spacing: 1px;
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 19px;
   color: var(--nco-action);
   cursor: pointer;
 }
@@ -430,7 +433,7 @@ body {
   font-family: var(--nco-font-display);
   letter-spacing: 1px;
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 19px;
   color: var(--nco-action);
   margin: 0 0 4px;
 }
@@ -456,7 +459,14 @@ body {
 .nco-section-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+/* The label's own bottom margin would offset its text upward relative to the
+   add button in this centered row; drop it (the row carries its own margin). */
+.nco-section-header .nco-section-label {
+  margin: 0;
 }
 
 .nco-empty-hint {
@@ -562,6 +572,42 @@ body {
 
 .nco-add-trigger {
   margin-top: 6px;
+}
+
+/* Compact circular "+" button shown beside a section label to add an entry
+   (Trademarks, Advantages, Gear, Conditions, Traumas, Tags, …). Replaces the
+   full-width labelled .nco-add buttons so the controls don't crowd the chips
+   below them. The localized "Add X" text lives in the title/aria-label. */
+.nco-add-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: rgb(var(--nco-action-rgb) /0.08);
+  border: 1px solid var(--nco-action);
+  color: var(--nco-action);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.nco-add-icon:hover {
+  background: rgb(var(--nco-action-rgb) /0.2);
+  text-shadow: none;
+}
+
+/* Danger-palette variant for red-labelled sections (Conditions, Traumas, …). */
+.nco-add-icon-danger {
+  background: rgb(var(--nco-danger-rgb) /0.08);
+  border-color: var(--nco-danger);
+  color: var(--nco-danger);
+}
+
+.nco-add-icon-danger:hover {
+  background: rgb(var(--nco-danger-rgb) /0.2);
 }
 
 /* Play mode: Trademarks and Tags rendered as clickable chips */
@@ -751,6 +797,21 @@ button.nco-chip-flaw:hover {
   align-items: center;
   gap: 6px;
   margin-top: 6px;
+}
+
+/* Keep the Hits-track length label and its number input on one line. */
+.nco-gear-hits-length {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nco-gear-hits-length .nco-section-label {
+  margin: 0;
+}
+
+.nco-gear-hits-length input {
+  width: 4em;
 }
 
 .nco-unique-gear-name {
@@ -1009,12 +1070,12 @@ button.nco-danger-rating:hover {
 .nco-boss-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 10px;
   margin-top: 6px;
   font-family: var(--nco-font-display);
   letter-spacing: 1px;
   text-transform: uppercase;
-  font-size: 14px;
+  font-size: 19px;
   color: var(--nco-danger);
   cursor: pointer;
   width: fit-content;
@@ -1023,7 +1084,8 @@ button.nco-danger-rating:hover {
 /* Match the Hits label width so the Boss checkbox lines up in a column with
    the first Hit box below it. */
 .nco-boss-toggle span {
-  min-width: 48px;
+  width: 60px;
+  min-width: 60px;
   flex: none;
 }
 
@@ -1043,6 +1105,13 @@ button.nco-danger-rating:hover {
   align-items: center;
   gap: 5px;
   margin-top: 6px;
+}
+
+/* Wider gap so the larger "BOSS" label clears the checkbox, kept equal to the
+   Boss toggle's gap so the Hits track and the Boss checkbox stay column-aligned
+   (both labels are 60px wide). */
+.nco-threat-sheet .nco-hits {
+  gap: 10px;
 }
 
 .nco-threat-sheet .nco-hit-box,

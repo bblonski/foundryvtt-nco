@@ -22,8 +22,9 @@
     <div class="nco-section-header">
       <label class="nco-section-label">{{localize "NCO.Sheet.Triggers"}}</label>
       {{#if editable}}
-        <button type="button" class="nco-add" data-action="createTrigger">
-          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTrigger"}}
+        <button type="button" class="nco-add-icon" data-action="createTrigger"
+                title="{{localize 'NCO.Sheet.AddTrigger'}}" aria-label="{{localize 'NCO.Sheet.AddTrigger'}}">
+          <i class="fas fa-plus"></i>
         </button>
       {{/if}}
     </div>

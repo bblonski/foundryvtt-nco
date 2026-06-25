@@ -69,8 +69,9 @@
     <div class="nco-section-header">
       <label class="nco-section-label">{{localize "NCO.Sheet.Tags"}}</label>
       {{#if editing}}
-        <button type="button" class="nco-add" data-action="createTag">
-          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTag"}}
+        <button type="button" class="nco-add-icon" data-action="createTag"
+                title="{{localize 'NCO.Sheet.AddTag'}}" aria-label="{{localize 'NCO.Sheet.AddTag'}}">
+          <i class="fas fa-plus"></i>
         </button>
       {{/if}}
     </div>
@@ -127,8 +128,9 @@
     <div class="nco-section-header">
       <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.VehicleConditions"}}</label>
       {{#if editable}}
-        <button type="button" class="nco-add" data-action="createCritical">
-          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddCondition"}}
+        <button type="button" class="nco-add-icon nco-add-icon-danger" data-action="createCritical"
+                title="{{localize 'NCO.Sheet.AddCondition'}}" aria-label="{{localize 'NCO.Sheet.AddCondition'}}">
+          <i class="fas fa-plus"></i>
         </button>
       {{/if}}
     </div>

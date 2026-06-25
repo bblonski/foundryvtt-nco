@@ -102,10 +102,11 @@
     {{!-- Drive track: a description plus ten tri-state boxes. Each box cycles
           empty -> ticked (blue /) -> crossed (red x) -> empty on click; the
           ticked/crossed counts are character stats (see CharacterData). The
-          description stays writable during play, like Gear. --}}
+          description field locks with the sheet (edit mode only); the boxes
+          stay clickable during play. --}}
     <section class="nco-drive">
       <label class="nco-section-label">{{localize "NCO.Sheet.Drive"}}</label>
-      {{#if editable}}
+      {{#if editing}}
         <input type="text" class="nco-drive-desc" name="system.drive.description"
                value="{{system.drive.description}}"
                placeholder="{{localize 'NCO.Sheet.DrivePlaceholder'}}" />
@@ -125,8 +126,9 @@
     <div class="nco-section-header">
       <label class="nco-section-label">{{localize "NCO.Sheet.Trademarks"}}</label>
       {{#if editing}}
-        <button type="button" class="nco-add" data-action="createTrademark">
-          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTrademark"}}
+        <button type="button" class="nco-add-icon" data-action="createTrademark"
+                title="{{localize 'NCO.Sheet.AddTrademark'}}" aria-label="{{localize 'NCO.Sheet.AddTrademark'}}">
+          <i class="fas fa-plus"></i>
         </button>
       {{/if}}
     </div>
@@ -185,8 +187,9 @@
       <div class="nco-section-header">
         <label class="nco-section-label">{{localize "NCO.Sheet.Advantages"}}</label>
         {{#if editing}}
-          <button type="button" class="nco-add" data-action="createAdvantage">
-            <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddAdvantage"}}
+          <button type="button" class="nco-add-icon" data-action="createAdvantage"
+                  title="{{localize 'NCO.Sheet.AddAdvantage'}}" aria-label="{{localize 'NCO.Sheet.AddAdvantage'}}">
+            <i class="fas fa-plus"></i>
           </button>
         {{/if}}
       </div>
@@ -253,9 +256,10 @@
   <section class="nco-unique-gear-section">
     <div class="nco-section-header">
       <label class="nco-section-label">{{localize "NCO.Sheet.UniqueGear"}}</label>
-      {{#if editing}}
-        <button type="button" class="nco-add" data-action="createUniqueGear">
-          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddUniqueGear"}}
+      {{#if editable}}
+        <button type="button" class="nco-add-icon" data-action="createUniqueGear"
+                title="{{localize 'NCO.Sheet.AddUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.AddUniqueGear'}}">
+          <i class="fas fa-plus"></i>
         </button>
       {{/if}}
     </div>
@@ -317,8 +321,9 @@
     <div class="nco-section-header">
       <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Conditions"}}</label>
       {{#if editable}}
-        <button type="button" class="nco-add" data-action="createCondition">
-          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddCondition"}}
+        <button type="button" class="nco-add-icon nco-add-icon-danger" data-action="createCondition"
+                title="{{localize 'NCO.Sheet.AddCondition'}}" aria-label="{{localize 'NCO.Sheet.AddCondition'}}">
+          <i class="fas fa-plus"></i>
         </button>
       {{/if}}
     </div>
@@ -358,8 +363,9 @@
     <div class="nco-section-header">
       <label class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Traumas"}}</label>
       {{#if editable}}
-        <button type="button" class="nco-add" data-action="createTrauma">
-          <i class="fas fa-plus"></i> {{localize "NCO.Sheet.AddTrauma"}}
+        <button type="button" class="nco-add-icon nco-add-icon-danger" data-action="createTrauma"
+                title="{{localize 'NCO.Sheet.AddTrauma'}}" aria-label="{{localize 'NCO.Sheet.AddTrauma'}}">
+          <i class="fas fa-plus"></i>
         </button>
       {{/if}}
     </div>
