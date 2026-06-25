@@ -1,6 +1,7 @@
 import { NCOSheetMixin } from "./nco-sheet-mixin.js";
 import { TAG_POLARITY } from "../tags.js";
 import { escapeHTML } from "../lib/lib.js";
+import { NCORoll } from "../dice/nco-roll.js";
 
 const { ActorSheetV2 } = foundry.applications.sheets;
 
@@ -34,6 +35,7 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     position: { width: 600, height: 800, top: 80, left: 120 },
     // Shared actions (editImage, toggleEdit, invoke, trackAdd) come from NCOSheetMixin.
     actions: {
+      customRoll: this._onCustomRoll,
       createTrademark: this._onCreateTrademark,
       editTrademark: this._onEditTrademark,
       deleteTrademark: this._onDeleteTrademark,
@@ -68,6 +70,14 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
    */
   _startsBlank() {
     return !this.#trademarkItems.length;
+  }
+
+  /**
+   * Open the direct-count roll prompt (Action/Danger dice) and post the result
+   * to chat — a quick custom roll independent of the shared roll pool.
+   */
+  static _onCustomRoll(_event, _target) {
+    return NCORoll.fromDialog({ post: true });
   }
 
   /** The character's embedded Trademark Items. */

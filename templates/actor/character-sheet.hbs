@@ -16,6 +16,11 @@
         {{else}}
           <h1 class="nco-name">{{document.name}}</h1>
         {{/if}}
+        <button type="button" class="nco-icon-button nco-custom-roll"
+                data-action="customRoll" title="{{localize 'NCO.Sheet.CustomRoll'}}"
+                aria-label="{{localize 'NCO.Sheet.CustomRoll'}}">
+          <i class="fas fa-dice-d6"></i>
+        </button>
         {{#if editable}}
           <button type="button" class="nco-icon-button nco-edit-toggle {{#if editing}}nco-edit-toggle-active{{/if}}"
                   data-action="toggleEdit" title="{{localize 'NCO.Sheet.ToggleEdit'}}"
