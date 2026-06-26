@@ -109,6 +109,7 @@ Hooks.once("init", function () {
 
   GlobalRollPool.registerSettings();
   GlobalRollPool.registerSocket();
+  NCORollDialog.registerSettings();
 
   PressureTrack.registerSettings();
   PressureTrack.registerSocket();

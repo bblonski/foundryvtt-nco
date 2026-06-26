@@ -19,7 +19,7 @@ export class NCORollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     classes: ["nco", "roll-dialog"],
     window: { title: "NCO.RollDialog.Title", icon: "fas fa-dice-d6" },
     // Default to the top-right corner, clear of the scene navigation bar.
-    position: { width: 460, height: "auto", top: 70, left: window.innerWidth - 800 },
+    position: { width: 540, height: "auto", top: 70, left: window.innerWidth - 800 },
     actions: {
       removeDie: this._onRemoveDie,
       addBonus: this._onAddBonus,
@@ -33,12 +33,50 @@ export class NCORollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     content: { template: "systems/foundryvtt-nco/templates/dice/roll-dialog.hbs" },
   };
 
+  /** Client-scoped store for the window's last position, so it reopens where the
+   *  user left it instead of snapping back to the default corner. */
+  static registerSettings() {
+    game.settings.register("foundryvtt-nco", "rollDialogPosition", {
+      scope: "client",
+      config: false,
+      type: Object,
+      default: {},
+    });
+  }
+
   /** Open the dialog, reusing and focusing an existing instance rather than stacking duplicates. */
   static open() {
     const existing = foundry.applications.instances.get("nco-roll-dialog");
     const dialog = existing instanceof NCORollDialog ? existing : new NCORollDialog();
     return dialog.render({ force: true });
   }
+
+  /** @override — seed the window with the remembered position (left/top only,
+   *  so the height stays "auto"). */
+  _initializeApplicationOptions(options) {
+    const opts = super._initializeApplicationOptions(options);
+    const saved = game.settings?.get("foundryvtt-nco", "rollDialogPosition");
+    if (Number.isFinite(saved?.left) && Number.isFinite(saved?.top)) {
+      opts.position = { ...opts.position, left: saved.left, top: saved.top };
+    }
+    return opts;
+  }
+
+  /** @override — persist the window's position (debounced) whenever it moves. */
+  setPosition(position) {
+    const applied = super.setPosition(position);
+    this.#savePosition(applied);
+    return applied;
+  }
+
+  /** Debounced so a drag (many setPosition calls) writes the setting once. */
+  #savePosition = foundry.utils.debounce((position) => {
+    if (!Number.isFinite(position?.left) || !Number.isFinite(position?.top)) return;
+    game.settings.set("foundryvtt-nco", "rollDialogPosition", {
+      left: position.left,
+      top: position.top,
+    });
+  }, 300);
 
   /** @override */
   async _prepareContext(_options) {

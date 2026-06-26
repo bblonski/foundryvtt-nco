@@ -8,12 +8,12 @@
       </h3>
       <ul class="nco-pool-list">
         <li class="nco-pool-base" title="{{localize 'NCO.RollDialog.BaseDieHint'}}">
-          {{localize "NCO.RollDialog.BaseDie"}}
+          <i class="fas fa-dice-d6 nco-pool-die-icon"></i> {{localize "NCO.RollDialog.BaseDie"}}
         </li>
         {{#each action as |die|}}
           <li class="nco-pool-item" data-action="removeDie" data-key="{{die.key}}"
               title="{{localize 'NCO.RollDialog.Remove'}}">
-            {{die.text}}{{#if die.source}} <span class="nco-pool-source">({{die.source}})</span>{{/if}}
+            <i class="fas fa-dice-d6 nco-pool-die-icon"></i> {{die.text}}{{#if die.source}} <span class="nco-pool-source">({{die.source}})</span>{{/if}}
           </li>
         {{/each}}
       </ul>
@@ -27,7 +27,7 @@
         {{#each danger as |die|}}
           <li class="nco-pool-item" data-action="removeDie" data-key="{{die.key}}"
               title="{{localize 'NCO.RollDialog.Remove'}}">
-            {{die.text}}{{#if die.source}} <span class="nco-pool-source">({{die.source}})</span>{{/if}}
+            <i class="fas fa-dice-d6 nco-pool-die-icon"></i> {{die.text}}{{#if die.source}} <span class="nco-pool-source">({{die.source}})</span>{{/if}}
           </li>
         {{else}}
           <li class="nco-pool-empty">{{localize "NCO.RollDialog.EmptyDanger"}}</li>

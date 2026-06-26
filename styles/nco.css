@@ -133,9 +133,9 @@ body {
 
 .nco-header-fields input[type="text"] {
   width: 100%;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
-  line-height: 22px;
+  line-height: 26px;
   box-sizing: border-box;
 }
 
@@ -146,9 +146,9 @@ body {
   border: 1px solid transparent;
   border-radius: 4px;
   padding: 4px 6px;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
-  line-height: 22px;
+  line-height: 26px;
   box-sizing: border-box;
   color: var(--nco-text);
 }
@@ -1308,6 +1308,22 @@ button.nco-danger-rating:hover {
   font-size: 13px;
 }
 
+/* Small d6 marker at the front of each pool entry; slightly dimmed so the die
+   text stays the focus. Action entries tint to the action color, Danger to
+   danger. */
+.nco-pool-die-icon {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.nco-pool-action .nco-pool-die-icon {
+  color: var(--nco-action);
+}
+
+.nco-pool-danger .nco-pool-die-icon {
+  color: var(--nco-danger);
+}
+
 .nco-roll-footer {
   display: flex;
   justify-content: flex-end;
@@ -1322,7 +1338,8 @@ button.nco-danger-rating:hover {
   border: 1px solid var(--nco-border);
   color: rgb(var(--nco-neutral-rgb) /0.7);
   border-radius: 4px;
-  padding: 6px 12px;
+  padding: 9px 18px;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -1340,7 +1357,8 @@ button.nco-danger-rating:hover {
   border: 1px solid var(--nco-action);
   color: var(--nco-action);
   border-radius: 4px;
-  padding: 6px 16px;
+  padding: 9px 22px;
+  font-size: 16px;
   cursor: pointer;
   font-weight: bold;
 }
