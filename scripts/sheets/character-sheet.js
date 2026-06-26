@@ -32,7 +32,7 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
     classes: ["nco", "sheet", "actor"],
     // Default to the left side of the screen, clear of the scene controls toolbar.
-    position: { width: 820, height: 1100, top: 80, left: 120 },
+    position: { width: 820, height: "auto" },
     resiable: true,
     // Shared actions (editImage, toggleEdit, invoke, trackAdd) come from NCOSheetMixin.
     actions: {
