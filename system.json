@@ -28,6 +28,7 @@
     }
   ],
   "packs": [],
+  "socket": true,
   "flags": {
     "hotReload": {
       "extensions": ["css", "hbs", "json"],
