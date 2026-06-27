@@ -57,10 +57,7 @@
     "NCO.Sheet.Ties": "Ties",
     "NCO.Sheet.TiesPlaceholder": "List relationships and connections here…",
     "NCO.Sheet.Advantages": "Advantages",
-    "NCO.Sheet.AddAdvantage": "Advantage",
-    "NCO.Sheet.AddAdvantageTitle": "New Advantage",
-    "NCO.Sheet.AdvantageNamePlaceholder": "Advantage…",
-    "NCO.Sheet.DeleteAdvantage": "Delete Advantage",
+    "NCO.Sheet.AdvantagesPlaceholder": "List advantages here…",
 
     "NCO.Sheet.Gear": "NCO Gear Sheet",
     "NCO.Sheet.UniqueGear": "Special Gear",

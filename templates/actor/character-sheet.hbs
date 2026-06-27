@@ -179,48 +179,15 @@
     {{/each}}
   </section>
 
-  {{!-- Advantages: an open-ended list mirroring Traumas, but each is a positive
-        Tag (invoked as an Action die). Added and removed only while the sheet is
-        unlocked; in play mode they are plain clickable Tags. --}}
+  {{!-- Optional freeform Advantages box (toggled per world). Mirrors the Gear
+        box: editable textarea in edit mode, enriched HTML in play. --}}
   {{#if advantagesEnabled}}
     <section class="nco-advantages">
-      <div class="nco-section-header">
-        <label class="nco-section-label">{{localize "NCO.Sheet.Advantages"}}</label>
-        {{#if editing}}
-          <button type="button" class="nco-add-icon" data-action="createAdvantage"
-                  title="{{localize 'NCO.Sheet.AddAdvantage'}}" aria-label="{{localize 'NCO.Sheet.AddAdvantage'}}">
-            <i class="fas fa-plus"></i>
-          </button>
-        {{/if}}
-      </div>
-      {{#if editing}}
-        {{#each advantages as |advantage advantageIndex|}}
-          <div class="nco-trauma-row">
-            <input type="text" class="nco-advantage-text" name="system.advantages.{{advantageIndex}}"
-                   value="{{advantage.text}}" placeholder="{{localize 'NCO.Sheet.AdvantageNamePlaceholder'}}" />
-            <button type="button" class="nco-icon-button nco-delete" data-action="deleteAdvantage"
-                    data-advantage-index="{{advantageIndex}}"
-                    title="{{localize 'NCO.Sheet.DeleteAdvantage'}}" aria-label="{{localize 'NCO.Sheet.DeleteAdvantage'}}">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-        {{/each}}
+      <label class="nco-section-label">{{localize "NCO.Sheet.Advantages"}}</label>
+      {{#if editable}}
+        <textarea name="system.advantages" rows="3" placeholder="{{localize 'NCO.Sheet.AdvantagesPlaceholder'}}">{{system.advantages}}</textarea>
       {{else}}
-        <ul class="nco-tags nco-tags-play">
-          {{#each advantages as |advantage|}}
-            <li>
-              {{#if advantage.clickable}}
-                <button type="button" class="nco-chip nco-chip-edge"
-                        data-action="invoke" data-polarity="positive" data-text="{{advantage.text}}"
-                        title="{{@root.invokePositiveTitle}}">
-                  <i class="fas fa-plus"></i> {{advantage.text}}
-                </button>
-              {{else}}
-                <span class="nco-chip nco-chip-edge nco-chip-static">{{advantage.text}}</span>
-              {{/if}}
-            </li>
-          {{/each}}
-        </ul>
+        <div class="nco-description-text">{{{advantagesHTML}}}</div>
       {{/if}}
     </section>
   {{/if}}
@@ -251,70 +218,6 @@
         {{/each}}
       </ul>
     {{/if}}
-  </section>
-
-  <section class="nco-unique-gear-section">
-    <div class="nco-section-header">
-      <label class="nco-section-label">{{localize "NCO.Sheet.UniqueGear"}}</label>
-      {{#if editable}}
-        <button type="button" class="nco-add-icon" data-action="createUniqueGear"
-                title="{{localize 'NCO.Sheet.AddUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.AddUniqueGear'}}">
-          <i class="fas fa-plus"></i>
-        </button>
-      {{/if}}
-    </div>
-
-    {{#each uniqueGear as |gearItem|}}
-      <div class="nco-unique-gear" data-item-id="{{gearItem.id}}">
-        <div class="nco-unique-gear-header">
-          <span class="nco-unique-gear-name">{{gearItem.name}}</span>
-          <ul class="nco-tags nco-tags-play">
-            {{#each gearItem.tags as |tag|}}
-              <li>
-                {{#if tag.clickable}}
-                  <button type="button"
-                          class="nco-chip nco-chip-tag {{#if tag.positive}}nco-chip-edge{{else}}nco-chip-flaw{{/if}}"
-                          data-action="invoke" data-text="{{tag.text}}"
-                          data-polarity="{{#if tag.positive}}positive{{else}}negative{{/if}}"
-                          title="{{#if tag.positive}}{{@root.invokePositiveTitle}}{{else}}{{@root.invokeNegativeTitle}}{{/if}}">
-                    <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i> {{tag.text}}
-                  </button>
-                {{else}}
-                  <span class="nco-chip nco-chip-tag nco-chip-static">{{tag.text}}</span>
-                {{/if}}
-              </li>
-            {{/each}}
-          </ul>
-          <button type="button" class="nco-icon-button" data-action="editUniqueGear"
-                  data-item-id="{{gearItem.id}}"
-                  title="{{localize 'NCO.Sheet.EditUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.EditUniqueGear'}}">
-            <i class="fas fa-pen"></i>
-          </button>
-          <button type="button" class="nco-icon-button nco-delete" data-action="deleteUniqueGear"
-                  data-item-id="{{gearItem.id}}"
-                  title="{{localize 'NCO.Sheet.DeleteUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.DeleteUniqueGear'}}">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-        {{!-- Optional damage track, present only when the Gear was given a length.
-              Clickable here on the character sheet; the update is routed to the
-              embedded Item via the "gearHits:<id>" track key (see _trackConfig). --}}
-        {{#if gearItem.hitBoxes}}
-          <div class="nco-gear-hits">
-            <span class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Hits"}}</span>
-            <div class="nco-gear-hits-track nco-track" data-action="trackAdd"
-                 data-track="gearHits:{{gearItem.id}}" title="{{trackHint}}">
-              {{#each gearItem.hitBoxes as |box|}}
-                <span class="nco-hit-box {{#if box.checked}}nco-hit-box-filled{{/if}}"
-                      data-index="{{box.index}}"></span>
-              {{/each}}
-            </div>
-          </div>
-        {{/if}}
-      </div>
-    {{else}}
-      <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyUniqueGear"}}</p>
-    {{/each}}
   </section>
 
   <section class="nco-conditions">
@@ -429,6 +332,70 @@
       </div>
     </section>
   {{/if}}
+
+  <section class="nco-unique-gear-section">
+    <div class="nco-section-header">
+      <label class="nco-section-label">{{localize "NCO.Sheet.UniqueGear"}}</label>
+      {{#if editable}}
+        <button type="button" class="nco-add-icon" data-action="createUniqueGear"
+                title="{{localize 'NCO.Sheet.AddUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.AddUniqueGear'}}">
+          <i class="fas fa-plus"></i>
+        </button>
+      {{/if}}
+    </div>
+
+    {{#each uniqueGear as |gearItem|}}
+      <div class="nco-unique-gear" data-item-id="{{gearItem.id}}">
+        <div class="nco-unique-gear-header">
+          <span class="nco-unique-gear-name">{{gearItem.name}}</span>
+          <ul class="nco-tags nco-tags-play">
+            {{#each gearItem.tags as |tag|}}
+              <li>
+                {{#if tag.clickable}}
+                  <button type="button"
+                          class="nco-chip nco-chip-tag {{#if tag.positive}}nco-chip-edge{{else}}nco-chip-flaw{{/if}}"
+                          data-action="invoke" data-text="{{tag.text}}"
+                          data-polarity="{{#if tag.positive}}positive{{else}}negative{{/if}}"
+                          title="{{#if tag.positive}}{{@root.invokePositiveTitle}}{{else}}{{@root.invokeNegativeTitle}}{{/if}}">
+                    <i class="fas {{#if tag.positive}}fa-plus{{else}}fa-minus{{/if}}"></i> {{tag.text}}
+                  </button>
+                {{else}}
+                  <span class="nco-chip nco-chip-tag nco-chip-static">{{tag.text}}</span>
+                {{/if}}
+              </li>
+            {{/each}}
+          </ul>
+          <button type="button" class="nco-icon-button" data-action="editUniqueGear"
+                  data-item-id="{{gearItem.id}}"
+                  title="{{localize 'NCO.Sheet.EditUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.EditUniqueGear'}}">
+            <i class="fas fa-pen"></i>
+          </button>
+          <button type="button" class="nco-icon-button nco-delete" data-action="deleteUniqueGear"
+                  data-item-id="{{gearItem.id}}"
+                  title="{{localize 'NCO.Sheet.DeleteUniqueGear'}}" aria-label="{{localize 'NCO.Sheet.DeleteUniqueGear'}}">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+        {{!-- Optional damage track, present only when the Gear was given a length.
+              Clickable here on the character sheet; the update is routed to the
+              embedded Item via the "gearHits:<id>" track key (see _trackConfig). --}}
+        {{#if gearItem.hitBoxes}}
+          <div class="nco-gear-hits">
+            <span class="nco-section-label nco-danger-label">{{localize "NCO.Sheet.Hits"}}</span>
+            <div class="nco-gear-hits-track nco-track" data-action="trackAdd"
+                 data-track="gearHits:{{gearItem.id}}" title="{{trackHint}}">
+              {{#each gearItem.hitBoxes as |box|}}
+                <span class="nco-hit-box {{#if box.checked}}nco-hit-box-filled{{/if}}"
+                      data-index="{{box.index}}"></span>
+              {{/each}}
+            </div>
+          </div>
+        {{/if}}
+      </div>
+    {{else}}
+      <p class="nco-empty-hint">{{localize "NCO.Sheet.EmptyUniqueGear"}}</p>
+    {{/each}}
+  </section>
 
   {{!-- Gear is a freeform notes box that stays writable during play (when the
         sheet is locked), so it follows `editable` (permission) rather than

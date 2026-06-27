@@ -720,16 +720,6 @@ button.nco-chip-flaw:hover {
   background: rgb(var(--nco-danger-rgb) /0.25);
 }
 
-/* Advantages: edited as rows (like Traumas) but invoked as positive (Action)
-   Tags. The edit input borrows the Flaw input's flex sizing with an Action tint. */
-.nco-advantage-text {
-  flex: 1;
-}
-
-.nco-character-sheet .nco-advantage-text {
-  border-color: rgb(var(--nco-action-rgb) /0.4);
-}
-
 .nco-chip-removable > .nco-chip-remove {
   display: inline-flex;
   align-items: center;
@@ -773,6 +763,8 @@ button.nco-chip-flaw:hover {
 .nco-ties textarea,
 .nco-advantages textarea {
   width: 100%;
+  /* Grow vertically to fit content (the `rows` attribute sets the minimum). */
+  field-sizing: content;
   resize: vertical;
 }
 
