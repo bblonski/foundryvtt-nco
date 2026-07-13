@@ -329,9 +329,18 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     const remaining = current - 1;
     await this.actor.update({ "system.stuntPoints.value": remaining });
 
-    const options = ["Trademark", "Soak", "Adjust", "Detail"]
-      .map((key) => `<li>${game.i18n.localize(`NCO.Chat.StuntPoint.Option${key}`)}</li>`)
-      .join("");
+    // The listed options are configurable (one per line, or comma-separated);
+    // see the stuntPointOptions setting. Omit the list entirely if cleared.
+    const optionTexts = game.settings
+      .get("foundryvtt-nco", "stuntPointOptions")
+      .split(/[,\n]/)
+      .map((option) => option.trim())
+      .filter((option) => option.length);
+    const options = optionTexts.length
+      ? `<ul style="margin:6px 0;padding-left:18px;font-size:12px;line-height:1.6;">${optionTexts
+          .map((text) => `<li>${escapeHTML(text)}</li>`)
+          .join("")}</ul>`
+      : "";
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
       content: `
@@ -339,7 +348,7 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
           <div style="font-family:'Courier New',monospace;letter-spacing:1px;color:var(--nco-action);font-size:11px;text-transform:uppercase;">
             ${game.i18n.localize("NCO.Chat.StuntPoint.Title")}
           </div>
-          <ul style="margin:6px 0;padding-left:18px;font-size:12px;line-height:1.6;">${options}</ul>
+          ${options}
           <div style="font-size:11px;opacity:0.7;">
             ${game.i18n.format("NCO.Chat.StuntPoint.Remaining", { name: this.actor.name, remaining })}
           </div>

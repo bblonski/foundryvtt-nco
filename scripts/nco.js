@@ -224,6 +224,10 @@ Hooks.once("init", function () {
     default: true,
   });
 
+  // startingConditions and stuntPointOptions are registered later, in the
+  // i18nInit hook: their defaults are localized lists, and translations (plus
+  // the active game line's term overrides) aren't loaded yet during init.
+
   // How many Stash boxes appear on each character's Stash track.
   game.settings.register("foundryvtt-nco", "stashTrackLength", {
     name: "NCO.Settings.StashTrackLength.Name",
@@ -256,17 +260,77 @@ Hooks.once("i18nInit", function () {
   const line = game.settings.get("foundryvtt-nco", "gameLine");
   applyGameLineTerms(line);
   document.body.classList.add(gameLineThemeClass(line));
+
+  // Registered here (not in init) so their prefilled defaults can be localized
+  // — translations and the active game line's term overrides are applied above.
+  // Both are edited as textareas (see the renderSettingsConfig hook below); a
+  // GM may add, remove or reword entries one per line.
+
+  // The Conditions each new character is seeded with (see the preCreateActor
+  // hook). Clearing the list starts new characters with none.
+  game.settings.register("foundryvtt-nco", "startingConditions", {
+    name: "NCO.Settings.StartingConditions.Name",
+    hint: "NCO.Settings.StartingConditions.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    default: DEFAULT_CONDITIONS.map((key) => game.i18n.localize(`NCO.Condition.${key}`)).join("\n"),
+  });
+
+  // The ways a spent Stunt Point may be used, listed in chat when a character
+  // spends one (see CharacterSheet._onSpendStuntPoint).
+  game.settings.register("foundryvtt-nco", "stuntPointOptions", {
+    name: "NCO.Settings.StuntPointOptions.Name",
+    hint: "NCO.Settings.StuntPointOptions.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    default: DEFAULT_STUNT_OPTIONS.map((key) =>
+      game.i18n.localize(`NCO.Chat.StuntPoint.Option${key}`),
+    ).join("\n"),
+  });
 });
 
-// Every new character starts with the standard set of (unmarked) Conditions.
+// Render the multi-line list settings as textareas rather than single-line
+// inputs, so their newline-separated entries are comfortable to edit.
+const TEXTAREA_SETTINGS = ["startingConditions", "stuntPointOptions"];
+Hooks.on("renderSettingsConfig", (_app, html) => {
+  const root = html instanceof HTMLElement ? html : html?.[0];
+  if (!root) return;
+  for (const key of TEXTAREA_SETTINGS) {
+    const input = root.querySelector(`[name="foundryvtt-nco.${key}"]`);
+    if (!input || input.tagName === "TEXTAREA") continue;
+    const textarea = document.createElement("textarea");
+    textarea.name = input.name;
+    textarea.value = input.value;
+    textarea.rows = 4;
+    for (const cls of input.classList) textarea.classList.add(cls);
+    input.replaceWith(textarea);
+  }
+});
+
+// Every new character starts with a configurable set of (unmarked) Conditions.
+// DEFAULT_CONDITIONS is the built-in list and the default for the
+// `startingConditions` setting; a GM can edit that setting to change the set.
 // Skip actors that already carry items, e.g. duplicates and imports.
 const DEFAULT_CONDITIONS = ["Angry", "Exhausted", "Restrained", "Dazed", "Scared", "Weakened"];
 
+// The standard Stunt Point uses, keyed by their NCO.Chat.StuntPoint.Option*
+// i18n strings; the default for the `stuntPointOptions` setting.
+const DEFAULT_STUNT_OPTIONS = ["Trademark", "Soak", "Adjust", "Detail"];
+
 Hooks.on("preCreateActor", (actor, data) => {
   if (actor.type !== "character" || data.items?.length) return;
+  // Split on commas or newlines so the setting accepts either style.
+  const names = game.settings
+    .get("foundryvtt-nco", "startingConditions")
+    .split(/[,\n]/)
+    .map((name) => name.trim())
+    .filter((name) => name.length);
+  if (!names.length) return;
   actor.updateSource({
-    items: DEFAULT_CONDITIONS.map((key) => ({
-      name: game.i18n.localize(`NCO.Condition.${key}`),
+    items: names.map((name) => ({
+      name,
       type: "condition",
       img: "icons/svg/downgrade.svg",
     })),
