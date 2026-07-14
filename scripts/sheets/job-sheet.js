@@ -25,6 +25,9 @@ export class JobSheet extends NCOSheetMixin(ItemSheetV2) {
       trackHits: this._onTrackHits,
       removeScene: this._onRemoveScene,
       removeThreat: this._onRemoveThreat,
+      // Re-registered: the mixin's action map captured its own _onInvokeDanger
+      // function reference, so overriding the static method alone is not enough.
+      invokeDanger: this._onInvokeDanger,
     },
   };
 
