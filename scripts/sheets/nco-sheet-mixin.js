@@ -33,6 +33,16 @@ export function NCOSheetMixin(Base) {
     /** Polarity a newly created Tag starts at. Subclasses may override. */
     static NEW_TAG_POLARITY = TAG_POLARITY.POSITIVE;
 
+    /**
+     * Item sub-types this sheet accepts via drag & drop. Null keeps the base
+     * class behavior (accept anything); an array rejects everything not in it
+     * — an empty array therefore rejects all Items. Actor sheets override this
+     * so e.g. a Trademark can't be silently embedded on a Threat, where it
+     * would never render.
+     * @type {string[]|null}
+     */
+    static ALLOWED_ITEM_TYPES = null;
+
     /** Options every NCO sheet shares; subclasses merge in their own. */
     static DEFAULT_OPTIONS = {
       window: { resizable: true },
@@ -183,6 +193,22 @@ export function NCOSheetMixin(Base) {
       if (index < 0 || index >= tags.length) return;
       tags[index].polarity = Tags.invert(tags[index].polarity ?? TAG_POLARITY.POSITIVE);
       await this.document.update({ "system.tags": tags });
+    }
+
+    /**
+     * Reject dropped Items whose type this sheet can't display (see
+     * {@link ALLOWED_ITEM_TYPES}); accepted drops fall through to the base
+     * ActorSheetV2 embedding. Item-based sheets (Scene, Job) never receive
+     * this callback, so the optional chain is safe there.
+     * @override
+     */
+    async _onDropItem(event, item) {
+      const allowed = this.constructor.ALLOWED_ITEM_TYPES;
+      if (allowed && !allowed.includes(item.type)) {
+        ui.notifications.warn(game.i18n.localize("NCO.Sheet.DropUnsupported"));
+        return null;
+      }
+      return super._onDropItem?.(event, item);
     }
 
     /**

@@ -13,6 +13,9 @@ const { ActorSheetV2 } = foundry.applications.sheets;
  * (like a Character's Traumas), each always invoked as a Danger die.
  */
 export class VehicleSheet extends NCOSheetMixin(ActorSheetV2) {
+  /** @override A Vehicle renders no embedded Items, so accept none. */
+  static ALLOWED_ITEM_TYPES = [];
+
   static DEFAULT_OPTIONS = {
     classes: ["nco", "sheet", "actor"],
     position: { width: 480, height: 480, top: 80 },

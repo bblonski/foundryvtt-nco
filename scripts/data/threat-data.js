@@ -55,6 +55,12 @@ export class ThreatData extends foundry.abstract.TypeDataModel {
     const multiplier = this.boss ? ThreatData.BOSS_HITS_MULTIPLIER : 1;
     // The effective Hits ceiling once the Boss multiplier is applied.
     this.hits.effectiveMax = Math.max(1, this.hits.max) * multiplier;
+    // Token resource bars read hits.value/hits.max directly, so the derived
+    // max must be the Boss-adjusted ceiling (the sheet's edit input binds to
+    // the *source* max instead — see ThreatSheet). Clamp taken so toggling
+    // Boss off can't leave a stale overflow behind.
+    this.hits.max = this.hits.effectiveMax;
+    this.hits.taken = Math.min(this.hits.taken, this.hits.effectiveMax);
     // Remaining hits, primarily for token resource bars.
     this.hits.value = Math.max(0, this.hits.effectiveMax - this.hits.taken);
   }

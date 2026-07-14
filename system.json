@@ -4,7 +4,7 @@
   "description": "An unofficial FoundryVTT implementation of Neon City Overdrive and other Action Tales! by Data Suckers / Peril Planet.",
   "version": "#{VERSION}#",
   "compatibility": {
-    "minimum": "12",
+    "minimum": "13",
     "verified": "14"
   },
   "authors": [
@@ -27,7 +27,30 @@
       "path": "languages/en.json"
     }
   ],
-  "packs": [],
+  "packs": [
+    {
+      "name": "macros",
+      "label": "Action Tales Macros",
+      "path": "packs/macros",
+      "type": "Macro",
+      "system": "foundryvtt-nco",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "guides",
+      "label": "Getting Started",
+      "path": "packs/guides",
+      "type": "JournalEntry",
+      "system": "foundryvtt-nco",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
   "socket": true,
   "flags": {
     "hotReload": {

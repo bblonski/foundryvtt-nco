@@ -59,7 +59,9 @@
           {{/each}}
         </div>
         {{#if editing}}
-          <input type="number" class="nco-hits-max" name="system.hits.max" value="{{system.hits.max}}"
+          {{!-- Bound to the source value: the derived system.hits.max carries
+                the Boss multiplier and must not be written back. --}}
+          <input type="number" class="nco-hits-max" name="system.hits.max" value="{{hitsMaxSource}}"
                  min="1" step="1" title="{{localize 'NCO.Sheet.HitsMax'}}" />
         {{/if}}
       </div>

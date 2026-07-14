@@ -16,12 +16,15 @@ import { TrademarkSheet } from "./sheets/trademark-sheet.js";
 import { GearSheet } from "./sheets/gear-sheet.js";
 import { ConditionSheet } from "./sheets/condition-sheet.js";
 import { NCORollDialog } from "./applications/nco-roll-dialog.js";
+import { LineDefaultsMenu } from "./applications/line-defaults.js";
 import { NCOCombat, NCOCombatant } from "./combat/nco-combat.js";
 import { NCOCombatTracker } from "./combat/nco-combat-tracker.js";
 import { GlobalRollPool } from "./global-roll-pool.js";
 import { PressureTrack } from "./pressure-track.js";
 import { PressureApp } from "./applications/pressure-app.js";
 import { Tags } from "./tags.js";
+import { Migrations } from "./migrations.js";
+import { registerDiceSoNice } from "./dice/dice-so-nice.js";
 import {
   GAME_LINES,
   DEFAULT_GAME_LINE,
@@ -109,112 +112,19 @@ Hooks.once("init", function () {
     label: "NCO.Sheet.Condition",
   });
 
-  GlobalRollPool.registerSettings();
-  GlobalRollPool.registerSocket();
-  NCORollDialog.registerSettings();
-
-  PressureTrack.registerSettings();
-  PressureTrack.registerSocket();
-
-  game.settings.register("foundryvtt-nco", "startingHits", {
-    name: "NCO.Settings.StartingHits.Name",
-    hint: "NCO.Settings.StartingHits.Hint",
-    scope: "world",
-    config: true,
-    type: Number,
-    range: { min: 1, max: 6, step: 1 },
-    default: 3,
+  // One-click application of the active game line's recommended optional
+  // rules (see `settings` in config.js). Menus render above the settings list.
+  game.settings.registerMenu("foundryvtt-nco", "lineDefaults", {
+    name: "NCO.Settings.LineDefaults.Name",
+    label: "NCO.Settings.LineDefaults.Label",
+    hint: "NCO.Settings.LineDefaults.Hint",
+    icon: "fas fa-wand-magic-sparkles",
+    type: LineDefaultsMenu,
+    restricted: true,
   });
 
-  game.settings.register("foundryvtt-nco", "startingStuntPoints", {
-    name: "NCO.Settings.StartingStuntPoints.Name",
-    hint: "NCO.Settings.StartingStuntPoints.Hint",
-    scope: "world",
-    config: true,
-    type: Number,
-    range: { min: 1, max: 5, step: 1 },
-    default: 3,
-  });
-
-  game.settings.register("foundryvtt-nco", "maxHits", {
-    name: "NCO.Settings.MaxHits.Name",
-    hint: "NCO.Settings.MaxHits.Hint",
-    scope: "world",
-    config: true,
-    type: Number,
-    range: { min: 1, max: 6, step: 1 },
-    default: 4,
-    requiresReload: true,
-  });
-
-  game.settings.register("foundryvtt-nco", "xpTrackLength", {
-    name: "NCO.Settings.XPTrackLength.Name",
-    hint: "NCO.Settings.XPTrackLength.Hint",
-    scope: "world",
-    config: true,
-    type: Number,
-    range: { min: 5, max: 30, step: 1 },
-    default: 15,
-    requiresReload: true,
-  });
-
-  // Controls how the Hits and XP tracks respond to clicks (see CharacterSheet).
-  game.settings.register("foundryvtt-nco", "trackClickMode", {
-    name: "NCO.Settings.TrackClickMode.Name",
-    hint: "NCO.Settings.TrackClickMode.Hint",
-    scope: "world",
-    config: true,
-    type: String,
-    choices: {
-      increment: "NCO.Settings.TrackClickMode.Increment",
-      fill: "NCO.Settings.TrackClickMode.Fill",
-    },
-    default: "increment",
-  });
-
-  // Whether the optional Drive track appears on character sheets.
-  game.settings.register("foundryvtt-nco", "driveTrackEnabled", {
-    name: "NCO.Settings.DriveTrack.Name",
-    hint: "NCO.Settings.DriveTrack.Hint",
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: true,
-    requiresReload: true,
-  });
-
-  // Whether the optional Stash track appears on character sheets.
-  game.settings.register("foundryvtt-nco", "stashTrackEnabled", {
-    name: "NCO.Settings.StashTrack.Name",
-    hint: "NCO.Settings.StashTrack.Hint",
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: true,
-    requiresReload: true,
-  });
-
-  // Whether the optional Ties (relationships) freeform box appears on sheets.
-  game.settings.register("foundryvtt-nco", "tiesEnabled", {
-    name: "NCO.Settings.Ties.Name",
-    hint: "NCO.Settings.Ties.Hint",
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: false,
-    requiresReload: true,
-  });
-
-  // Whether the optional Advantages freeform box appears on sheets.
-  game.settings.register("foundryvtt-nco", "advantagesEnabled", {
-    name: "NCO.Settings.Advantages.Name",
-    hint: "NCO.Settings.Advantages.Hint",
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: false,
-    requiresReload: true,
-  });
+  // Visible settings are listed in registration order, most impactful first:
+  // rule toggles, then their track lengths / numeric knobs, then UI behavior.
 
   // Optional phase-based initiative: PCs roll a d6 to act before (4+) or
   // after (3-) the Threats, and the combat tracker becomes three color-coded
@@ -247,9 +157,31 @@ Hooks.once("init", function () {
     default: true,
   });
 
-  // startingConditions and stuntPointOptions are registered later, in the
-  // i18nInit hook: their defaults are localized lists, and translations (plus
-  // the active game line's term overrides) aren't loaded yet during init.
+  // Pressure (optional rule): enabled toggle + track length.
+  PressureTrack.registerSettings();
+  PressureTrack.registerSocket();
+
+  // Whether the optional Drive track appears on character sheets.
+  game.settings.register("foundryvtt-nco", "driveTrackEnabled", {
+    name: "NCO.Settings.DriveTrack.Name",
+    hint: "NCO.Settings.DriveTrack.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    requiresReload: true,
+  });
+
+  // Whether the optional Stash track appears on character sheets.
+  game.settings.register("foundryvtt-nco", "stashTrackEnabled", {
+    name: "NCO.Settings.StashTrack.Name",
+    hint: "NCO.Settings.StashTrack.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    requiresReload: true,
+  });
 
   // How many Stash boxes appear on each character's Stash track.
   game.settings.register("foundryvtt-nco", "stashTrackLength", {
@@ -262,6 +194,97 @@ Hooks.once("init", function () {
     default: 5,
     requiresReload: true,
   });
+
+  // Whether the optional Ties (relationships) freeform box appears on sheets.
+  game.settings.register("foundryvtt-nco", "tiesEnabled", {
+    name: "NCO.Settings.Ties.Name",
+    hint: "NCO.Settings.Ties.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    requiresReload: true,
+  });
+
+  // Whether the optional Advantages freeform box appears on sheets.
+  game.settings.register("foundryvtt-nco", "advantagesEnabled", {
+    name: "NCO.Settings.Advantages.Name",
+    hint: "NCO.Settings.Advantages.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    requiresReload: true,
+  });
+
+  game.settings.register("foundryvtt-nco", "startingHits", {
+    name: "NCO.Settings.StartingHits.Name",
+    hint: "NCO.Settings.StartingHits.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 1, max: 6, step: 1 },
+    default: 3,
+  });
+
+  game.settings.register("foundryvtt-nco", "maxHits", {
+    name: "NCO.Settings.MaxHits.Name",
+    hint: "NCO.Settings.MaxHits.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 1, max: 6, step: 1 },
+    default: 4,
+    requiresReload: true,
+  });
+
+  game.settings.register("foundryvtt-nco", "startingStuntPoints", {
+    name: "NCO.Settings.StartingStuntPoints.Name",
+    hint: "NCO.Settings.StartingStuntPoints.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 1, max: 5, step: 1 },
+    default: 3,
+  });
+
+  game.settings.register("foundryvtt-nco", "xpTrackLength", {
+    name: "NCO.Settings.XPTrackLength.Name",
+    hint: "NCO.Settings.XPTrackLength.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 5, max: 30, step: 1 },
+    default: 15,
+    requiresReload: true,
+  });
+
+  // Controls how the Hits and XP tracks respond to clicks (see CharacterSheet).
+  game.settings.register("foundryvtt-nco", "trackClickMode", {
+    name: "NCO.Settings.TrackClickMode.Name",
+    hint: "NCO.Settings.TrackClickMode.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      increment: "NCO.Settings.TrackClickMode.Increment",
+      fill: "NCO.Settings.TrackClickMode.Fill",
+    },
+    default: "increment",
+  });
+
+  // startingConditions and stuntPointOptions are registered later, in the
+  // i18nInit hook: their defaults are localized lists, and translations (plus
+  // the active game line's term overrides) aren't loaded yet during init.
+  // Registration order puts them at the end of the settings list.
+
+  // Hidden (config: false) settings; their order doesn't matter.
+  GlobalRollPool.registerSettings();
+  GlobalRollPool.registerSocket();
+  NCORollDialog.registerSettings();
+  Migrations.registerSettings();
+
+  registerDiceSoNice();
 
   // Foundry's built-in "Create Actor" dialog only fills in a default `type`
   // when more than one sub-type is registered (Actor disallows the "base"
@@ -382,27 +405,21 @@ Hooks.on("preCreateItem", (item, data) => {
   item.updateSource({ img: icon });
 });
 
-// World collections don't exist until ready, and only one client should
-// create the convenience macro (and only if it doesn't exist yet).
-// Show the Pressure display (if the optional rule is enabled) once the UI exists.
+// Show the Pressure display (if the optional rule is enabled) once the UI
+// exists, and stamp/migrate the world on the designated GM client. The "NCO
+// Roll" convenience macro ships in the system's Macros compendium.
 Hooks.once("ready", function () {
   PressureApp.refresh();
-});
-
-Hooks.once("ready", function () {
-  if (!game.user.isGM || game.macros.getName("NCO Roll")) return;
-  Macro.create({
-    name: "NCO Roll",
-    type: "script",
-    command: "game.nco.NCORollDialog.open();",
-    img: "icons/dice/d6.webp",
-  }).catch((e) => console.warn("NCO | Macro creation failed:", e));
+  Migrations.migrateWorld();
 });
 
 // Add a "NCO Roll" tool to the token controls so the GM and players alike
 // always have one-click access to the global roll dialog from the canvas.
 Hooks.on("getSceneControlButtons", (controls) => {
-  const tool = {
+  const tokenControls = controls.tokens ?? controls.token;
+  if (!tokenControls) return;
+  tokenControls.tools ??= {};
+  tokenControls.tools["nco-roll"] = {
     name: "nco-roll",
     order: 99,
     title: "NCO.RollDialog.OpenTool",
@@ -411,23 +428,6 @@ Hooks.on("getSceneControlButtons", (controls) => {
     onChange: () => NCORollDialog.open(),
     onClick: () => NCORollDialog.open(),
   };
-
-  try {
-    if (Array.isArray(controls)) {
-      // Foundry v12: controls is an array of { name, tools: [...] }
-      const tokenControls = controls.find((c) => c.name === "token" || c.name === "tokens");
-      tokenControls?.tools?.push(tool);
-    } else {
-      // Foundry v13+: controls is a record keyed by control name, tools is a record too
-      const tokenControls = controls.tokens ?? controls.token;
-      if (tokenControls) {
-        tokenControls.tools ??= {};
-        tokenControls.tools[tool.name] = tool;
-      }
-    }
-  } catch (e) {
-    console.warn("NCO | Failed to add scene control button:", e);
-  }
 });
 
 Hooks.on("chatMessage", (_chatLog, message, _chatData) => {

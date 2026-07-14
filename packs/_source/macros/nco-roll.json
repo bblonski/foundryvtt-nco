@@ -1,0 +1,15 @@
+{
+  "_id": "ncoRollMacro0001",
+  "_key": "!macros!ncoRollMacro0001",
+  "name": "NCO Roll",
+  "type": "script",
+  "img": "icons/dice/d6black.svg",
+  "scope": "global",
+  "command": "game.nco.NCORollDialog.open();",
+  "folder": null,
+  "sort": 0,
+  "ownership": {
+    "default": 2
+  },
+  "flags": {}
+}

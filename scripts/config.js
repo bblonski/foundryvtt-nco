@@ -13,6 +13,11 @@
  * titles, and any line that renames a concept). Add book-accurate overrides for
  * a line by dropping more `"<i18n key>": "<text>"` pairs into its `terms` map;
  * the available keys are whatever appears in languages/en.json.
+ *
+ * Each line also declares `settings`: the recommended values for the optional
+ * rules, applied on demand via the "Apply Recommended Settings" menu button
+ * (see applications/line-defaults.js). Selecting a Game Line never applies
+ * these automatically — a GM may have deliberately diverged.
  */
 
 export const DEFAULT_GAME_LINE = "nco";
@@ -23,11 +28,27 @@ export const GAME_LINES = {
     theme: "cyberpunk",
     // Base line: presentation matches languages/en.json as-shipped.
     terms: {},
+    settings: {
+      driveTrackEnabled: true,
+      stashTrackEnabled: true,
+      tiesEnabled: false,
+      advantagesEnabled: false,
+      pressureEnabled: false,
+      deathCheckEnabled: true,
+    },
   },
 
   "star-scoundrels": {
     label: "Star Scoundrels",
     theme: "space-opera",
+    settings: {
+      driveTrackEnabled: false,
+      stashTrackEnabled: false,
+      tiesEnabled: false,
+      advantagesEnabled: false,
+      pressureEnabled: true,
+      deathCheckEnabled: true,
+    },
     terms: {
       "NCO.Roll.Title": "Star Scoundrels · Check",
       "NCO.RollDialog.Title": "Star Scoundrels — Roll",
@@ -49,6 +70,14 @@ export const GAME_LINES = {
   "dungeon-crawlers": {
     label: "Dungeon Crawlers",
     theme: "osr",
+    settings: {
+      driveTrackEnabled: false,
+      stashTrackEnabled: false,
+      tiesEnabled: false,
+      advantagesEnabled: false,
+      pressureEnabled: false,
+      deathCheckEnabled: true,
+    },
     terms: {
       "NCO.Roll.Title": "Dungeon Crawlers · Check",
       "NCO.RollDialog.Title": "Dungeon Crawlers — Roll",
@@ -58,6 +87,14 @@ export const GAME_LINES = {
   "hard-city": {
     label: "Hard City",
     theme: "noir",
+    settings: {
+      driveTrackEnabled: false,
+      stashTrackEnabled: false,
+      tiesEnabled: true,
+      advantagesEnabled: false,
+      pressureEnabled: false,
+      deathCheckEnabled: true,
+    },
     terms: {
       "NCO.Roll.Title": "Hard City · Check",
       "NCO.RollDialog.Title": "Hard City — Roll",
@@ -85,6 +122,14 @@ export const GAME_LINES = {
   "tomorrow-city": {
     label: "Tomorrow City",
     theme: "dieselpunk",
+    settings: {
+      driveTrackEnabled: false,
+      stashTrackEnabled: true,
+      tiesEnabled: true,
+      advantagesEnabled: true,
+      pressureEnabled: false,
+      deathCheckEnabled: true,
+    },
     terms: {
       "NCO.Roll.Title": "Tomorrow City · Check",
       "NCO.RollDialog.Title": "Tomorrow City — Roll",

@@ -1,0 +1,108 @@
+{
+  "_id": "ncoGettingStart1",
+  "_key": "!journal!ncoGettingStart1",
+  "name": "Getting Started",
+  "folder": null,
+  "sort": 0,
+  "ownership": {
+    "default": 2
+  },
+  "flags": {},
+  "pages": [
+    {
+      "_id": "ncoGSPageWelcome",
+      "name": "Welcome",
+      "type": "text",
+      "title": {
+        "show": false,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>This system implements <strong>Neon City Overdrive</strong> and the other <em>Action Tales</em> games by Peril Planet.</p><p>To pick your game, open <strong>Game Settings &rarr; Configure Settings &rarr; Neon City Overdrive and other Action Tales!</strong> and set the <strong>Game Line</strong> (Neon City Overdrive, Star Scoundrels, Dungeon Crawlers, Hard City, or Tomorrow City). Then click <strong>Apply Recommended Settings</strong> at the top of the same page to switch the optional rules to that game's recommended configuration.</p>"
+      },
+      "sort": 100000,
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!ncoGettingStart1.ncoGSPageWelcome"
+    },
+    {
+      "_id": "ncoGSPageChars00",
+      "name": "Characters",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Click the <strong>lock icon</strong> at the top right of a character sheet to toggle between edit mode (build the character) and play mode (click Tags to roll).</p><ul><li><strong>Trademarks</strong> are your character's defining talents. Each has a list of <strong>Triggers</strong>; a Trigger upgraded to an <strong>Edge</strong> becomes a clickable Tag. Trademarks can be built directly on the sheet or authored as Items and dragged on.</li><li><strong>Flaws</strong> (two slots), <strong>Conditions</strong>, and <strong>Traumas</strong> are negative Tags &mdash; clicking one adds a Danger die. Adding a new Trauma automatically rolls a death check (optional rule).</li><li><strong>Gear</strong>: everyday equipment goes in the freeform Basic Gear box; <strong>Special Gear</strong> items carry their own Tags and an optional damage track.</li><li><strong>Tracks</strong>: Hits, Stunt Points, XP, and (optionally) Stash and Drive. Left-click a box to fill, right-click to clear &mdash; or switch to fill-to-level clicking in the system settings.</li><li>Click the <strong>Stunt</strong> label to spend a Stunt Point; the ways it can be used are posted to chat.</li></ul>"
+      },
+      "sort": 200000,
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!ncoGettingStart1.ncoGSPageChars00"
+    },
+    {
+      "_id": "ncoGSPageRolling",
+      "name": "Rolling Dice",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Checks are built in a <strong>shared roll pool</strong> that every player sees. Click Tags on any sheet to add dice:</p><ul><li>A <strong>positive Tag</strong> (Trademark name, Edge, positive Gear/Scene/Threat Tag) adds an <strong>Action die</strong>.</li><li>A <strong>negative Tag</strong> (Flaw, Trauma, active Condition, negative Tag) adds a <strong>Danger die</strong>.</li><li><strong>Shift-click</strong> any Tag to invert it. A Threat's <strong>Danger Rating</strong> circle adds that many Danger dice at once.</li><li>The dialog's <strong>Bonus</strong> / <strong>Penalty</strong> buttons add ad-hoc situational dice, and every check always includes one base Action die.</li></ul><p>Click <strong>Roll</strong>: each Danger die cancels one matching Action die, and the highest surviving Action die is the result &mdash; <strong>6</strong> is a success (extra 6s are boons), <strong>4&ndash;5</strong> a partial success at a cost, <strong>3 or less</strong> a failure, and a <strong>botch</strong> when nothing (or only 1s) survives.</p><p>For a quick roll outside the shared pool, use the dice button on the character sheet, or type <code>/r a4d2</code> in chat (4 Action dice against 2 Danger dice).</p>"
+      },
+      "sort": 300000,
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!ncoGettingStart1.ncoGSPageRolling"
+    },
+    {
+      "_id": "ncoGSPageGMTools",
+      "name": "GM Tools",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>The GM-side elements are lightweight and all feed the same shared roll pool:</p><ul><li><strong>Threats</strong> (Actors): a Danger Rating, a Hits track, Tags, and freeform Drive/Actions text. The <strong>Boss</strong> toggle triples a Threat's Hits.</li><li><strong>Vehicles</strong> (Actors): a Danger Rating, Hits, Tags, and inline Conditions/Criticals.</li><li><strong>Scenes</strong> (Items): a name and a list of Tags for the current situation or location.</li><li><strong>Jobs</strong> (Items): the mission planning hub &mdash; Concept, Objective, Obstacles, and Link, plus linked Scenes and Threats dragged onto the sheet. Their Tags, Danger Ratings, and Hits tracks are all usable inline, so a GM can run a whole Job from one window.</li><li><strong>Pressure</strong> (optional rule): a shared GM track pinned near the top of the screen; each uncancelled 6 on a Danger die ticks it up by one.</li><li><strong>Phase-based initiative</strong> (optional rule): characters roll a d6 and act before the Threats on 4+ or after on 3 or less; the combat tracker shows the phases as color-coded sections with a turn-taken toggle per combatant.</li></ul>"
+      },
+      "sort": 400000,
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!ncoGettingStart1.ncoGSPageGMTools"
+    },
+    {
+      "_id": "ncoGSPageSetting",
+      "name": "Settings & Game Lines",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "format": 1,
+        "content": "<p>Everything configurable lives under <strong>Game Settings &rarr; Configure Settings &rarr; Neon City Overdrive and other Action Tales!</strong></p><p>The <strong>Game Line</strong> setting re-themes every sheet, dialog, and chat card and swaps in that game's terminology (e.g. Stunt Points become <em>Flow</em> in Star Scoundrels and <em>Moxie</em> in Hard City / Tomorrow City). Changing it requires a reload.</p><p><strong>Apply Recommended Settings</strong> switches the optional rules to the recommended configuration for the selected line in one click: the Drive and Stash tracks for Neon City Overdrive, Pressure for Star Scoundrels, Ties for Hard City, Cred/Ties/Advantages for Tomorrow City, and so on. Each rule can still be toggled individually afterwards.</p><p>Other settings control starting Hits and Stunt Points, the starting Conditions new characters are seeded with, the Stunt Point options listed in chat, track lengths, and how clicking a track behaves.</p>"
+      },
+      "sort": 500000,
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!ncoGettingStart1.ncoGSPageSetting"
+    }
+  ]
+}

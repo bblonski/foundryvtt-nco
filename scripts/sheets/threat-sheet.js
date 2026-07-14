@@ -21,6 +21,9 @@ export class ThreatSheet extends NCOSheetMixin(ActorSheetV2) {
   /** A Threat's first Tag is most often a weakness, so new Tags default negative. */
   static NEW_TAG_POLARITY = TAG_POLARITY.NEGATIVE;
 
+  /** @override A Threat renders no embedded Items, so accept none. */
+  static ALLOWED_ITEM_TYPES = [];
+
   static DEFAULT_OPTIONS = {
     classes: ["nco", "sheet", "actor"],
     position: { width: 480, height: 560, top: 80 },
@@ -49,6 +52,10 @@ export class ThreatSheet extends NCOSheetMixin(ActorSheetV2) {
       ...context,
       ...this._baseContext(),
       hitGroups: this.#prepareHitGroups(),
+      // The edit input must show (and write back) the pre-Boss source value:
+      // the derived system.hits.max is tripled for Bosses, so binding to it
+      // would bake the multiplier into the source on the next form submit.
+      hitsMaxSource: this.actor._source.system.hits.max,
       tags: this._prepareTags(this.actor.system.tags),
       dangerRating: this.actor.system.dangerRating ?? 0,
       driveHTML: await TextEditorImpl.enrichHTML(this.actor.system.drive ?? "", {

@@ -26,6 +26,12 @@ export class NCORoll {
     this._actionRoll = new Roll(`${this.actionCount}d6`);
     this._dangerRoll = this.dangerCount > 0 ? new Roll(`${this.dangerCount}d6`) : null;
 
+    // Dice So Nice reads per-term appearance options; the colorsets are
+    // registered on the diceSoNiceReady hook (see dice-so-nice.js). Harmless
+    // without the module — the options simply ride along in the roll JSON.
+    for (const die of this._actionRoll.dice) die.options.appearance = { colorset: "nco-action" };
+    for (const die of this._dangerRoll?.dice ?? []) die.options.appearance = { colorset: "nco-danger" };
+
     // Populated after evaluate()
     this.actionDice = null;  // [{value, cancelled}]
     this.dangerDice = null;  // [{value, used}]
@@ -86,7 +92,9 @@ export class NCORoll {
       this.high = null;
     } else {
       this.high = Math.max(...this.remaining);
-      this.boons = this.remaining.filter(v => v === 6).length - 1;
+      // Extra 6s beyond the first are boons; never negative (a non-6 result
+      // has none, and this is exposed to macros via game.nco.NCORoll).
+      this.boons = Math.max(0, this.remaining.filter(v => v === 6).length - 1);
     }
   }
 
@@ -166,11 +174,9 @@ export class NCORoll {
       if (sixes > 0) PressureTrack.add(sixes);
     }
 
+    // Dice So Nice animates the rolls attached to the chat message on its own;
+    // calling showForRoll here as well would play every roll twice.
     const dsn = game.modules.get("dice-so-nice")?.active;
-    if (dsn) {
-      await game.dice3d.showForRoll(this._actionRoll, game.user, true);
-      if (this._dangerRoll) await game.dice3d.showForRoll(this._dangerRoll, game.user, true);
-    }
 
     return ChatMessage.create({
       speaker: ChatMessage.getSpeaker(),

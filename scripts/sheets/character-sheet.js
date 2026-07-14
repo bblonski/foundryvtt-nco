@@ -29,6 +29,9 @@ const DRIVE_STATES = ["empty", "ticked", "crossed"];
  *    Tags and are not clickable.
  */
 export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
+  /** @override Only the embedded types the sheet actually renders. */
+  static ALLOWED_ITEM_TYPES = ["trademark", "gear", "condition"];
+
   static DEFAULT_OPTIONS = {
     classes: ["nco", "sheet", "actor"],
     position: { width: 820, height: 900 },
@@ -350,7 +353,7 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
           </div>
           ${options}
           <div style="font-size:11px;opacity:0.7;">
-            ${game.i18n.format("NCO.Chat.StuntPoint.Remaining", { name: this.actor.name, remaining })}
+            ${game.i18n.format("NCO.Chat.StuntPoint.Remaining", { name: escapeHTML(this.actor.name), remaining })}
           </div>
         </div>`,
     });

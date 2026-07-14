@@ -109,16 +109,25 @@ export class NCORollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     return GlobalRollPool.clear();
   }
 
+  /** Guards _onRoll against re-entry (double-click, impatient clicking). */
+  static #rolling = false;
+
   /** Roll the assembled dice pools, post the result to chat, and reset the pool. */
   static async _onRoll(_event, _target) {
-    const { action, danger } = GlobalRollPool.state;
-    const roll = new NCORoll(action.length + 1, danger.length, {
-      edges: {
-        action: action.map((e) => e.text),
-        danger: danger.map((e) => e.text),
-      },
-    });
-    await roll.toMessage();
-    await GlobalRollPool.clear();
+    if (NCORollDialog.#rolling) return;
+    NCORollDialog.#rolling = true;
+    try {
+      const { action, danger } = GlobalRollPool.state;
+      const roll = new NCORoll(action.length + 1, danger.length, {
+        edges: {
+          action: action.map((e) => e.text),
+          danger: danger.map((e) => e.text),
+        },
+      });
+      await roll.toMessage();
+      await GlobalRollPool.clear();
+    } finally {
+      NCORollDialog.#rolling = false;
+    }
   }
 }
