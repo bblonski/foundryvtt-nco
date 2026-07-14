@@ -4,7 +4,8 @@
   "type": "module",
   "description": "Development tooling for the Neon City Overdrive system. The system itself has no build step; this only compiles the compendium packs.",
   "scripts": {
-    "build:packs": "node build-packs.mjs"
+    "build:packs": "node build-packs.mjs",
+    "extract:packs": "node extract-packs.mjs"
   },
   "devDependencies": {
     "@foundryvtt/foundryvtt-cli": "^1.0.3"

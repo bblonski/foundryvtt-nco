@@ -1,3 +1,5 @@
-2026/07/14-12:59:57.204226 7f594b7fe6c0 Recovering log #7
-2026/07/14-12:59:57.205833 7f594b7fe6c0 Delete type=0 #7
-2026/07/14-12:59:57.205844 7f594b7fe6c0 Delete type=3 #6
+2026/07/14-15:49:51.555093 7f879cbfd6c0 Delete type=3 #1
+2026/07/14-15:49:51.555337 7f878f7fe6c0 Level-0 table #5: started
+2026/07/14-15:49:51.555883 7f878f7fe6c0 Level-0 table #5: 2700 bytes OK
+2026/07/14-15:49:51.557096 7f878f7fe6c0 Delete type=0 #3
+2026/07/14-15:49:51.557121 7f878f7fe6c0 Manual compaction at level-0 from '!journal!ncoGettingStart1' @ 72057594037927935 : 1 .. '!journal.pages!ncoGettingStart1.ncoGSPageWelcome' @ 0 : 0; will stop at (end)

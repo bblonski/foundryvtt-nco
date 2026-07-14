@@ -1,6 +1,5 @@
 {
   "_id": "ncoRollMacro0001",
-  "_key": "!macros!ncoRollMacro0001",
   "name": "NCO Roll",
   "type": "script",
   "img": "icons/dice/d6black.svg",
@@ -11,5 +10,6 @@
   "ownership": {
     "default": 2
   },
-  "flags": {}
+  "flags": {},
+  "_key": "!macros!ncoRollMacro0001"
 }
