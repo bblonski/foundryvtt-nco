@@ -165,6 +165,16 @@
     "NCO.Settings.GameLine.Name": "Game Line",
     "NCO.Settings.GameLine.Hint": "Which Action Tales game this world is running. Sets the visual theme and setting-specific terminology.",
 
+    "NCO.Settings.PhaseInitiative.Name": "Phase-Based Initiative",
+    "NCO.Settings.PhaseInitiative.Hint": "Replace numeric initiative with three phases: characters roll a d6 and act before the Threats on 4+ or after them on 3 or less. The combat tracker shows the phases as color-coded sections with a turn-taken toggle for each combatant.",
+
+    "NCO.Combat.PhaseUnassigned": "Roll for Phase",
+    "NCO.Combat.PhaseBefore": "Before Threats",
+    "NCO.Combat.PhaseThreats": "Threats",
+    "NCO.Combat.PhaseAfter": "After Threats",
+    "NCO.Combat.TurnTaken": "Turn taken — click to reset",
+    "NCO.Combat.TurnPending": "Click once this combatant has acted",
+
     "NCO.Pressure.Title": "Pressure",
     "NCO.Pressure.Reset": "Reset Pressure",
     "NCO.Pressure.SetLevel": "Click to set the Pressure level",

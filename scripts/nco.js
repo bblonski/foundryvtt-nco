@@ -16,6 +16,8 @@ import { TrademarkSheet } from "./sheets/trademark-sheet.js";
 import { GearSheet } from "./sheets/gear-sheet.js";
 import { ConditionSheet } from "./sheets/condition-sheet.js";
 import { NCORollDialog } from "./applications/nco-roll-dialog.js";
+import { NCOCombat, NCOCombatant } from "./combat/nco-combat.js";
+import { NCOCombatTracker } from "./combat/nco-combat-tracker.js";
 import { GlobalRollPool } from "./global-roll-pool.js";
 import { PressureTrack } from "./pressure-track.js";
 import { PressureApp } from "./applications/pressure-app.js";
@@ -214,6 +216,27 @@ Hooks.once("init", function () {
     requiresReload: true,
   });
 
+  // Optional phase-based initiative: PCs roll a d6 to act before (4+) or
+  // after (3-) the Threats, and the combat tracker becomes three color-coded
+  // phase sections with per-combatant "turn taken" toggles instead of a
+  // numeric turn order. Swapping document and tracker classes requires a
+  // reload; when disabled, Foundry's stock initiative is untouched.
+  game.settings.register("foundryvtt-nco", "phaseInitiative", {
+    name: "NCO.Settings.PhaseInitiative.Name",
+    hint: "NCO.Settings.PhaseInitiative.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    requiresReload: true,
+  });
+
+  if (game.settings.get("foundryvtt-nco", "phaseInitiative")) {
+    CONFIG.Combat.documentClass = NCOCombat;
+    CONFIG.Combatant.documentClass = NCOCombatant;
+    CONFIG.ui.combat = NCOCombatTracker;
+  }
+
   // Whether suffering a new Trauma automatically rolls a death check.
   game.settings.register("foundryvtt-nco", "deathCheckEnabled", {
     name: "NCO.Settings.DeathCheck.Name",
@@ -260,6 +283,13 @@ Hooks.once("i18nInit", function () {
   const line = game.settings.get("foundryvtt-nco", "gameLine");
   applyGameLineTerms(line);
   document.body.classList.add(gameLineThemeClass(line));
+
+  // Scopes the phase-tracker CSS (styles/nco.css) so it can't leak into the
+  // stock tracker when the optional rule is off; also hides the footer's
+  // turn-step buttons, which have no meaning in phase play.
+  if (game.settings.get("foundryvtt-nco", "phaseInitiative")) {
+    document.body.classList.add("nco-phase-initiative");
+  }
 
   // Registered here (not in init) so their prefilled defaults can be localized
   // — translations and the active game line's term overrides are applied above.

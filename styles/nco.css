@@ -1656,3 +1656,90 @@ button.nco-danger-rating:hover {
   gap: 0.15rem;
   font-size: 0.9em;
 }
+
+/* ----------------------------------------------------------------------- */
+/* Phase-based initiative tracker (optional rule; see NCOCombatTracker)     */
+/* ----------------------------------------------------------------------- */
+
+/* Phase accents, derived from the active theme's channels so every game line
+   recolors them for free (declared on <body>, not :root — see the note atop
+   this file). Before-Threats borrows the Action accent, Threats the Danger
+   accent, After-Threats the partial-success gold. */
+body {
+  --nco-phase-before: rgb(var(--nco-action-rgb));
+  --nco-phase-threats: rgb(var(--nco-danger-rgb));
+  --nco-phase-after: var(--nco-partial);
+  --nco-phase-unassigned: rgb(var(--nco-neutral-rgb) / 0.5);
+}
+
+/* Everything below is scoped to body.nco-phase-initiative, which nco.js adds
+   only while the optional rule is enabled — the stock tracker is untouched. */
+
+/* Each phase's class appears on both its header row and its combatants, so a
+   single rule feeds the accent color to both. */
+body.nco-phase-initiative .combat-tracker .nco-phase-unassigned { --nco-phase-color: var(--nco-phase-unassigned); }
+body.nco-phase-initiative .combat-tracker .nco-phase-before { --nco-phase-color: var(--nco-phase-before); }
+body.nco-phase-initiative .combat-tracker .nco-phase-threats { --nco-phase-color: var(--nco-phase-threats); }
+body.nco-phase-initiative .combat-tracker .nco-phase-after { --nco-phase-color: var(--nco-phase-after); }
+
+/* Section headers double as the horizontal dividers between phases. */
+body.nco-phase-initiative .combat-tracker .nco-phase-header {
+  display: flex;
+  align-items: center;
+  margin: 6px 0 2px;
+  padding: 3px 8px 2px;
+  list-style: none;
+  border-top: 2px solid var(--nco-phase-color);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--nco-phase-color) 16%, transparent), transparent);
+  color: var(--nco-phase-color);
+  font-family: var(--nco-font-display);
+  font-size: var(--font-size-12);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+body.nco-phase-initiative .combat-tracker .combatant {
+  border-left: 3px solid var(--nco-phase-color, transparent);
+}
+
+/* A combatant who has acted this round recedes; the toggle stays legible so
+   the state (and the click target to undo it) remains obvious. */
+body.nco-phase-initiative .combat-tracker .combatant.nco-turn-taken :is(.token-image, .token-name, .token-resource) {
+  opacity: 0.45;
+}
+
+/* The turn-taken toggle lives in the initiative cell, whose core rule paints
+   any button with the d20 icon background — reset that for our icon glyph. */
+body.nco-phase-initiative .combat-tracker .token-initiative button.nco-turn-toggle {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  filter: none;
+  font-size: var(--font-size-16);
+  color: rgb(var(--nco-neutral-rgb) / 0.4);
+}
+
+body.nco-phase-initiative .combat-tracker .token-initiative button.nco-turn-toggle:hover {
+  background: none;
+  filter: none;
+  color: rgb(var(--nco-neutral-rgb) / 0.8);
+}
+
+body.nco-phase-initiative .combat-tracker .token-initiative button.nco-turn-toggle.taken,
+body.nco-phase-initiative .combat-tracker .token-initiative button.nco-turn-toggle.taken:hover {
+  color: var(--nco-phase-color);
+}
+
+/* Non-owners see the indicator but can't press it. */
+body.nco-phase-initiative .combat-tracker .token-initiative button.nco-turn-toggle:disabled {
+  cursor: default;
+}
+
+/* Turn-stepping has no meaning in phase play: rounds are the only unit of
+   progression, so hide the footer's turn buttons (including the player-facing
+   "End Turn" button, which is also data-action="nextTurn"). */
+body.nco-phase-initiative .combat-sidebar .combat-controls :is([data-action="previousTurn"], [data-action="nextTurn"]) {
+  display: none;
+}
