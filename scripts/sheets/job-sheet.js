@@ -165,7 +165,7 @@ export class JobSheet extends NCOSheetMixin(ItemSheetV2) {
   }
 
   /**
-   * A Threat's Hits track split into groups for the template. Bosses triple
+   * A Threat's Hits track split into groups for the template. Bosses extend
    * their Hits and are grouped in threes (with a divider between groups); a
    * normal Threat is a single row. Boxes fill from the left.
    */

@@ -238,6 +238,34 @@ Hooks.once("init", function () {
     requiresReload: true,
   });
 
+  // How a Boss Threat's Hits track extends past a normal Threat's: tripled
+  // (NCO) or plus one Hit per player character (Star Scoundrels). Feeds
+  // ThreatData.prepareDerivedData, so already-loaded Threats need a reload.
+  game.settings.register("foundryvtt-nco", "bossHitsMode", {
+    name: "NCO.Settings.BossHitsMode.Name",
+    hint: "NCO.Settings.BossHitsMode.Hint",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      multiply: "NCO.Settings.BossHitsMode.Multiply",
+      addPCs: "NCO.Settings.BossHitsMode.AddPCs",
+    },
+    default: "multiply",
+    requiresReload: true,
+  });
+
+  // How many PCs are in the crew, for the per-PC Boss Hits mode above.
+  game.settings.register("foundryvtt-nco", "pcCount", {
+    name: "NCO.Settings.PCCount.Name",
+    hint: "NCO.Settings.PCCount.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    default: 4,
+    requiresReload: true,
+  });
+
   game.settings.register("foundryvtt-nco", "startingStuntPoints", {
     name: "NCO.Settings.StartingStuntPoints.Name",
     hint: "NCO.Settings.StartingStuntPoints.Hint",
@@ -355,7 +383,10 @@ Hooks.on("renderSettingsConfig", (_app, html) => {
     if (!input || input.tagName === "TEXTAREA") continue;
     const textarea = document.createElement("textarea");
     textarea.name = input.name;
-    textarea.value = input.value;
+    // Don't copy input.value: the single-line <input type="text"> Foundry
+    // rendered has already stripped the newlines from it. Read the stored
+    // setting, which still has them.
+    textarea.value = game.settings.get("foundryvtt-nco", key);
     textarea.rows = 4;
     for (const cls of input.classList) textarea.classList.add(cls);
     input.replaceWith(textarea);

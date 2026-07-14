@@ -35,6 +35,7 @@ export const GAME_LINES = {
       advantagesEnabled: false,
       pressureEnabled: false,
       deathCheckEnabled: true,
+      bossHitsMode: "multiply",
     },
   },
 
@@ -47,7 +48,8 @@ export const GAME_LINES = {
       tiesEnabled: false,
       advantagesEnabled: false,
       pressureEnabled: true,
-      deathCheckEnabled: true,
+      deathCheckEnabled: false,
+      bossHitsMode: "addPCs",
     },
     terms: {
       "NCO.Roll.Title": "Star Scoundrels · Check",
@@ -76,7 +78,8 @@ export const GAME_LINES = {
       tiesEnabled: false,
       advantagesEnabled: false,
       pressureEnabled: false,
-      deathCheckEnabled: true,
+      deathCheckEnabled: false,
+      bossHitsMode: "multiply",
     },
     terms: {
       "NCO.Roll.Title": "Dungeon Crawlers · Check",
@@ -93,7 +96,8 @@ export const GAME_LINES = {
       tiesEnabled: true,
       advantagesEnabled: false,
       pressureEnabled: false,
-      deathCheckEnabled: true,
+      deathCheckEnabled: false,
+      bossHitsMode: "multiply",
     },
     terms: {
       "NCO.Roll.Title": "Hard City · Check",
@@ -128,7 +132,8 @@ export const GAME_LINES = {
       tiesEnabled: true,
       advantagesEnabled: true,
       pressureEnabled: false,
-      deathCheckEnabled: true,
+      deathCheckEnabled: false,
+      bossHitsMode: "multiply",
     },
     terms: {
       "NCO.Roll.Title": "Tomorrow City · Check",

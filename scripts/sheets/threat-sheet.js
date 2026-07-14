@@ -11,8 +11,9 @@ const { ActorSheetV2 } = foundry.applications.sheets;
  * the play/edit toggle, the Danger Rating, and the Hits track all come from
  * {@link NCOSheetMixin}; only the Boss-aware Hits grouping is Threat-specific.
  *
- * Toggling Boss triples the Hits track; the track is then drawn with a divider
- * after every third box so it stays readable.
+ * Toggling Boss extends the Hits track (tripled, or +1 per PC, per the
+ * bossHitsMode world setting); the track is then drawn with a divider after
+ * every third box so it stays readable.
  */
 export class ThreatSheet extends NCOSheetMixin(ActorSheetV2) {
   /** Hits are grouped (with dividers) by this many for Boss Threats. */
@@ -52,6 +53,13 @@ export class ThreatSheet extends NCOSheetMixin(ActorSheetV2) {
       ...context,
       ...this._baseContext(),
       hitGroups: this.#prepareHitGroups(),
+      // The Boss toggle's tooltip describes whichever Hits calculation the
+      // bossHitsMode world setting selects.
+      bossHint: game.i18n.localize(
+        game.settings.get("foundryvtt-nco", "bossHitsMode") === "addPCs"
+          ? "NCO.Sheet.BossHintAddPCs"
+          : "NCO.Sheet.BossHint",
+      ),
       // The edit input must show (and write back) the pre-Boss source value:
       // the derived system.hits.max is tripled for Bosses, so binding to it
       // would bake the multiplier into the source on the next form submit.
@@ -68,7 +76,7 @@ export class ThreatSheet extends NCOSheetMixin(ActorSheetV2) {
   }
 
   /**
-   * The Hits track split into groups for the template. Bosses triple their
+   * The Hits track split into groups for the template. Bosses extend their
    * Hits and are grouped in threes (so a divider can be drawn between each
    * group); a normal Threat is a single ungrouped row. Boxes fill from the left.
    */

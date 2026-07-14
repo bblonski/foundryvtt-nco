@@ -24,13 +24,17 @@ export class LineDefaultsMenu extends foundry.applications.api.ApplicationV2 {
     const recommended = line.settings ?? {};
 
     // One row per optional rule, using the setting's own (term-overridden)
-    // display name, with the rules already matching marked as such.
+    // display name, with the rules already matching marked as such. Toggles
+    // show On/Off; choice settings show the recommended choice's label.
     const rows = Object.entries(recommended).map(([key, value]) => {
       const config = game.settings.settings.get(`${SYSTEM_ID}.${key}`);
       const name = game.i18n.localize(config?.name ?? key);
-      const state = game.i18n.localize(
-        value ? "NCO.Settings.LineDefaults.On" : "NCO.Settings.LineDefaults.Off",
-      );
+      const state =
+        typeof value === "boolean"
+          ? game.i18n.localize(
+              value ? "NCO.Settings.LineDefaults.On" : "NCO.Settings.LineDefaults.Off",
+            )
+          : game.i18n.localize(config?.choices?.[value] ?? String(value));
       const unchanged =
         game.settings.get(SYSTEM_ID, key) === value
           ? ` <em>(${game.i18n.localize("NCO.Settings.LineDefaults.Unchanged")})</em>`

@@ -164,6 +164,29 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     };
   }
 
+  /** @override */
+  async _onRender(context, options) {
+    await super._onRender(context, options);
+    // The Gear/Ties/Advantages notes textareas grow with their content via
+    // CSS `field-sizing: content`; this is the fallback for browsers that
+    // don't support it yet (e.g. Firefox).
+    if (!CSS.supports("field-sizing", "content")) this.#autosizeNotesTextareas();
+  }
+
+  /** Size each notes textarea to its content, and re-size as the user types. */
+  #autosizeNotesTextareas() {
+    const selector = ".nco-gear textarea, .nco-ties textarea, .nco-advantages textarea";
+    for (const textarea of this.element.querySelectorAll(selector)) {
+      const grow = () => {
+        textarea.style.height = "auto";
+        const borders = textarea.offsetHeight - textarea.clientHeight;
+        textarea.style.height = `${textarea.scrollHeight + borders}px`;
+      };
+      textarea.addEventListener("input", grow);
+      grow();
+    }
+  }
+
   /** One checkbox per hit, checked from the left as damage is taken. */
   #prepareHitBoxes() {
     const hits = this.actor.system.hits ?? {};
