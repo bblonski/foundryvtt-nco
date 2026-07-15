@@ -76,6 +76,21 @@ body {
   font-family: inherit;
 }
 
+/* Font Awesome 7 (Foundry v14) gives every icon a fixed 1.25em box with the
+   glyph centered inside it; Font Awesome 6 (Foundry v13) instead uses each
+   glyph's intrinsic width with no centering. Our controls are laid out against
+   the v14 metrics, so on v13 the narrower FA6 glyphs shift buttons like the
+   Condition close (×) and the section add (+) out of alignment. Replicate FA7's
+   fixed-width icon box within our content so both versions render identically;
+   this is a no-op on v14. Scoped to content roots (never the window frame) like
+   the font rule above, so header controls keep their own glyph sizing. */
+:is(.nco-character-sheet, .nco-threat-sheet, .nco-vehicle-sheet, .nco-trademark-sheet,
+    .nco-gear-sheet, .nco-condition-sheet, .nco-job-sheet, .nco-scene-sheet,
+    .nco-roll-dialog-content) :is(.fa, .fas, .far, .fab) {
+  width: 1.25em;
+  text-align: center;
+}
+
 .nco-character-sheet,
 .nco-trademark-sheet,
 .nco-gear-sheet,
