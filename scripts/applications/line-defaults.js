@@ -20,8 +20,20 @@ export class LineDefaultsMenu extends foundry.applications.api.ApplicationV2 {
 
   /** Confirm and apply the active game line's recommended optional rules. */
   static async apply() {
-    const line = getGameLine(game.settings.get(SYSTEM_ID, "gameLine"));
-    const recommended = line.settings ?? {};
+    // The menu button does not submit the settings form, so a Game Line picked
+    // in the dropdown but not yet saved is invisible to game.settings.get —
+    // and the post-apply re-render below would silently discard it. Read the
+    // pending value straight from the form and, when it differs from the
+    // saved one, commit the line switch as part of the apply.
+    const saved = game.settings.get(SYSTEM_ID, "gameLine");
+    const form = foundry.applications.instances.get("settings-config")?.element;
+    const pending = form?.querySelector(`[name="${SYSTEM_ID}.gameLine"]`)?.value;
+    const lineId = pending || saved;
+    const line = getGameLine(lineId);
+    const recommended = {
+      ...(lineId !== saved ? { gameLine: lineId } : {}),
+      ...(line.settings ?? {}),
+    };
 
     // One row per optional rule, using the setting's own (term-overridden)
     // display name, with the rules already matching marked as such. Toggles
