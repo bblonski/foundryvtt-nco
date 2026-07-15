@@ -41,6 +41,9 @@ export class ConditionSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       item: this.item,
       system: this.item.system,
       editable: this.isEditable,
+      // With the condition/trauma-tracks setting on, `active` is derived from
+      // the hit track (see ConditionData), so the checkbox is display-only.
+      activeLocked: game.settings.get("foundryvtt-nco", "conditionTraumaTracksEnabled"),
     };
   }
 

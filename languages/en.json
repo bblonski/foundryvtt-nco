@@ -164,6 +164,8 @@
     "NCO.Settings.StashTrack.Hint": "Show the optional Stash track on character sheets.",
     "NCO.Settings.StashTrackLength.Name": "Stash Track Length",
     "NCO.Settings.StashTrackLength.Hint": "How many Stash boxes appear on each character's Stash track.",
+    "NCO.Settings.ConditionTraumaTracks.Name": "Condition & Trauma Hit Tracks",
+    "NCO.Settings.ConditionTraumaTracks.Hint": "Show an optional three-box hit track beside each Condition and Trauma on character sheets (used by Tomorrow City).",
     "NCO.Settings.Ties.Name": "Ties Box",
     "NCO.Settings.Ties.Hint": "Show the optional Ties (relationships) section on character sheets.",
     "NCO.Settings.Advantages.Name": "Advantages Box",

@@ -43,6 +43,12 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       traumas: new fields.ArrayField(
         new fields.StringField({ required: true, blank: true, initial: "" }),
       ),
+      // Filled boxes on each Trauma's optional three-box hit track, index-aligned
+      // with `traumas` (missing entries read as 0). Shown when the world's
+      // condition/trauma-tracks setting is enabled (e.g. Tomorrow City).
+      traumaHits: new fields.ArrayField(
+        new fields.NumberField({ required: true, integer: true, min: 0, max: 3, initial: 0 }),
+      ),
       // Meta-currency spent for stunts; clicking the sheet label spends one
       // and posts the spending options to chat. Drawn as a Hits-like track
       // (filled boxes = available points) in blue. New characters start with

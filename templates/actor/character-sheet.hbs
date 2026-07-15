@@ -233,14 +233,31 @@
     <ul class="nco-conditions-list">
       {{#each conditions as |condition|}}
         <li class="nco-condition">
-          {{!-- One pill per Condition with an integrated toggle: ticking the
-                checkbox flips it on/off without rolling; when on, clicking the
-                name invokes it as a Danger die. --}}
+          {{!-- Optional per-Condition hit track (see the condition/trauma-tracks
+                setting): three diamond boxes in a tight pyramid, on the pill's
+                left. The update is routed to the embedded Item via the
+                "conditionHits:<id>" track key (see _trackConfig). --}}
+          {{#if condition.hitBoxes}}
+            <div class="nco-pyramid-track nco-track" data-action="trackAdd"
+                 data-track="conditionHits:{{condition.id}}" title="{{@root.trackHint}}">
+              {{#each condition.hitBoxes as |box|}}
+                <span class="nco-hit-box {{#if box.checked}}nco-hit-box-filled{{/if}}"
+                      data-index="{{box.index}}"></span>
+              {{/each}}
+            </div>
+          {{/if}}
+          {{!-- One pill per Condition. Without the hit track it carries an
+                integrated toggle: ticking the checkbox flips it on/off without
+                rolling. With the track, the track itself is the toggle — one or
+                more marked hits counts as active (see ConditionData). Either
+                way, when on, clicking the name invokes it as a Danger die. --}}
           <div class="nco-chip nco-chip-condition {{#if condition.active}}nco-condition-on{{/if}}">
-            <label class="nco-condition-switch" title="{{localize 'NCO.Sheet.ToggleCondition'}}">
-              <input type="checkbox" data-action="toggleCondition" data-item-id="{{condition.id}}"
-                     {{checked condition.active}} {{#unless @root.editable}}disabled{{/unless}} />
-            </label>
+            {{#unless condition.hitBoxes}}
+              <label class="nco-condition-switch" title="{{localize 'NCO.Sheet.ToggleCondition'}}">
+                <input type="checkbox" data-action="toggleCondition" data-item-id="{{condition.id}}"
+                       {{checked condition.active}} {{#unless @root.editable}}disabled{{/unless}} />
+              </label>
+            {{/unless}}
             {{!-- Always a button (disabled when inactive) so the pill keeps the
                   same size whether or not the Condition is toggled on. --}}
             <button type="button" class="nco-condition-name" data-action="invoke"
@@ -275,6 +292,15 @@
     {{#if editing}}
       {{#each traumas as |trauma traumaIndex|}}
         <div class="nco-trauma-row">
+          {{#if trauma.hitBoxes}}
+            <div class="nco-pyramid-track nco-track" data-action="trackAdd"
+                 data-track="traumaHits:{{traumaIndex}}" title="{{@root.trackHint}}">
+              {{#each trauma.hitBoxes as |box|}}
+                <span class="nco-hit-box {{#if box.checked}}nco-hit-box-filled{{/if}}"
+                      data-index="{{box.index}}"></span>
+              {{/each}}
+            </div>
+          {{/if}}
           <input type="text" class="nco-flaw-text" name="system.traumas.{{traumaIndex}}"
                  value="{{trauma.text}}" placeholder="{{localize 'NCO.Sheet.TraumaNamePlaceholder'}}" />
           <button type="button" class="nco-icon-button nco-delete" data-action="deleteTrauma"
@@ -288,6 +314,18 @@
       <ul class="nco-tags nco-tags-play">
         {{#each traumas as |trauma traumaIndex|}}
           <li>
+            {{!-- Optional per-Trauma hit track, stored in the index-aligned
+                  `system.traumaHits` array (see _trackConfig), on the chip's
+                  left like the Condition tracks. --}}
+            {{#if trauma.hitBoxes}}
+              <div class="nco-pyramid-track nco-track" data-action="trackAdd"
+                   data-track="traumaHits:{{traumaIndex}}" title="{{@root.trackHint}}">
+                {{#each trauma.hitBoxes as |box|}}
+                  <span class="nco-hit-box {{#if box.checked}}nco-hit-box-filled{{/if}}"
+                        data-index="{{box.index}}"></span>
+                {{/each}}
+              </div>
+            {{/if}}
             <div class="nco-chip nco-chip-flaw {{#if @root.editable}}nco-chip-removable{{/if}}">
               {{#if trauma.clickable}}
                 <button type="button" class="nco-chip-label" data-action="invoke"

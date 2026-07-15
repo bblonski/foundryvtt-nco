@@ -21,7 +21,7 @@
   <section class="nco-condition-active">
     <label class="nco-checkbox">
       <input type="checkbox" name="system.active" {{checked system.active}}
-             {{#unless editable}}disabled{{/unless}} />
+             {{#if activeLocked}}disabled{{else}}{{#unless editable}}disabled{{/unless}}{{/if}} />
       {{localize "NCO.Sheet.ConditionActive"}}
     </label>
   </section>

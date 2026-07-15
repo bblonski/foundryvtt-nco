@@ -196,6 +196,18 @@ Hooks.once("init", function () {
     requiresReload: true,
   });
 
+  // Whether each Condition and Trauma carries an optional three-box hit track
+  // (drawn as a tight pyramid of diamond boxes), per Tomorrow City.
+  game.settings.register("foundryvtt-nco", "conditionTraumaTracksEnabled", {
+    name: "NCO.Settings.ConditionTraumaTracks.Name",
+    hint: "NCO.Settings.ConditionTraumaTracks.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    requiresReload: true,
+  });
+
   // Whether the optional Ties (relationships) freeform box appears on sheets.
   game.settings.register("foundryvtt-nco", "tiesEnabled", {
     name: "NCO.Settings.Ties.Name",

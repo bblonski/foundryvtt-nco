@@ -872,6 +872,8 @@ button.nco-chip-flaw:hover {
 
 .nco-character-sheet .nco-condition {
   display: inline-flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
 }
 
@@ -972,6 +974,50 @@ button.nco-chip-flaw:hover {
 button.nco-condition-name:hover {
   background: rgb(var(--nco-danger-rgb) /0.25);
   text-shadow: none;
+}
+
+/* Optional Condition/Trauma hit tracks (see the condition/trauma-tracks
+   setting): three boxes rotated 45° and packed into a tight pyramid — the top
+   three sections of a four-part diamond. Box 0 sits bottom-left, box 1 on top,
+   box 2 bottom-right; positions are the box centers minus half a box, laid out
+   on a --nco-pyr-cell grid (the box diagonal plus a hairline gap). */
+.nco-pyramid-track {
+  --nco-pyr-box: 11px;
+  --nco-pyr-cell: 17px;
+  position: relative;
+  flex: none;
+  width: calc(var(--nco-pyr-cell) * 2);
+  height: calc(var(--nco-pyr-cell) * 1.5);
+}
+
+.nco-character-sheet .nco-pyramid-track .nco-hit-box {
+  position: absolute;
+  width: var(--nco-pyr-box);
+  height: var(--nco-pyr-box);
+  border-radius: 2px;
+  transform: rotate(45deg);
+}
+
+.nco-pyramid-track .nco-hit-box[data-index="0"] {
+  left: calc(var(--nco-pyr-cell) * 0.5 - var(--nco-pyr-box) / 2);
+  top: calc(var(--nco-pyr-cell) - var(--nco-pyr-box) / 2);
+}
+
+.nco-pyramid-track .nco-hit-box[data-index="1"] {
+  left: calc(var(--nco-pyr-cell) - var(--nco-pyr-box) / 2);
+  top: calc(var(--nco-pyr-cell) * 0.5 - var(--nco-pyr-box) / 2);
+}
+
+.nco-pyramid-track .nco-hit-box[data-index="2"] {
+  left: calc(var(--nco-pyr-cell) * 1.5 - var(--nco-pyr-box) / 2);
+  top: calc(var(--nco-pyr-cell) - var(--nco-pyr-box) / 2);
+}
+
+/* A Trauma's track sits beside its chip in play mode. */
+.nco-traumas .nco-tags-play li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* ----------------------------------------------------------------------- */

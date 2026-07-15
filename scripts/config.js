@@ -35,6 +35,7 @@ export const GAME_LINES = {
     settings: {
       driveTrackEnabled: true,
       stashTrackEnabled: true,
+      conditionTraumaTracksEnabled: false,
       tiesEnabled: false,
       advantagesEnabled: false,
       pressureEnabled: false,
@@ -50,6 +51,7 @@ export const GAME_LINES = {
     settings: {
       driveTrackEnabled: false,
       stashTrackEnabled: false,
+      conditionTraumaTracksEnabled: false,
       tiesEnabled: false,
       advantagesEnabled: false,
       pressureEnabled: true,
@@ -80,6 +82,7 @@ export const GAME_LINES = {
     settings: {
       driveTrackEnabled: false,
       stashTrackEnabled: false,
+      conditionTraumaTracksEnabled: false,
       tiesEnabled: false,
       advantagesEnabled: false,
       pressureEnabled: false,
@@ -99,6 +102,7 @@ export const GAME_LINES = {
     settings: {
       driveTrackEnabled: false,
       stashTrackEnabled: false,
+      conditionTraumaTracksEnabled: false,
       tiesEnabled: true,
       advantagesEnabled: false,
       pressureEnabled: false,
@@ -126,6 +130,8 @@ export const GAME_LINES = {
       "NCO.RollDialog.Hint": "Click Tags on character sheets to add dice — positive Tags (Trademarks, Edges) add Action dice; negative Tags (Flaws, Injuries, Conditions) add Danger dice. Shift-click to invert. This pool is shared by all players.",
       "NCO.Settings.DeathCheck.Name": "Death Check on Injury",
       "NCO.Settings.DeathCheck.Hint": "Automatically roll a death check when a character suffers a new Injury.",
+      "NCO.Settings.ConditionTraumaTracks.Name": "Condition & Injury Hit Tracks",
+      "NCO.Settings.ConditionTraumaTracks.Hint": "Show an optional three-box hit track beside each Condition and Injury on character sheets.",
     },
   },
 
@@ -135,6 +141,7 @@ export const GAME_LINES = {
     settings: {
       driveTrackEnabled: false,
       stashTrackEnabled: true,
+      conditionTraumaTracksEnabled: true,
       tiesEnabled: true,
       advantagesEnabled: true,
       pressureEnabled: false,
@@ -167,6 +174,8 @@ export const GAME_LINES = {
       "NCO.RollDialog.Hint": "Click Tags on character sheets to add dice — positive Tags (Trademarks, Edges) add Action dice; negative Tags (Flaws, Injuries, Conditions) add Danger dice. Shift-click to invert. This pool is shared by all players.",
       "NCO.Settings.DeathCheck.Name": "Death Check on Injury",
       "NCO.Settings.DeathCheck.Hint": "Automatically roll a death check when a character suffers a new Injury.",
+      "NCO.Settings.ConditionTraumaTracks.Name": "Condition & Injury Hit Tracks",
+      "NCO.Settings.ConditionTraumaTracks.Hint": "Show an optional three-box hit track beside each Condition and Injury on character sheets.",
     },
   },
 };

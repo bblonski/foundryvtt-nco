@@ -11,6 +11,8 @@ const DRIVE_TRACK_LENGTH = 10;
 const STUNT_POINTS_MAX = 5;
 /** Drive box state values (index) mapped to their CSS state name. */
 const DRIVE_STATES = ["empty", "ticked", "crossed"];
+/** Boxes on the optional per-Condition/per-Trauma hit track (see setting). */
+const CONDITION_TRAUMA_TRACK_LENGTH = 3;
 
 /**
  * Character sheet for Neon City Overdrive characters.
@@ -95,6 +97,8 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     const TextEditorImpl = foundry.applications.ux?.TextEditor?.implementation ?? TextEditor;
+    // Optional per-Condition/per-Trauma hit tracks (e.g. Tomorrow City).
+    const conditionTraumaTracks = game.settings.get("foundryvtt-nco", "conditionTraumaTracksEnabled");
 
     return {
       ...context,
@@ -121,18 +125,29 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
       driveEnabled: game.settings.get("foundryvtt-nco", "driveTrackEnabled"),
       driveBoxes: this.#prepareDriveBoxes(),
       driveHint: game.i18n.localize("NCO.Sheet.DriveHint"),
+      conditionTraumaTracks,
       conditions: this.actor.items
         .filter((item) => item.type === "condition")
-        .map((item) => ({ id: item.id, name: item.name, active: !!item.system.active })),
+        .map((item) => ({
+          id: item.id,
+          name: item.name,
+          active: !!item.system.active,
+          hitBoxes: conditionTraumaTracks
+            ? this.#preparePyramidBoxes(item.system.hits ?? 0)
+            : null,
+        })),
       hitsMaxLimit: game.settings.get("foundryvtt-nco", "maxHits"),
       // Exactly two Flaw slots, regardless of what older documents stored.
       flaws: Array.from({ length: 2 }, (_, i) => {
         const text = this.actor.system.flaws?.[i] ?? "";
         return { text, clickable: !!text.trim() };
       }),
-      traumas: (this.actor.system.traumas ?? []).map((text) => ({
+      traumas: (this.actor.system.traumas ?? []).map((text, index) => ({
         text,
         clickable: !!text?.trim(),
+        hitBoxes: conditionTraumaTracks
+          ? this.#preparePyramidBoxes(this.#traumaHits()[index])
+          : null,
       })),
       // Unique Gear: the Item's name is just a label, not a Tag — only its
       // own Tags (each independently positive or negative) are clickable.
@@ -205,6 +220,31 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     if (max <= 0) return null;
     const taken = Math.min(max, Math.max(0, hits.taken ?? 0));
     return Array.from({ length: max }, (_, i) => ({ index: i, checked: i < taken }));
+  }
+
+  /**
+   * The three boxes of a Condition/Trauma hit track as {index, checked} pairs,
+   * filled from `taken`. The template arranges them into the pyramid.
+   */
+  #preparePyramidBoxes(taken) {
+    const filled = Math.min(CONDITION_TRAUMA_TRACK_LENGTH, Math.max(0, taken ?? 0));
+    return Array.from({ length: CONDITION_TRAUMA_TRACK_LENGTH }, (_, i) => ({
+      index: i,
+      checked: i < filled,
+    }));
+  }
+
+  /**
+   * The per-Trauma hit counts, index-aligned with `system.traumas`. Older
+   * documents (or Traumas added while the tracks were disabled) may have a
+   * short or missing array; missing entries read as 0.
+   */
+  #traumaHits() {
+    const traumas = this.actor.system.traumas ?? [];
+    const hits = this.actor.system.traumaHits ?? [];
+    return traumas.map((_, i) =>
+      Math.min(CONDITION_TRAUMA_TRACK_LENGTH, Math.max(0, hits[i] ?? 0)),
+    );
   }
 
   /** One box per Stunt Point, filled from the left as points become available. */
@@ -322,6 +362,35 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
         max: this.#stashTrackLength,
       };
     }
+    // Condition hit track: `data-track` carries the item id ("conditionHits:<id>")
+    // so the update is routed to that embedded Item rather than the character.
+    if (track?.startsWith("conditionHits:")) {
+      const item = this.actor.items.get(track.slice("conditionHits:".length));
+      if (!item) return null;
+      return {
+        document: item,
+        field: "system.hits",
+        current: item.system.hits ?? 0,
+        max: CONDITION_TRAUMA_TRACK_LENGTH,
+      };
+    }
+    // Trauma hit track: `data-track` carries the Trauma's index in the
+    // `system.traumas` array ("traumaHits:<index>"). The hit counts live in the
+    // parallel `system.traumaHits` array, which is rewritten wholesale — a
+    // partial `traumaHits.<index>` update would not survive the ArrayField.
+    if (track?.startsWith("traumaHits:")) {
+      const index = Number(track.slice("traumaHits:".length));
+      const hits = this.#traumaHits();
+      if (!Number.isInteger(index) || index < 0 || index >= hits.length) return null;
+      return {
+        current: hits[index],
+        max: CONDITION_TRAUMA_TRACK_LENGTH,
+        write: (next) => {
+          hits[index] = next;
+          return this.actor.update({ "system.traumaHits": hits });
+        },
+      };
+    }
     // Unique Gear damage track: `data-track` carries the item id ("gearHits:<id>")
     // so the update is routed to that embedded Item rather than the character.
     if (track?.startsWith("gearHits:")) {
@@ -403,9 +472,17 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     if (!name?.trim()) return;
 
     if (this.isEditable) await this.submit();
-    const traumas = this.actor.toObject().system.traumas ?? [];
+    const system = this.actor.toObject().system;
+    const traumas = system.traumas ?? [];
+    const oldHits = system.traumaHits ?? [];
     traumas.push(name.trim());
-    await this.actor.update({ "system.traumas": traumas });
+    // Keep the hit-count array index-aligned (padding for older documents).
+    // With the hit tracks enabled, a fresh Trauma starts with one box marked.
+    const traumaHits = Array.from({ length: traumas.length - 1 }, (_, i) => oldHits[i] ?? 0);
+    traumaHits.push(
+      game.settings.get("foundryvtt-nco", "conditionTraumaTracksEnabled") ? 1 : 0,
+    );
+    await this.actor.update({ "system.traumas": traumas, "system.traumaHits": traumaHits });
     if (game.settings.get("foundryvtt-nco", "deathCheckEnabled")) {
       await this.#rollDeathCheck(name.trim());
     }
@@ -414,10 +491,13 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
   static async _onDeleteTrauma(_event, target) {
     const index = Number(target.dataset.traumaIndex);
     if (this.isEditable) await this.submit();
-    const traumas = this.actor.toObject().system.traumas ?? [];
+    const system = this.actor.toObject().system;
+    const traumas = system.traumas ?? [];
+    const traumaHits = system.traumaHits ?? [];
     if (index < 0 || index >= traumas.length) return;
     traumas.splice(index, 1);
-    await this.actor.update({ "system.traumas": traumas });
+    if (index < traumaHits.length) traumaHits.splice(index, 1);
+    await this.actor.update({ "system.traumas": traumas, "system.traumaHits": traumaHits });
   }
 
   /** Roll the death check for a freshly suffered Trauma and post the outcome. */
@@ -488,8 +568,14 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
       },
     });
     if (!name?.trim()) return;
+    // With the hit tracks enabled, a fresh Condition starts with one box
+    // marked — the track replaces the on/off toggle (see ConditionData), so
+    // this is what makes the new Condition count as active.
+    const system = game.settings.get("foundryvtt-nco", "conditionTraumaTracksEnabled")
+      ? { hits: 1 }
+      : {};
     await this.actor.createEmbeddedDocuments("Item", [
-      { name: name.trim(), type: "condition", img: "icons/svg/downgrade.svg" },
+      { name: name.trim(), type: "condition", img: "icons/svg/downgrade.svg", system },
     ]);
   }
 
