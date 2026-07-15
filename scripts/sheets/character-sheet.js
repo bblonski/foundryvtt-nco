@@ -188,10 +188,25 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     if (!CSS.supports("field-sizing", "content")) this.#autosizeNotesTextareas();
   }
 
+  /**
+   * @override The base class restores the body's scroll position here, before
+   * `_onRender` runs the textarea-autosize fallback. At that point the notes
+   * textareas are still at their default height, the body is shorter, and the
+   * restored scrollTop gets clamped — leaving the sheet scrolled up after any
+   * re-render (e.g. a track click). Grow the textareas first so the scroll
+   * offset is restored against the final layout.
+   */
+  _syncPartState(partId, newElement, priorElement, state) {
+    if (!CSS.supports("field-sizing", "content")) this.#autosizeNotesTextareas(newElement);
+    super._syncPartState(partId, newElement, priorElement, state);
+  }
+
   /** Size each notes textarea to its content, and re-size as the user types. */
-  #autosizeNotesTextareas() {
+  #autosizeNotesTextareas(root = this.element) {
     const selector = ".nco-gear textarea, .nco-ties textarea, .nco-advantages textarea";
-    for (const textarea of this.element.querySelectorAll(selector)) {
+    for (const textarea of root.querySelectorAll(selector)) {
+      if (textarea.dataset.autosized) continue;
+      textarea.dataset.autosized = "true";
       const grow = () => {
         textarea.style.height = "auto";
         const borders = textarea.offsetHeight - textarea.clientHeight;
