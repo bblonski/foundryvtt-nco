@@ -28,6 +28,7 @@ import { registerDiceSoNice } from "./dice/dice-so-nice.js";
 import {
   GAME_LINES,
   DEFAULT_GAME_LINE,
+  getGameLine,
   gameLineChoices,
   gameLineThemeClass,
   applyGameLineTerms,
@@ -348,14 +349,17 @@ Hooks.once("i18nInit", function () {
   // GM may add, remove or reword entries one per line.
 
   // The Conditions each new character is seeded with (see the preCreateActor
-  // hook). Clearing the list starts new characters with none.
+  // hook). Clearing the list starts new characters with none. The default is
+  // the active game line's list (see `conditions` in config.js), falling back
+  // to the base NCO set.
+  const conditionKeys = getGameLine(line).conditions ?? DEFAULT_CONDITIONS;
   game.settings.register("foundryvtt-nco", "startingConditions", {
     name: "NCO.Settings.StartingConditions.Name",
     hint: "NCO.Settings.StartingConditions.Hint",
     scope: "world",
     config: true,
     type: String,
-    default: DEFAULT_CONDITIONS.map((key) => game.i18n.localize(`NCO.Condition.${key}`)).join("\n"),
+    default: conditionKeys.map((key) => game.i18n.localize(`NCO.Condition.${key}`)).join("\n"),
   });
 
   // The ways a spent Stunt Point may be used, listed in chat when a character
@@ -395,8 +399,9 @@ Hooks.on("renderSettingsConfig", (_app, html) => {
 
 // Every new character starts with a configurable set of (unmarked) Conditions.
 // DEFAULT_CONDITIONS is the built-in list and the default for the
-// `startingConditions` setting; a GM can edit that setting to change the set.
-// Skip actors that already carry items, e.g. duplicates and imports.
+// `startingConditions` setting, unless the active game line declares its own
+// `conditions` list (see config.js); a GM can edit that setting to change the
+// set. Skip actors that already carry items, e.g. duplicates and imports.
 const DEFAULT_CONDITIONS = ["Angry", "Exhausted", "Restrained", "Dazed", "Scared", "Weakened"];
 
 // The standard Stunt Point uses, keyed by their NCO.Chat.StuntPoint.Option*

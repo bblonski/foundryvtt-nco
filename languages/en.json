@@ -97,6 +97,10 @@
     "NCO.Condition.Dazed": "Dazed",
     "NCO.Condition.Scared": "Scared",
     "NCO.Condition.Weakened": "Weakened",
+    "NCO.Condition.Tired": "Tired",
+    "NCO.Condition.Shaken": "Shaken",
+    "NCO.Condition.Drunk": "Drunk",
+    "NCO.Condition.Dishevelled": "Dishevelled",
 
     "NCO.Sheet.Hits": "Hits",
     "NCO.Sheet.HitsMax": "Total Hits for this character",

@@ -18,6 +18,10 @@
  * rules, applied on demand via the "Apply Recommended Settings" menu button
  * (see applications/line-defaults.js). Selecting a Game Line never applies
  * these automatically — a GM may have deliberately diverged.
+ *
+ * A line may declare `conditions`: the NCO.Condition.* key suffixes used as
+ * the default for the "Starting Conditions" setting (see the i18nInit hook in
+ * nco.js). Lines without one use the base NCO list.
  */
 
 export const DEFAULT_GAME_LINE = "nco";
@@ -42,6 +46,7 @@ export const GAME_LINES = {
   "star-scoundrels": {
     label: "Star Scoundrels",
     theme: "space-opera",
+    conditions: ["Angry", "Scared", "Dazed", "Tired"],
     settings: {
       driveTrackEnabled: false,
       stashTrackEnabled: false,
@@ -90,6 +95,7 @@ export const GAME_LINES = {
   "hard-city": {
     label: "Hard City",
     theme: "noir",
+    conditions: ["Angry", "Dazed", "Tired", "Shaken", "Drunk", "Dishevelled"],
     settings: {
       driveTrackEnabled: false,
       stashTrackEnabled: false,
