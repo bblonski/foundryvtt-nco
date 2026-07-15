@@ -73,6 +73,22 @@ jobs:
         uses: actions/checkout@v7
 
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+
+      # Compile the compendium packs (packs/_source/<pack>/*.json) into the
+      # LevelDB databases Foundry loads (packs/<pack>/), so the release always
+      # ships packs built from the committed source JSON.
+      - name: Build Compendium Packs
+        run: |
+          npm ci
+          npm run build:packs
+
+
       # Extract version embedded in the tag.
       # This step expects the tag to be one of the following formats:
       #   - "v<major>.<minor>.<patch>" (e.g., "v1.2.3")

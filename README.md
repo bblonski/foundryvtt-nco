@@ -136,17 +136,18 @@ off to match the game you're running:
 ### Compendium packs
 
 Pack source lives as one JSON file per document under `packs/_source/<pack>/`.
-The compiled LevelDB output (`packs/macros/`, `packs/guides/`) is committed to
-the repository so no build step is needed to run the system from a checkout.
-After editing the source JSON, rebuild the packs (with Foundry **closed**, since
-it locks the pack databases while a world is open):
+Only the source JSON is committed — the compiled LevelDB output (`packs/macros/`,
+`packs/guides/`) is gitignored and built from source: locally for development,
+and by the release workflow when packaging `system.zip`.
+
+To run the system from a checkout, or after editing the source JSON, build the
+packs (with Foundry **closed**, since it locks the pack databases while a world
+is open):
 
 ```
 npm install
 npm run build:packs
 ```
-
-and commit the regenerated `packs/` contents.
 
 ### Release process
 
@@ -165,6 +166,8 @@ To cut a release:
    The tag's version drives the `version` field in the released manifest.
 2. **Publish** the release.
 3. The workflow will:
+   - compile the compendium packs from `packs/_source/`
+     (`npm ci && npm run build:packs`),
    - extract the version from the tag,
    - substitute the manifest tokens with the version and release URLs,
    - package `system.json`, `README.md`, `LICENSE`, and the

@@ -1,1 +1,6 @@
 node_modules/
+
+# Compiled compendium packs — built from packs/_source by `npm run build:packs`
+# (locally for development, and by CI at release time).
+packs/*
+!packs/_source/
