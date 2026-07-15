@@ -1473,6 +1473,11 @@ button.nco-danger-rating:hover {
 .nco-pressure-count {
   font-size: 12px;
   opacity: 0.85;
+  /* Reserve room for the widest count (e.g. "10 / 10") so the panel
+     width doesn't shift as digit counts change. */
+  min-width: 6ch;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 .nco-pressure-reset {
