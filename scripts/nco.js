@@ -453,11 +453,28 @@ Hooks.on("preCreateItem", (item, data) => {
   item.updateSource({ img: icon });
 });
 
+// A brand-new world contains no canvas Scene, so the first thing a GM sees is
+// an empty black void. Seed Foundry's own default scene (the NUE welcome map)
+// and activate it on the world's very first launch — detected by the
+// migration version stamp not yet being set, so it must run before
+// Migrations.migrateWorld() writes that stamp. Worlds that already have
+// scenes (e.g. adventure imports) are left alone, and deleting the scene
+// later never resurrects it. Core only creates this scene itself as part of
+// the welcome tour, which a returning user never sees again.
+async function createDefaultScene() {
+  if (game.settings.get("foundryvtt-nco", "systemVersion")) return;
+  if (game.scenes.size) return;
+  // Public API in v14; v13 still names it _createDefaultScene.
+  const create = game.nue.createDefaultScene ?? game.nue._createDefaultScene;
+  await create.call(game.nue, { active: true });
+}
+
 // Show the Pressure display (if the optional rule is enabled) once the UI
 // exists, and stamp/migrate the world on the designated GM client. The "NCO
 // Roll" convenience macro ships in the system's Macros compendium.
-Hooks.once("ready", function () {
+Hooks.once("ready", async function () {
   PressureApp.refresh();
+  if (game.users.activeGM?.isSelf) await createDefaultScene();
   Migrations.migrateWorld();
 });
 
