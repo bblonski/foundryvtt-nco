@@ -86,6 +86,15 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // (total boxes) is a world setting, so it isn't stored per character;
       // the sheet clamps the display to that length.
       xp: new fields.NumberField({ required: true, integer: true, min: 0, initial: 0 }),
+      // Tri-state XP track (optional; see the xpTriStateEnabled setting). Used
+      // instead of the `xp` count above when that setting is on: each box cycles
+      // empty (0) -> ticked (1) -> crossed (2) independently, like the Drive
+      // track. Toggling the setting converts between the two shapes (see
+      // convertXpTracks), so only one of them is ever authoritative.
+      xpBoxes: new fields.ArrayField(
+        new fields.NumberField({ required: true, integer: true, min: 0, max: 2, initial: 0 }),
+        { initial: () => [] },
+      ),
       // Stash track: how many Stash boxes are filled. Like XP, the track's
       // length is a world setting (optional, default 5) and isn't stored per
       // character; the sheet clamps the display to that length. Drawn in blue.
@@ -127,5 +136,49 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     const driveBoxes = this.drive?.boxes ?? [];
     this.drive.ticked = driveBoxes.filter((b) => b === 1).length;
     this.drive.crossed = driveBoxes.filter((b) => b === 2).length;
+    // Same counts for the optional tri-state XP track.
+    const xpBoxes = this.xpBoxes ?? [];
+    this.xpTicked = xpBoxes.filter((b) => b === 1).length;
+    this.xpCrossed = xpBoxes.filter((b) => b === 2).length;
+  }
+
+  /**
+   * Convert every character between the two XP track shapes when the
+   * xpTriStateEnabled setting is toggled, so no advancement is lost either way.
+   * Turning the option on ticks one box per stored XP point; turning it off
+   * counts ticked and crossed boxes back into `xp` (both are spent XP). The
+   * boxes are left in place when converting back, since turning the option on
+   * again rebuilds them from `xp`.
+   *
+   * Called from the setting's onChange on the active GM only — world documents
+   * are writable there, and every client reloads afterwards anyway.
+   */
+  static async convertXpTracks(enabled) {
+    const length = Math.max(0, game.settings.get("foundryvtt-nco", "xpTrackLength") ?? 15);
+    const convert = (actor) => {
+      const system = actor.system;
+      if (enabled) {
+        const filled = Math.min(length, Math.max(0, system.xp ?? 0));
+        const boxes = Array.from({ length }, (_, i) => (i < filled ? 1 : 0));
+        return { _id: actor.id, "system.xpBoxes": boxes };
+      }
+      const boxes = (system.xpBoxes ?? []).slice(0, length);
+      return { _id: actor.id, "system.xp": boxes.filter((b) => b === 1 || b === 2).length };
+    };
+
+    const characters = game.actors.filter((actor) => actor.type === "character");
+    if (characters.length) {
+      await CONFIG.Actor.documentClass.updateDocuments(characters.map(convert));
+    }
+
+    // Unlinked tokens carry their own copy of the actor data, so they need the
+    // same conversion applied through each token's synthetic actor.
+    for (const scene of game.scenes) {
+      for (const token of scene.tokens) {
+        if (token.actorLink || token.actor?.type !== "character") continue;
+        const { _id, ...changes } = convert(token.actor);
+        await token.actor.update(changes);
+      }
+    }
   }
 }

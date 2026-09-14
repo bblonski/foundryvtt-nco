@@ -300,6 +300,23 @@ Hooks.once("init", function () {
     requiresReload: true,
   });
 
+  // Whether the XP track uses tri-state boxes (empty/ticked/crossed, like the
+  // Drive track) instead of filling from the left. Toggling it converts every
+  // character's stored XP between the two shapes.
+  game.settings.register("foundryvtt-nco", "xpTriStateEnabled", {
+    name: "NCO.Settings.XPTriState.Name",
+    hint: "NCO.Settings.XPTriState.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    requiresReload: true,
+    onChange: async (value) => {
+      if (!game.users.activeGM?.isSelf) return;
+      await CharacterData.convertXpTracks(value);
+    },
+  });
+
   // Controls how the Hits and XP tracks respond to clicks (see CharacterSheet).
   game.settings.register("foundryvtt-nco", "trackClickMode", {
     name: "NCO.Settings.TrackClickMode.Name",

@@ -127,7 +127,7 @@
 
     "NCO.Sheet.Drive": "Drive",
     "NCO.Sheet.DrivePlaceholder": "What drives this character?",
-    "NCO.Sheet.DriveHint": "Click to tick, again to cross out, again to clear",
+    "NCO.Sheet.TriStateHint": "Click to tick, again to cross out, again to clear",
 
     "NCO.Chat.StuntPoint.Title": "Stunt Point Spent",
     "NCO.Chat.StuntPoint.OptionTrademark": "Add a second Trademark to the check",
@@ -154,8 +154,10 @@
     "NCO.Settings.PCCount.Hint": "How many player characters are in the crew, used to calculate Boss Hits when adding one Hit per player character.",
     "NCO.Settings.XPTrackLength.Name": "XP Track Length",
     "NCO.Settings.XPTrackLength.Hint": "How many XP boxes appear on each character's advancement track.",
+    "NCO.Settings.XPTriState.Name": "Tri-state XP Track",
+    "NCO.Settings.XPTriState.Hint": "XP boxes can be ticked, crossed out, or left blank, like the Drive track, instead of filling from the left. Switching this converts each character's existing XP; ticked and crossed boxes both count as spent XP.",
     "NCO.Settings.TrackClickMode.Name": "Track Click Behavior",
-    "NCO.Settings.TrackClickMode.Hint": "How the Hits and XP tracks respond to clicks.",
+    "NCO.Settings.TrackClickMode.Hint": "How the Hits and XP tracks respond to clicks (a tri-state XP track always cycles each box instead).",
     "NCO.Settings.TrackClickMode.Increment": "Left-click adds, right-click removes",
     "NCO.Settings.TrackClickMode.Fill": "Click a box to fill to that level",
     "NCO.Settings.DriveTrack.Name": "Drive Track",

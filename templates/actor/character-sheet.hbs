@@ -71,19 +71,36 @@
       </div>
       <div class="nco-xp">
         <label class="nco-section-label">{{localize "NCO.Sheet.XP"}}</label>
-        {{!-- Click behavior is shared with the Hits track (see JS / setting). --}}
-        <div class="nco-xp-track nco-track" data-action="trackAdd" data-track="xp"
-             title="{{trackHint}}">
-          {{#each xpGroups as |group|}}
-            {{#unless @first}}<hr class="nco-xp-divider" />{{/unless}}
-            <div class="nco-xp-group">
-              {{#each group as |box|}}
-                <span class="nco-xp-box {{#if box.checked}}nco-xp-box-filled{{/if}}"
-                      data-index="{{box.index}}"></span>
-              {{/each}}
-            </div>
-          {{/each}}
-        </div>
+        {{#if xpTriState}}
+          {{!-- Tri-state XP track (optional setting): each box cycles
+                empty -> ticked -> crossed on click, like the Drive track, so it
+                is not a `nco-track` and takes no trackAdd/right-click. --}}
+          <div class="nco-xp-track" title="{{triStateHint}}">
+            {{#each xpGroups as |group|}}
+              {{#unless @first}}<hr class="nco-xp-divider" />{{/unless}}
+              <div class="nco-xp-group">
+                {{#each group as |box|}}
+                  <span class="nco-tri-box nco-tri-box-{{box.state}}"
+                        data-action="xpTriClick" data-index="{{box.index}}"></span>
+                {{/each}}
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          {{!-- Click behavior is shared with the Hits track (see JS / setting). --}}
+          <div class="nco-xp-track nco-track" data-action="trackAdd" data-track="xp"
+               title="{{trackHint}}">
+            {{#each xpGroups as |group|}}
+              {{#unless @first}}<hr class="nco-xp-divider" />{{/unless}}
+              <div class="nco-xp-group">
+                {{#each group as |box|}}
+                  <span class="nco-xp-box {{#if box.checked}}nco-xp-box-filled{{/if}}"
+                        data-index="{{box.index}}"></span>
+                {{/each}}
+              </div>
+            {{/each}}
+          </div>
+        {{/if}}
       </div>
     </div>
   </header>
@@ -113,9 +130,9 @@
       {{else}}
         <div class="nco-description-text">{{system.drive.description}}</div>
       {{/if}}
-      <div class="nco-drive-track" title="{{driveHint}}">
+      <div class="nco-drive-track" title="{{triStateHint}}">
         {{#each driveBoxes as |box|}}
-          <span class="nco-drive-box nco-drive-box-{{box.state}}"
+          <span class="nco-tri-box nco-tri-box-{{box.state}}"
                 data-action="driveClick" data-index="{{box.index}}"></span>
         {{/each}}
       </div>

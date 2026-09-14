@@ -9,8 +9,8 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 const DRIVE_TRACK_LENGTH = 10;
 /** Absolute ceiling for the Stunt Points track. */
 const STUNT_POINTS_MAX = 5;
-/** Drive box state values (index) mapped to their CSS state name. */
-const DRIVE_STATES = ["empty", "ticked", "crossed"];
+/** Tri-state box values (index) mapped to their CSS state name. */
+const TRI_STATES = ["empty", "ticked", "crossed"];
 /** Boxes on the optional per-Condition/per-Trauma hit track (see setting). */
 const CONDITION_TRAUMA_TRACK_LENGTH = 3;
 
@@ -45,6 +45,7 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
       editTrademark: this._onEditTrademark,
       deleteTrademark: this._onDeleteTrademark,
       driveClick: this._onDriveClick,
+      xpTriClick: this._onXpTriClick,
       spendStuntPoint: this._onSpendStuntPoint,
       toggleCondition: this._onToggleCondition,
       createCondition: this._onCreateCondition,
@@ -119,12 +120,13 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
       hitBoxes: this.#prepareHitBoxes(),
       stuntBoxes: this.#prepareStuntBoxes(),
       stuntMaxLimit: STUNT_POINTS_MAX,
+      xpTriState: game.settings.get("foundryvtt-nco", "xpTriStateEnabled"),
       xpGroups: this.#prepareXpGroups(),
+      triStateHint: game.i18n.localize("NCO.Sheet.TriStateHint"),
       stashEnabled: game.settings.get("foundryvtt-nco", "stashTrackEnabled"),
       stashGroups: this.#prepareStashGroups(),
       driveEnabled: game.settings.get("foundryvtt-nco", "driveTrackEnabled"),
       driveBoxes: this.#prepareDriveBoxes(),
-      driveHint: game.i18n.localize("NCO.Sheet.DriveHint"),
       conditionTraumaTracks,
       conditions: this.actor.items
         .filter((item) => item.type === "condition")
@@ -277,10 +279,13 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
 
   /**
    * The XP track split into groups of five boxes, so the template can draw a
-   * horizontal divider between each group. Boxes fill from the left.
+   * horizontal divider between each group. Boxes fill from the left, or — when
+   * the tri-state setting is on — carry an independent `state` each, like the
+   * Drive track. Stored arrays shorter than the track read as empty.
    */
   #prepareXpGroups() {
     const length = this.#xpTrackLength;
+    const boxes = this.actor.system.xpBoxes ?? [];
     const filled = Math.min(length, Math.max(0, this.actor.system.xp ?? 0));
     const groups = [];
     for (let i = 0; i < length; i += 5) {
@@ -288,6 +293,7 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
         Array.from({ length: Math.min(5, length - i) }, (_, j) => ({
           index: i + j,
           checked: i + j < filled,
+          state: TRI_STATES[boxes[i + j] ?? 0] ?? "empty",
         })),
       );
     }
@@ -328,25 +334,44 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
     const boxes = this.actor.system.drive?.boxes ?? [];
     return Array.from({ length: DRIVE_TRACK_LENGTH }, (_, i) => ({
       index: i,
-      state: DRIVE_STATES[boxes[i] ?? 0] ?? "empty",
+      state: TRI_STATES[boxes[i] ?? 0] ?? "empty",
     }));
   }
 
   /**
-   * Click a Drive box: cycle its tri-state through empty -> ticked -> crossed
-   * -> empty. Unlike the Hits/XP tracks, each box is independent rather than a
-   * fill level, so the whole array is rewritten with the one box advanced.
+   * Advance one box of a tri-state track through empty -> ticked -> crossed ->
+   * empty. Each box is independent rather than a fill level, so the whole array
+   * is rewritten at the track's current length with the one box advanced.
    */
-  static async _onDriveClick(_event, target) {
+  async #cycleTriState(field, stored, length, index) {
     if (!this.isEditable) return;
-    const index = Number(target.dataset.index);
-    if (!Number.isInteger(index) || index < 0 || index >= DRIVE_TRACK_LENGTH) return;
-    const boxes = Array.from(
-      { length: DRIVE_TRACK_LENGTH },
-      (_, i) => Number(this.actor.system.drive?.boxes?.[i] ?? 0),
-    );
+    if (!Number.isInteger(index) || index < 0 || index >= length) return;
+    const boxes = Array.from({ length }, (_, i) => Number(stored?.[i] ?? 0));
     boxes[index] = (boxes[index] + 1) % 3;
-    await this.actor.update({ "system.drive.boxes": boxes });
+    await this.actor.update({ [field]: boxes });
+  }
+
+  /** Click a Drive box: cycle its tri-state (see {@link #cycleTriState}). */
+  static async _onDriveClick(_event, target) {
+    await this.#cycleTriState(
+      "system.drive.boxes",
+      this.actor.system.drive?.boxes,
+      DRIVE_TRACK_LENGTH,
+      Number(target.dataset.index),
+    );
+  }
+
+  /**
+   * Click an XP box while the tri-state XP setting is on: cycle its tri-state.
+   * Without that setting the track is a fill level handled by `trackAdd`.
+   */
+  static async _onXpTriClick(_event, target) {
+    await this.#cycleTriState(
+      "system.xpBoxes",
+      this.actor.system.xpBoxes,
+      this.#xpTrackLength,
+      Number(target.dataset.index),
+    );
   }
 
   /**

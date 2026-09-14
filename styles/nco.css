@@ -319,8 +319,9 @@ body {
   border-left: 1px solid var(--nco-border);
 }
 
-/* Drive track: a description input above a row of ten tri-state boxes. A box
-   cycles empty -> ticked (blue /) -> crossed (red x) -> empty on each click. */
+/* Tri-state tracks: the Drive track (a description input above a row of ten
+   boxes) and the XP track when the tri-state XP setting is on. A box cycles
+   empty -> ticked (blue check) -> crossed (red x) -> empty on each click. */
 .nco-drive-desc {
   width: 100%;
   margin-bottom: 6px;
@@ -331,7 +332,8 @@ body {
   padding: 2px 6px;
 }
 
-.nco-drive-track {
+.nco-drive-track,
+.nco-xp-track {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -340,7 +342,7 @@ body {
   user-select: none;
 }
 
-.nco-character-sheet .nco-drive-box {
+.nco-character-sheet .nco-tri-box {
   width: 18px;
   height: 18px;
   flex: none;
@@ -358,11 +360,11 @@ body {
   transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-.nco-character-sheet .nco-drive-box-ticked {
+.nco-character-sheet .nco-tri-box-ticked {
   border-color: var(--nco-action);
 }
 
-.nco-character-sheet .nco-drive-box-ticked::after {
+.nco-character-sheet .nco-tri-box-ticked::after {
   content: "\f00c"; /* Font Awesome check, matching the pressure track */
   font-family: "Font Awesome 7 Pro", "Font Awesome 6 Pro", "Font Awesome 5 Pro";
   font-weight: 900;
@@ -371,13 +373,13 @@ body {
   text-shadow: 0 0 5px rgb(var(--nco-action-rgb) /0.7);
 }
 
-.nco-character-sheet .nco-drive-box-crossed {
+.nco-character-sheet .nco-tri-box-crossed {
   border-color: var(--nco-danger);
   position: relative;
 }
 
 /* A full cross drawn corner-to-corner so it reaches the edges of the box. */
-.nco-character-sheet .nco-drive-box-crossed::after {
+.nco-character-sheet .nco-tri-box-crossed::after {
   content: "";
   position: absolute;
   inset: 0;

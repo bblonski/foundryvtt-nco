@@ -35,6 +35,7 @@ export const GAME_LINES = {
     settings: {
       driveTrackEnabled: true,
       stashTrackEnabled: true,
+      xpTriStateEnabled: false,
       conditionTraumaTracksEnabled: false,
       tiesEnabled: false,
       advantagesEnabled: false,
@@ -51,6 +52,7 @@ export const GAME_LINES = {
     settings: {
       driveTrackEnabled: false,
       stashTrackEnabled: false,
+      xpTriStateEnabled: false,
       conditionTraumaTracksEnabled: false,
       tiesEnabled: false,
       advantagesEnabled: false,
@@ -82,6 +84,7 @@ export const GAME_LINES = {
     settings: {
       driveTrackEnabled: false,
       stashTrackEnabled: false,
+      xpTriStateEnabled: false,
       conditionTraumaTracksEnabled: false,
       tiesEnabled: false,
       advantagesEnabled: false,
@@ -102,6 +105,7 @@ export const GAME_LINES = {
     settings: {
       driveTrackEnabled: false,
       stashTrackEnabled: false,
+      xpTriStateEnabled: true,
       conditionTraumaTracksEnabled: false,
       tiesEnabled: true,
       advantagesEnabled: false,
@@ -141,6 +145,7 @@ export const GAME_LINES = {
     settings: {
       driveTrackEnabled: false,
       stashTrackEnabled: true,
+      xpTriStateEnabled: true,
       conditionTraumaTracksEnabled: true,
       tiesEnabled: true,
       advantagesEnabled: true,
