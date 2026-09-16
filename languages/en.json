@@ -127,7 +127,7 @@
 
     "NCO.Sheet.Drive": "Drive",
     "NCO.Sheet.DrivePlaceholder": "What drives this character?",
-    "NCO.Sheet.TriStateHint": "Click to tick, again to cross out, again to clear",
+    "NCO.Sheet.TriStateHint": "Click to tick, again to cross out, again to clear; right-click to cycle backwards",
 
     "NCO.Chat.StuntPoint.Title": "Stunt Point Spent",
     "NCO.Chat.StuntPoint.OptionTrademark": "Add a second Trademark to the check",

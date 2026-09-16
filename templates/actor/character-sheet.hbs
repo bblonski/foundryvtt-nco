@@ -72,9 +72,10 @@
       <div class="nco-xp">
         <label class="nco-section-label">{{localize "NCO.Sheet.XP"}}</label>
         {{#if xpTriState}}
-          {{!-- Tri-state XP track (optional setting): each box cycles
-                empty -> ticked -> crossed on click, like the Drive track, so it
-                is not a `nco-track` and takes no trackAdd/right-click. --}}
+          {{!-- Tri-state XP track (optional setting): each box cycles on click
+                and backwards on right-click, like the Drive track, so it is not
+                a `nco-track` and takes none of the fill-level trackAdd
+                handling. --}}
           <div class="nco-xp-track" title="{{triStateHint}}">
             {{#each xpGroups as |group|}}
               {{#unless @first}}<hr class="nco-xp-divider" />{{/unless}}
@@ -117,7 +118,8 @@
 
   {{#if driveEnabled}}
     {{!-- Drive track: a description plus ten tri-state boxes. Each box cycles
-          empty -> ticked (blue /) -> crossed (red x) -> empty on click; the
+          empty -> ticked (blue check) -> crossed (red x) -> empty on click and
+          backwards on right-click; the
           ticked/crossed counts are character stats (see CharacterData). The
           description field locks with the sheet (edit mode only); the boxes
           stay clickable during play. --}}

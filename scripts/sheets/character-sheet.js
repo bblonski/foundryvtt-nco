@@ -184,6 +184,11 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
   /** @override */
   async _onRender(context, options) {
     await super._onRender(context, options);
+    // Reverse-cycle on right-click. The boxes are rebuilt each render, so this
+    // re-binds every time, like the mixin's own track context menu.
+    for (const box of this.element.querySelectorAll(".nco-tri-box")) {
+      box.addEventListener("contextmenu", this._onTriStateContextMenu.bind(this));
+    }
     // The Gear/Ties/Advantages notes textareas grow with their content via
     // CSS `field-sizing: content`; this is the fallback for browsers that
     // don't support it yet (e.g. Firefox).
@@ -339,26 +344,46 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
   }
 
   /**
-   * Advance one box of a tri-state track through empty -> ticked -> crossed ->
-   * empty. Each box is independent rather than a fill level, so the whole array
-   * is rewritten at the track's current length with the one box advanced.
+   * Where a tri-state track's boxes live, keyed by the click action its boxes
+   * carry in `data-action`. Returns null for anything else.
    */
-  async #cycleTriState(field, stored, length, index) {
+  #triTrackConfig(action) {
+    if (action === "driveClick") {
+      return {
+        field: "system.drive.boxes",
+        stored: this.actor.system.drive?.boxes,
+        length: DRIVE_TRACK_LENGTH,
+      };
+    }
+    if (action === "xpTriClick") {
+      return {
+        field: "system.xpBoxes",
+        stored: this.actor.system.xpBoxes,
+        length: this.#xpTrackLength,
+      };
+    }
+    return null;
+  }
+
+  /**
+   * Step one box of a tri-state track through empty -> ticked -> crossed ->
+   * empty (`step` 1, on left-click) or backwards (`step` -1, on right-click).
+   * Each box is independent rather than a fill level, so the whole array is
+   * rewritten at the track's current length with the one box moved.
+   */
+  async #cycleTriState(action, index, step) {
     if (!this.isEditable) return;
-    if (!Number.isInteger(index) || index < 0 || index >= length) return;
-    const boxes = Array.from({ length }, (_, i) => Number(stored?.[i] ?? 0));
-    boxes[index] = (boxes[index] + 1) % 3;
-    await this.actor.update({ [field]: boxes });
+    const cfg = this.#triTrackConfig(action);
+    if (!cfg) return;
+    if (!Number.isInteger(index) || index < 0 || index >= cfg.length) return;
+    const boxes = Array.from({ length: cfg.length }, (_, i) => Number(cfg.stored?.[i] ?? 0));
+    boxes[index] = (boxes[index] + step + 3) % 3;
+    await this.actor.update({ [cfg.field]: boxes });
   }
 
   /** Click a Drive box: cycle its tri-state (see {@link #cycleTriState}). */
   static async _onDriveClick(_event, target) {
-    await this.#cycleTriState(
-      "system.drive.boxes",
-      this.actor.system.drive?.boxes,
-      DRIVE_TRACK_LENGTH,
-      Number(target.dataset.index),
-    );
+    await this.#cycleTriState("driveClick", Number(target.dataset.index), 1);
   }
 
   /**
@@ -366,12 +391,18 @@ export class CharacterSheet extends NCOSheetMixin(ActorSheetV2) {
    * Without that setting the track is a fill level handled by `trackAdd`.
    */
   static async _onXpTriClick(_event, target) {
-    await this.#cycleTriState(
-      "system.xpBoxes",
-      this.actor.system.xpBoxes,
-      this.#xpTrackLength,
-      Number(target.dataset.index),
-    );
+    await this.#cycleTriState("xpTriClick", Number(target.dataset.index), 1);
+  }
+
+  /**
+   * Right-click a tri-state box: cycle it backwards, so a misclick is undone
+   * without going the long way round. Right-click isn't an ActionV2 trigger, so
+   * it's bound per box on render (see `_onRender`).
+   */
+  async _onTriStateContextMenu(event) {
+    event.preventDefault();
+    const box = event.currentTarget;
+    await this.#cycleTriState(box.dataset.action, Number(box.dataset.index), -1);
   }
 
   /**
